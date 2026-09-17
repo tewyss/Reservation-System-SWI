@@ -14,10 +14,6 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
-/**
- * A RESERVATION: a request by an {@link AppUser} to use a {@link Court}
- * for a time slot [startTime, endTime), with a lifecycle {@link ReservationState}.
- */
 @Entity
 @Table(name = "reservation")
 public class Reservation {

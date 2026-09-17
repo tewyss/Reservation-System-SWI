@@ -1,13 +1,5 @@
 package org.example.reservation.domain;
 
-/**
- * Lifecycle states of a {@link Reservation}.
- *
- * <pre>
- *   DRAFT --confirm--> CONFIRMED --cancel--> CANCELLED
- *     \-----------------cancel-------------------/
- * </pre>
- */
 public enum ReservationState {
     /** Created but not yet approved; does not block the court. */
     DRAFT,

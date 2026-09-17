@@ -7,10 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- * The USER who creates reservations. Named {@code AppUser} (table {@code app_user})
- * to avoid clashing with the reserved SQL keyword {@code USER}.
- */
 @Entity
 @Table(name = "app_user")
 public class AppUser {

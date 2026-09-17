@@ -11,10 +11,7 @@ import jakarta.persistence.Table;
 
 import java.time.LocalTime;
 
-/**
- * The reserved RESOURCE: a bookable sports court (e.g. tennis, squash).
- * Each court has opening hours that constrain when it can be reserved.
- */
+
 @Entity
 @Table(name = "court")
 public class Court {
