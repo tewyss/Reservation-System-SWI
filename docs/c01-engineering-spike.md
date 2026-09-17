@@ -24,11 +24,11 @@ and `docs/evidence/spike-A-persistence-run.log`.
 Reviewer: Pavel Valošek 
 
 Review checklist:
-- [ ] Domain model matches the Project Frame (Court, AppUser, Reservation, states).
-- [ ] Common overlap rule only counts CONFIRMED reservations; `[start, end)` is half-open.
-- [ ] Opening-hours (domain) rule enforced at confirm and in availability check.
-- [ ] Notification failure does not roll back a confirmation.
-- [ ] `mvn test` is green locally on the reviewer's machine (6/6).
+- [x] Domain model matches the Project Frame (Court, AppUser, Reservation, states).
+- [x] Common overlap rule only counts CONFIRMED reservations; `[start, end)` is half-open.
+- [x] Opening-hours (domain) rule enforced at confirm and in availability check.
+- [x] Notification failure does not roll back a confirmation.
+- [x] `mvn test` is green locally on the reviewer's machine (6/6).
 
 Reviewer sign-off: _Pavel Mynář_
 Review comments: _---_
