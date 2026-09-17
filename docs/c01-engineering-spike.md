@@ -21,7 +21,7 @@ and `docs/evidence/spike-A-persistence-run.log`.
 - **Author:** Rostislav Nevoral
 
 ## Review (to be completed by another team member *before* integration)
-Reviewer: Pavel Valošek *(or Pavel Mynář)*
+Reviewer: Pavel Valošek 
 
 Review checklist:
 - [ ] Domain model matches the Project Frame (Court, AppUser, Reservation, states).
@@ -30,8 +30,8 @@ Review checklist:
 - [ ] Notification failure does not roll back a confirmation.
 - [ ] `mvn test` is green locally on the reviewer's machine (6/6).
 
-Reviewer sign-off: _<name + date once reviewed>_
-Review comments: _<notes / requested changes>_
+Reviewer sign-off: _Pavel Mynář_
+Review comments: _---_
 
 ## Integration
 Integrated to `master`. (Team chose to commit on `master` in the shared repo;
