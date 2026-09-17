@@ -1,0 +1,91 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< org.example:SWIReservationSystem >------------------
+[INFO] Building SWIReservationSystem 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ SWIReservationSystem ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ SWIReservationSystem ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ SWIReservationSystem ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ SWIReservationSystem ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ SWIReservationSystem ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.example.reservation.ReservationPersistenceSpikeTest
+19:50:21.987 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.example.reservation.ReservationPersistenceSpikeTest]: ReservationPersistenceSpikeTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+19:50:22.136 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.ReservationPersistenceSpikeTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-09-17T19:50:22.558+02:00  INFO 16452 --- [           main] o.e.r.ReservationPersistenceSpikeTest    : Starting ReservationPersistenceSpikeTest using Java 21.0.4 with PID 16452 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-09-17T19:50:22.559+02:00  INFO 16452 --- [           main] o.e.r.ReservationPersistenceSpikeTest    : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T19:50:22.919+02:00  INFO 16452 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-17T19:50:22.984+02:00  INFO 16452 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 56 ms. Found 3 JPA repository interfaces.
+2026-09-17T19:50:23.054+02:00  INFO 16452 --- [           main] beddedDataSourceBeanFactoryPostProcessor : Replacing 'dataSource' DataSource bean with embedded version
+2026-09-17T19:50:23.167+02:00  INFO 16452 --- [           main] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:h2:mem:7ac333af-b026-401d-9dd0-628769b18a18;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+2026-09-17T19:50:23.444+02:00  INFO 16452 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-17T19:50:23.503+02:00  INFO 16452 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.36.Final
+2026-09-17T19:50:23.535+02:00  INFO 16452 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-09-17T19:50:23.846+02:00  INFO 16452 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-17T19:50:23.941+02:00  INFO 16452 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory$EmbeddedDataSourceProxy@22048bd6']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-17T19:50:24.789+02:00  INFO 16452 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: drop table if exists app_user cascade 
+Hibernate: drop table if exists court cascade 
+Hibernate: drop table if exists reservation cascade 
+Hibernate: create table app_user (id bigint generated by default as identity, email varchar(255) not null unique, full_name varchar(255) not null, primary key (id))
+Hibernate: create table court (closing_time time(6) not null, opening_time time(6) not null, id bigint generated by default as identity, location varchar(255) not null, name varchar(255) not null, type enum ('BADMINTON','BASKETBALL','FOOTBALL','SQUASH','TENNIS') not null, primary key (id))
+Hibernate: create table reservation (court_id bigint not null, created_at timestamp(6) with time zone not null, end_time timestamp(6) not null, id bigint generated by default as identity, start_time timestamp(6) not null, user_id bigint not null, state enum ('CANCELLED','CONFIRMED','DRAFT') not null, primary key (id))
+Hibernate: alter table if exists reservation add constraint FKpxnu37u6x3lp9jvebvujghn4e foreign key (court_id) references court
+Hibernate: alter table if exists reservation add constraint FKm25r28103jb9lske61acewdlf foreign key (user_id) references app_user
+2026-09-17T19:50:24.841+02:00  INFO 16452 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-17T19:50:25.111+02:00  INFO 16452 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-17T19:50:25.595+02:00  INFO 16452 --- [           main] o.e.r.ReservationPersistenceSpikeTest    : Started ReservationPersistenceSpikeTest in 3.382 seconds (process running for 4.342)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Users\rosti\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+Hibernate: insert into court (closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,id) values (?,?,default)
+Hibernate: insert into reservation (court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,default)
+Hibernate: select r1_0.id,r1_0.court_id,c1_0.id,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.265 s -- in org.example.reservation.ReservationPersistenceSpikeTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  6.810 s
+[INFO] Finished at: 2026-09-17T19:50:26+02:00
+[INFO] ------------------------------------------------------------------------
