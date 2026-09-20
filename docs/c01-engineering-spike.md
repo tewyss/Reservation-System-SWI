@@ -15,13 +15,13 @@ Introduced the Spring Boot project skeleton, the domain model, `ReservationServi
 (create / confirm / cancel / check availability) with the overlap rule and the
 opening-hours rule, the `NotificationService` boundary, a minimal REST controller,
 and tests — including `ReservationPersistenceSpikeTest` (the spike) and
-`ReservationServiceTest` (business rules). Evidence: `docs/evidence-and-evolution.md`
-and `docs/evidence/spike-A-persistence-run.log`.
+`ReservationServiceTest` (business rules). Evidence: [`evidence-and-evolution.md`](evidence-and-evolution.md)
+and [`evidence/spike-A-persistence-run.log`](evidence/spike-A-persistence-run.log).
 
 - **Author:** Rostislav Nevoral
 
 ## Review (to be completed by another team member *before* integration)
-Reviewer: Pavel Mynář
+Reviewers: Pavel Mynář, Pavel Valošek
 
 Review checklist:
 - [x] Domain model matches the Project Frame (Court, AppUser, Reservation, states).
@@ -30,7 +30,7 @@ Review checklist:
 - [x] Notification failure does not roll back a confirmation. 
 - [x] `mvn test` is green locally on the reviewer's machine (6/6). 
 
-Reviewer sign-off: _Pavel Valošek_
+Reviewer sign-off: _Pavel Mynář, Pavel Valošek_
 
 ## Integration
 Integrated to `master`. (Team chose to commit on `master` in the shared repo;
