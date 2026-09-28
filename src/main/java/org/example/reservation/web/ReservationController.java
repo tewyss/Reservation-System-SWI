@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 /**
- * HTTP surface of the four core operations (Baseline v0.1).
+ * HTTP surface of Specification Baseline v0.2: the four core operations plus the
+ * approval workflow (approve, reject, expire).
  *
  * The actor (BR-05) is carried in the {@code X-Actor-Id} header. Assumption A-1:
  * the identity is asserted by the caller, not authenticated - establishing it is
@@ -60,13 +61,40 @@ public class ReservationController {
         return ReservationResponse.from(reservationService.cancel(actorId, id));
     }
 
+    /** OP-05 Approve Reservation (v0.2). */
+    @PostMapping("/{id}/approve")
+    public ReservationResponse approve(@RequestHeader(value = "X-Actor-Id", required = false) Long actorId,
+                                       @PathVariable Long id) {
+        return ReservationResponse.from(reservationService.approve(actorId, id));
+    }
+
+    /** OP-06 Reject Reservation (v0.2). */
+    @PostMapping("/{id}/reject")
+    public ReservationResponse reject(@RequestHeader(value = "X-Actor-Id", required = false) Long actorId,
+                                      @PathVariable Long id,
+                                      @RequestBody(required = false) RejectRequest request) {
+        return ReservationResponse.from(
+                reservationService.reject(actorId, id, request == null ? null : request.reason()));
+    }
+
+    /**
+     * OP-07 Expire Pending Approvals (v0.2) - triggered by time in production
+     * (see ApprovalExpirySweeper); exposed here so the sweep can also be driven
+     * explicitly when demonstrating the baseline.
+     */
+    @PostMapping("/expire-due")
+    public ExpiryResponse expireDue() {
+        return new ExpiryResponse(reservationService.expirePendingApprovals());
+    }
+
     /** OP-02 Check Availability. No actor required - see consistency finding C-5. */
     @GetMapping("/availability")
     public AvailabilityResponse availability(@RequestParam Long courtId,
                                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
                                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
         AvailabilityResult result = reservationService.checkAvailability(courtId, start, end);
-        return new AvailabilityResponse(result.available(), result.reason().name());
+        return new AvailabilityResponse(result.available(), result.reason().name(),
+                result.approvalRequired(), result.pendingApprovalCount());
     }
 
     @ExceptionHandler(ReservationException.class)
@@ -77,9 +105,9 @@ public class ReservationController {
 
     private static HttpStatus statusFor(ReservationErrorCode code) {
         return switch (code) {
-            case UNAUTHORIZED -> HttpStatus.FORBIDDEN;
+            case UNAUTHORIZED, SELF_APPROVAL -> HttpStatus.FORBIDDEN;
             case NOT_FOUND, COURT_NOT_FOUND -> HttpStatus.NOT_FOUND;
-            case CONFLICT, INVALID_STATE -> HttpStatus.CONFLICT;
+            case CONFLICT, INVALID_STATE, APPROVAL_EXPIRED -> HttpStatus.CONFLICT;
             case INVALID_INTERVAL, COURT_INACTIVE, OUTSIDE_OPENING_HOURS, TOO_LATE_TO_CANCEL ->
                     HttpStatus.BAD_REQUEST;
         };
@@ -88,15 +116,25 @@ public class ReservationController {
     public record CreateReservationRequest(Long courtId, LocalDateTime start, LocalDateTime end) {
     }
 
+    public record RejectRequest(String reason) {
+    }
+
+    public record ExpiryResponse(int expired) {
+    }
+
     public record ReservationResponse(Long id, Long courtId, Long ownerId,
-                                      LocalDateTime start, LocalDateTime end, String state) {
+                                      LocalDateTime start, LocalDateTime end, String state,
+                                      LocalDateTime approvalDeadline, Long decidedBy) {
         static ReservationResponse from(Reservation r) {
             return new ReservationResponse(r.getId(), r.getCourt().getId(), r.getUser().getId(),
-                    r.getStartTime(), r.getEndTime(), r.getState().name());
+                    r.getStartTime(), r.getEndTime(), r.getState().name(),
+                    r.getApprovalDeadline(),
+                    r.getDecidedBy() == null ? null : r.getDecidedBy().getId());
         }
     }
 
-    public record AvailabilityResponse(boolean available, String reason) {
+    public record AvailabilityResponse(boolean available, String reason,
+                                       boolean approvalRequired, int pendingApprovalCount) {
     }
 
     public record ErrorResponse(String code, String message) {

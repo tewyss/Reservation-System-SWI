@@ -48,6 +48,27 @@ public class Reservation {
     @Column
     private Instant cancelledAt;
 
+    /**
+     * BR-10 (v0.2): fixed when the reservation enters PENDING_APPROVAL as
+     * min(now + approvalWindow, startTime). On or after it the request is no
+     * longer approvable. Null unless the reservation was ever submitted to an
+     * approval-gated court.
+     */
+    @Column
+    private LocalDateTime approvalDeadline;
+
+    /** BR-09 / REQ-11: who decided (approved or rejected) this request. */
+    @ManyToOne
+    @JoinColumn(name = "decided_by_id")
+    private AppUser decidedBy;
+
+    @Column
+    private Instant decidedAt;
+
+    /** Optional free-text reason an approver gave when rejecting (OP-06). */
+    @Column(length = 500)
+    private String decisionReason;
+
     protected Reservation() {
         // required by JPA
     }
@@ -72,8 +93,36 @@ public class Reservation {
         return state.blocksCourt();
     }
 
+    /** OP-03 on a self-service court: DRAFT -> CONFIRMED. */
     public void confirm() {
         this.state = ReservationState.CONFIRMED;
+    }
+
+    /** OP-03 on an approval-gated court (REQ-09): DRAFT -> PENDING_APPROVAL. */
+    public void submitForApproval(LocalDateTime deadline) {
+        this.state = ReservationState.PENDING_APPROVAL;
+        this.approvalDeadline = deadline;
+    }
+
+    /** OP-05 (REQ-10): PENDING_APPROVAL -> CONFIRMED, recording the decision. */
+    public void approve(AppUser approver, Instant at) {
+        this.state = ReservationState.CONFIRMED;
+        this.decidedBy = approver;
+        this.decidedAt = at;
+    }
+
+    /** OP-06 (REQ-11): PENDING_APPROVAL -> REJECTED, recording the decision. */
+    public void reject(AppUser approver, Instant at, String reason) {
+        this.state = ReservationState.REJECTED;
+        this.decidedBy = approver;
+        this.decidedAt = at;
+        this.decisionReason = reason;
+    }
+
+    /** OP-05 E7 / OP-07 (REQ-12): PENDING_APPROVAL -> EXPIRED. No actor decided. */
+    public void expire(Instant at) {
+        this.state = ReservationState.EXPIRED;
+        this.decidedAt = at;
     }
 
     public void cancel(Instant at) {
@@ -111,5 +160,21 @@ public class Reservation {
 
     public Instant getCancelledAt() {
         return cancelledAt;
+    }
+
+    public LocalDateTime getApprovalDeadline() {
+        return approvalDeadline;
+    }
+
+    public AppUser getDecidedBy() {
+        return decidedBy;
+    }
+
+    public Instant getDecidedAt() {
+        return decidedAt;
+    }
+
+    public String getDecisionReason() {
+        return decisionReason;
     }
 }

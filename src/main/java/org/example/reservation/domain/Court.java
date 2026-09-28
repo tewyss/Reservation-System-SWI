@@ -42,23 +42,38 @@ public class Court {
     @Column(nullable = false)
     private boolean active = true;
 
+    /**
+     * BR-08 (v0.2): a gated court requires an approver's decision before a
+     * reservation may become CONFIRMED. Read at confirm time (A-11: toggling it
+     * does not reclassify requests already submitted).
+     */
+    @Column(nullable = false)
+    private boolean requiresApproval = false;
+
     protected Court() {
         // required by JPA
     }
 
     public Court(String name, CourtType type, String location,
                  LocalTime openingTime, LocalTime closingTime) {
-        this(name, type, location, openingTime, closingTime, true);
+        this(name, type, location, openingTime, closingTime, true, false);
     }
 
     public Court(String name, CourtType type, String location,
                  LocalTime openingTime, LocalTime closingTime, boolean active) {
+        this(name, type, location, openingTime, closingTime, active, false);
+    }
+
+    public Court(String name, CourtType type, String location,
+                 LocalTime openingTime, LocalTime closingTime,
+                 boolean active, boolean requiresApproval) {
         this.name = name;
         this.type = type;
         this.location = location;
         this.openingTime = openingTime;
         this.closingTime = closingTime;
         this.active = active;
+        this.requiresApproval = requiresApproval;
     }
 
     /**
@@ -98,6 +113,11 @@ public class Court {
 
     public boolean isActive() {
         return active;
+    }
+
+    /** BR-08: does this court need an approver's decision before CONFIRMED? */
+    public boolean isRequiresApproval() {
+        return requiresApproval;
     }
 
     public void deactivate() {

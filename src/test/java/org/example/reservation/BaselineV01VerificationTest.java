@@ -62,6 +62,8 @@ class BaselineV01VerificationTest {
     @BeforeEach
     void setUp() {
         clock.setTo(TestClockConfig.FIXTURE_NOW);
+        // OP-07 sweeps the WHOLE system, so each example starts from a known set.
+        reservations.deleteAll();
         courtId = courts.save(new Court("Court 1", Court.CourtType.SQUASH, "Hall B",
                 LocalTime.of(8, 0), LocalTime.of(22, 0))).getId();
         inactiveCourtId = courts.save(new Court("Court 9 (maintenance)", Court.CourtType.TENNIS, "Hall C",

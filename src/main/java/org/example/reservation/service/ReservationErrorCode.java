@@ -2,12 +2,12 @@ package org.example.reservation.service;
 
 /**
  * Outcome codes named by the specification slices in
- * {@code docs/c02-baseline-v0.1.md}. Each failure outcome in a slice maps to
- * exactly one code, so a verification example can assert the outcome and not
- * just "an error happened".
+ * {@code docs/c02-baseline-v0.1.md} and {@code docs/c02-change-v0.2-approval.md}.
+ * Each failure outcome in a slice maps to exactly one code, so a verification
+ * example can assert the specified outcome and not just "an error happened".
  */
 public enum ReservationErrorCode {
-    /** BR-05: actor unknown, or a MEMBER acting on a reservation they do not own. */
+    /** BR-05 / BR-09.1: actor unknown, lacks the role, or acts on a reservation they do not own. */
     UNAUTHORIZED,
     /** OP-01 A2 / OP-02 B2: the court does not exist. */
     COURT_NOT_FOUND,
@@ -24,5 +24,9 @@ public enum ReservationErrorCode {
     /** BR-04: the interval leaves the court's opening hours or spans a day boundary. */
     OUTSIDE_OPENING_HOURS,
     /** BR-03.2: now >= reservation start. */
-    TOO_LATE_TO_CANCEL
+    TOO_LATE_TO_CANCEL,
+    /** BR-09.2: an approver may not decide their own reservation (separation of duty). */
+    SELF_APPROVAL,
+    /** BR-10 / REQ-12: now >= approvalDeadline, so the request is no longer approvable. */
+    APPROVAL_EXPIRED
 }

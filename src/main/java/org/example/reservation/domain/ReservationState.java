@@ -6,19 +6,33 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * Reservation lifecycle states of Specification Baseline v0.1
- * (see docs/c02-baseline-v0.1.md section 8b).
+ * Reservation lifecycle states of Specification Baseline v0.2
+ * (see docs/c02-change-v0.2-approval.md section 7b).
+ *
+ * The {@code blocksCourt} flag is the single source of truth for the BR-02
+ * blocking set. Note that PENDING_APPROVAL does NOT block - change decision D-2:
+ * an undecided request must not deny the court to everyone else for the whole
+ * approval window.
  */
 public enum ReservationState {
 
-    /** Created but not allocated; does NOT block the court (BR-02). */
+    /** Created but not submitted; does NOT block the court. */
     DRAFT(false),
+
+    /** Submitted on an approval-gated court and awaiting a decision; does NOT block (D-2). */
+    PENDING_APPROVAL(false),
 
     /** Allocated; blocks the court and participates in the BR-02 invariant. */
     CONFIRMED(true),
 
-    /** Withdrawn; the record is kept (BR-03.4) but no longer blocks the court. */
-    CANCELLED(false);
+    /** Withdrawn by an authorized actor; the record is kept (BR-03.4), does not block. */
+    CANCELLED(false),
+
+    /** Terminal: an approver refused the request (BR-11). Does not block. */
+    REJECTED(false),
+
+    /** Terminal: nobody decided before the approval deadline (BR-10, BR-11). Does not block. */
+    EXPIRED(false);
 
     private final boolean blocksCourt;
 
@@ -29,14 +43,19 @@ public enum ReservationState {
     /**
      * BR-02: exactly the states that prevent another reservation from being
      * confirmed over the same interval. Defined once, here, so that the
-     * availability query (OP-02) and the confirm guard (OP-03) cannot drift
-     * apart - consistency check C-2.
+     * availability query (OP-02), the confirm guard (OP-03) and the approve
+     * guard (OP-05) cannot drift apart - consistency checks C-2 and C-14.
      */
     public boolean blocksCourt() {
         return blocksCourt;
     }
 
-    /** The single source of truth for the BR-02 blocking set (consistency check C-2). */
+    /** BR-11: no transition leaves a terminal state. */
+    public boolean isTerminal() {
+        return this == CANCELLED || this == REJECTED || this == EXPIRED;
+    }
+
+    /** The single source of truth for the BR-02 blocking set. */
     public static Set<ReservationState> blockingStates() {
         Set<ReservationState> blocking = EnumSet.noneOf(ReservationState.class);
         Arrays.stream(values()).filter(ReservationState::blocksCourt).forEach(blocking::add);

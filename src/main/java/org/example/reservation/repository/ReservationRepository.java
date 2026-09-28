@@ -31,4 +31,15 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                       @Param("states") Collection<ReservationState> states,
                                       @Param("start") LocalDateTime start,
                                       @Param("end") LocalDateTime end);
+
+    /**
+     * OP-07 / REQ-12: every request whose approval deadline has passed
+     * ({@code approvalDeadline <= now}) and which is still awaiting a decision.
+     */
+    @Query("""
+            SELECT r FROM Reservation r
+            WHERE r.state = org.example.reservation.domain.ReservationState.PENDING_APPROVAL
+              AND r.approvalDeadline <= :now
+            """)
+    List<Reservation> findDuePendingApprovals(@Param("now") LocalDateTime now);
 }
