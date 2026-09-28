@@ -477,18 +477,18 @@ flowchart LR
 
 ```mermaid
 stateDiagram-v2
-  [*] --> DRAFT : create [authorized ∧ court active ∧ start &lt; end]
+  [*] --> DRAFT : create [authorized ∧ court active ∧ start before end]
 
   DRAFT --> CONFIRMED : confirm [¬court.requiresApproval ∧ active ∧ opening hours ∧ no CONFIRMED overlap]
   DRAFT --> PENDING_APPROVAL : confirm [court.requiresApproval ∧ active ∧ opening hours ∧ no CONFIRMED overlap] / set approvalDeadline
 
-  PENDING_APPROVAL --> CONFIRMED : approve [STAFF ∧ ¬owner ∧ now &lt; deadline ∧ active ∧ opening hours ∧ no CONFIRMED overlap]
+  PENDING_APPROVAL --> CONFIRMED : approve [STAFF ∧ ¬owner ∧ now before deadline ∧ active ∧ opening hours ∧ no CONFIRMED overlap]
   PENDING_APPROVAL --> REJECTED : reject [STAFF ∧ ¬owner]
-  PENDING_APPROVAL --> EXPIRED : expire [now &gt;= deadline]
-  PENDING_APPROVAL --> CANCELLED : cancel [authorized ∧ now &lt; start]
+  PENDING_APPROVAL --> EXPIRED : expire [now at or after deadline]
+  PENDING_APPROVAL --> CANCELLED : cancel [authorized ∧ now before start]
 
-  DRAFT --> CANCELLED : cancel [authorized ∧ now &lt; start]
-  CONFIRMED --> CANCELLED : cancel [authorized ∧ now &lt; start]
+  DRAFT --> CANCELLED : cancel [authorized ∧ now before start]
+  CONFIRMED --> CANCELLED : cancel [authorized ∧ now before start]
   CANCELLED --> CANCELLED : cancel [authorized] / no-op (REQ-06)
 
   REJECTED --> [*]

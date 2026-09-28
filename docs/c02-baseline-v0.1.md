@@ -565,11 +565,11 @@ flowchart LR
 ```mermaid
 stateDiagram-v2
   direction LR
-  [*] --> DRAFT : create [authorized ∧ court active ∧ start &lt; end]
+  [*] --> DRAFT : create [authorized ∧ court active ∧ start before end]
 
   DRAFT --> CONFIRMED : confirm [authorized ∧ court active ∧ within opening hours ∧ no CONFIRMED overlap]
-  DRAFT --> CANCELLED : cancel [authorized ∧ now &lt; start]
-  CONFIRMED --> CANCELLED : cancel [authorized ∧ now &lt; start]
+  DRAFT --> CANCELLED : cancel [authorized ∧ now before start]
+  CONFIRMED --> CANCELLED : cancel [authorized ∧ now before start]
   CANCELLED --> CANCELLED : cancel [authorized] / no-op (REQ-06)
 
   CANCELLED --> [*]
