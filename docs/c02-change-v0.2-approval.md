@@ -628,9 +628,17 @@ it. That is the point of building the running baseline.
 
 ## 9. Acceptance
 
-All nine consistency checks C-13…C-21 are closed. The four new/amended
-requirements plus REQ-09…REQ-15 were each taken through the nine-line acceptance
-gate of v0.1 §7 (recorded in §10 below). New uncertainty is stated, not invented.
+All nine consistency checks C-13…C-21 are closed.
+
+- **REQ-09…REQ-15** (the new requirements) were each taken through the nine-line
+  acceptance gate — recorded in §10 below.
+- **REQ-02, REQ-03, REQ-04, REQ-05** were *amended*, not replaced. Their v0.1 gate
+  entries (v0.1 §7) still stand; the team re-checked only the gate lines the
+  amendment touches, and those re-checks are the §5 deltas plus checks C-14
+  (blocking set unchanged), C-15 (availability vs approve), C-18 (expiry boundary)
+  and C-21 (no v0.1 guarantee weakened). The amendments are listed in §4.
+
+New uncertainty is stated, not invented.
 
 > ### ✅ Specification Baseline v0.2 — Accepted by Team
 > **Team:** Holy Trio — Pavel Valošek, Rostislav Nevoral, Pavel Mynář
