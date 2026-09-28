@@ -38,17 +38,38 @@ public class Court {
     @Column(nullable = false)
     private LocalTime closingTime;
 
+    /** BR-07: an inactive court takes no new bookings but keeps its history. */
+    @Column(nullable = false)
+    private boolean active = true;
+
     protected Court() {
         // required by JPA
     }
 
     public Court(String name, CourtType type, String location,
                  LocalTime openingTime, LocalTime closingTime) {
+        this(name, type, location, openingTime, closingTime, true);
+    }
+
+    public Court(String name, CourtType type, String location,
+                 LocalTime openingTime, LocalTime closingTime, boolean active) {
         this.name = name;
         this.type = type;
         this.location = location;
         this.openingTime = openingTime;
         this.closingTime = closingTime;
+        this.active = active;
+    }
+
+    /**
+     * BR-04: does {@code [start, end)} lie inside this court's opening hours and
+     * within a single calendar day?
+     */
+    public boolean covers(java.time.LocalDateTime start, java.time.LocalDateTime end) {
+        boolean sameDay = start.toLocalDate().equals(end.toLocalDate());
+        boolean afterOpen = !start.toLocalTime().isBefore(openingTime);
+        boolean beforeClose = !end.toLocalTime().isAfter(closingTime);
+        return sameDay && afterOpen && beforeClose;
     }
 
     public Long getId() {
@@ -73,6 +94,14 @@ public class Court {
 
     public LocalTime getClosingTime() {
         return closingTime;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void deactivate() {
+        this.active = false;
     }
 
     public enum CourtType {

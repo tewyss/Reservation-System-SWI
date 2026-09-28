@@ -38,11 +38,11 @@ class ReservationPersistenceSpikeTest {
         Court court = em.persist(new Court(
                 "Center Court", Court.CourtType.TENNIS, "Hall A",
                 LocalTime.of(8, 0), LocalTime.of(22, 0)));
-        AppUser user = em.persist(new AppUser("Test Player", "player@example.com"));
+        AppUser user = em.persist(new AppUser("Test Player", "player@example.com", AppUser.Role.MEMBER));
 
         LocalDateTime start = LocalDateTime.of(2026, 9, 20, 10, 0);
         LocalDateTime end = LocalDateTime.of(2026, 9, 20, 11, 0);
-        Reservation saved = em.persist(new Reservation(court, user, start, end));
+        Reservation saved = em.persist(new Reservation(court, user, start, end, java.time.Instant.now()));
         Long id = saved.getId();
 
         // when: everything is written to the DB and the context is emptied

@@ -26,6 +26,7 @@ public class Reservation {
     @JoinColumn(name = "court_id", nullable = false)
     private Court court;
 
+    /** The reservation's OWNER (BR-05); not necessarily the actor of an operation. */
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private AppUser user;
@@ -43,30 +44,41 @@ public class Reservation {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
+    /** BR-03.4: cancel is not delete - the record is kept and stays auditable. */
+    @Column
+    private Instant cancelledAt;
+
     protected Reservation() {
         // required by JPA
     }
 
-    public Reservation(Court court, AppUser user, LocalDateTime startTime, LocalDateTime endTime) {
+    public Reservation(Court court, AppUser user, LocalDateTime startTime, LocalDateTime endTime,
+                       Instant createdAt) {
         this.court = court;
         this.user = user;
         this.startTime = startTime;
         this.endTime = endTime;
         this.state = ReservationState.DRAFT;
-        this.createdAt = Instant.now();
+        this.createdAt = createdAt;
     }
 
-    /** True if this reservation's slot overlaps the other's (half-open intervals). */
+    /** BR-01: true if this reservation's slot overlaps {@code [otherStart, otherEnd)}. */
     public boolean overlaps(LocalDateTime otherStart, LocalDateTime otherEnd) {
         return startTime.isBefore(otherEnd) && otherStart.isBefore(endTime);
+    }
+
+    /** BR-02: does this reservation block the court for its interval? */
+    public boolean blocksCourt() {
+        return state.blocksCourt();
     }
 
     public void confirm() {
         this.state = ReservationState.CONFIRMED;
     }
 
-    public void cancel() {
+    public void cancel(Instant at) {
         this.state = ReservationState.CANCELLED;
+        this.cancelledAt = at;
     }
 
     public Long getId() {
@@ -95,5 +107,9 @@ public class Reservation {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public Instant getCancelledAt() {
+        return cancelledAt;
     }
 }

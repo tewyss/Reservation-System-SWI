@@ -1,0 +1,690 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< org.example:SWIReservationSystem >------------------
+[INFO] Building SWIReservationSystem 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ SWIReservationSystem ---
+[INFO] Deleting C:\Users\rosti\IdeaProjects\SWIReservationSystem\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ SWIReservationSystem ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 17 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ SWIReservationSystem ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 4 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ SWIReservationSystem ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.example.reservation.BaselineV01VerificationTest
+13:34:25.455 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest]: BaselineV01VerificationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+13:34:25.602 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest
+[INFO] Running OP-04 Cancel Reservation
+13:34:25.717 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest$Op04Cancel]: Op04Cancel does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+13:34:25.720 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest$Op04Cancel
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-09-28T13:34:26.044+02:00  INFO 15264 --- [           main] o.e.r.BaselineV01VerificationTest        : Starting BaselineV01VerificationTest using Java 21.0.4 with PID 15264 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-09-28T13:34:26.044+02:00  INFO 15264 --- [           main] o.e.r.BaselineV01VerificationTest        : No active profile set, falling back to 1 default profile: "default"
+2026-09-28T13:34:26.815+02:00  INFO 15264 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-28T13:34:26.879+02:00  INFO 15264 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 54 ms. Found 3 JPA repository interfaces.
+2026-09-28T13:34:27.327+02:00  INFO 15264 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-28T13:34:27.380+02:00  INFO 15264 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.36.Final
+2026-09-28T13:34:27.413+02:00  INFO 15264 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-09-28T13:34:27.725+02:00  INFO 15264 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-28T13:34:27.758+02:00  INFO 15264 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-28T13:34:27.938+02:00  INFO 15264 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:swi_test user=SA
+2026-09-28T13:34:27.939+02:00  INFO 15264 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-28T13:34:27.995+02:00  INFO 15264 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-28T13:34:28.778+02:00  INFO 15264 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: drop table if exists app_user cascade 
+Hibernate: drop table if exists court cascade 
+Hibernate: drop table if exists reservation cascade 
+Hibernate: create table app_user (id bigint generated by default as identity, email varchar(255) not null unique, full_name varchar(255) not null, role enum ('MEMBER','STAFF') not null, primary key (id))
+Hibernate: create table court (active boolean not null, closing_time time(6) not null, opening_time time(6) not null, id bigint generated by default as identity, location varchar(255) not null, name varchar(255) not null, type enum ('BADMINTON','BASKETBALL','FOOTBALL','SQUASH','TENNIS') not null, primary key (id))
+Hibernate: create table reservation (cancelled_at timestamp(6) with time zone, court_id bigint not null, created_at timestamp(6) with time zone not null, end_time timestamp(6) not null, id bigint generated by default as identity, start_time timestamp(6) not null, user_id bigint not null, state enum ('CANCELLED','CONFIRMED','DRAFT') not null, primary key (id))
+Hibernate: alter table if exists reservation add constraint FKpxnu37u6x3lp9jvebvujghn4e foreign key (court_id) references court
+Hibernate: alter table if exists reservation add constraint FKm25r28103jb9lske61acewdlf foreign key (user_id) references app_user
+2026-09-28T13:34:28.828+02:00  INFO 15264 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T13:34:29.061+02:00  INFO 15264 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-28T13:34:29.637+02:00  WARN 15264 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-28T13:34:29.959+02:00  INFO 15264 --- [           main] o.e.r.BaselineV01VerificationTest        : Started BaselineV01VerificationTest in 4.2 seconds (process running for 5.204)
+mvn.cmd : Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future relea
+ses of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.i
+o/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+At line:6 char:1
++ & $mvn -B -f "$root\pom.xml" clean test "-Dtest=BaselineV01Verificati ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Mockito is curr...ockito.html#0.3:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+WARNING: A Java agent has been loaded dynamically (C:\Users\rosti\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\
+byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpat
+h has been appended
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.584+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 2 for court 'Court 1' confirmed for user alice+609147059464300@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.637+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 4 for court 'Court 1' confirmed for user alice+609147175377500@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.672+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 5 for court 'Court 1' confirmed for user alice+609147205797000@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.696+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 6 for court 'Court 1' confirmed for user alice+609147228932300@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.718+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 7 for court 'Court 1' confirmed for user alice+609147252712800@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.740+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 8 for court 'Court 1' confirmed for user alice+609147273600300@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.038 s -- in OP-04 Cancel Reservation
+[INFO] Running OP-03 Confirm Reservation
+2026-09-28T13:34:30.754+02:00  INFO 15264 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest$Op03Confirm]: Op03Confirm does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-28T13:34:30.754+02:00  INFO 15264 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest$Op03Confirm
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.776+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 9 for court 'Court 1' confirmed for user alice+609147306653100@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.800+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 10 for court 'Court 1' confirmed for user alice+609147333860600@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.824+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 12 for court 'Court 1' confirmed for user alice+609147359080500@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.824+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 13 for court 'Court 1' confirmed for user alice+609147359080500@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: update court set active=?,closing_time=?,location=?,name=?,opening_time=?,type=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.891+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 16 for court 'Court 1' confirmed for user alice+609147424924400@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.964+02:00  INFO 15264 --- [pool-3-thread-1] o.e.r.s.LoggingNotificationService       : Notification: reservation 19 for court 'Court 1' confirmed for user alice+609147484609200@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:30.964+02:00  INFO 15264 --- [pool-3-thread-8] o.e.r.s.LoggingNotificationService       : Notification: reservation 26 for court 'Court 1' confirmed for user alice+609147484609200@example.com
+2026-09-28T13:34:30.964+02:00  INFO 15264 --- [pool-3-thread-3] o.e.r.s.LoggingNotificationService       : Notification: reservation 21 for court 'Court 1' confirmed for user alice+609147484609200@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+[ERROR] Tests run: 9, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.236 s <<< FAILURE! -- in OP-03 Confirm Reservation
+[ERROR] org.example.reservation.BaselineV01VerificationTest.v03_9 -- Time elapsed: 0.052 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1L
+ but was: 3L
+	at org.example.reservation.BaselineV01VerificationTest$Op03Confirm.v03_9(BaselineV01VerificationTest.java:380)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running OP-02 Check Availability (fixture: CONFIRMED [10:00,11:00))
+2026-09-28T13:34:30.994+02:00  INFO 15264 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest$Op02Availability]: Op02Availability does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-28T13:34:30.996+02:00  INFO 15264 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest$Op02Availability
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.020+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 27 for court 'Court 1' confirmed for user alice+609147551314600@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.036+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 28 for court 'Court 1' confirmed for user alice+609147571760400@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.049+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 29 for court 'Court 1' confirmed for user alice+609147588986700@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.067+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 30 for court 'Court 1' confirmed for user alice+609147605812500@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.085+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 31 for court 'Court 1' confirmed for user alice+609147623501500@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.104+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 32 for court 'Court 1' confirmed for user alice+609147641081700@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.121+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 33 for court 'Court 1' confirmed for user alice+609147659151600@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.134+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 34 for court 'Court 1' confirmed for user alice+609147674183500@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.152+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 35 for court 'Court 1' confirmed for user alice+609147688528300@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.166+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 37 for court 'Court 1' confirmed for user alice+609147704323800@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.171+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 38 for court 'Court 1' confirmed for user alice+609147704323800@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.188 s -- in OP-02 Check Availability (fixture: CONFIRMED [10:00,11:00))
+[INFO] Running OP-01 Create Reservation
+2026-09-28T13:34:31.182+02:00  INFO 15264 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest$Op01Create]: Op01Create does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-28T13:34:31.182+02:00  INFO 15264 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest$Op01Create
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select r1_0.id,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+2026-09-28T13:34:31.212+02:00  INFO 15264 --- [           main] o.e.r.s.LoggingNotificationService       : Notification: reservation 40 for court 'Court 1' confirmed for user alice+609147748751800@example.com
+Hibernate: update reservation set cancelled_at=?,court_id=?,end_time=?,start_time=?,state=?,user_id=? where id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (cancelled_at,court_id,created_at,end_time,start_time,state,user_id,id) values (?,?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select count(*) from reservation r1_0
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select count(*) from reservation r1_0
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select count(*) from reservation r1_0
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select count(*) from reservation r1_0
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into court (active,closing_time,location,name,opening_time,type,id) values (?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.type from court c1_0 where c1_0.id=?
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.092 s -- in OP-01 Create Reservation
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.955 s -- in org.example.reservation.BaselineV01VerificationTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   BaselineV01VerificationTest.v03_9 
+expected: 1L
+ but was: 3L
+[INFO] 
+[ERROR] Tests run: 33, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  11.253 s
+[INFO] Finished at: 2026-09-28T13:34:31+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.4:test (default-test) on project SWIReservationSystem: There are test failures.
+[ERROR] 
+[ERROR] See C:\Users\rosti\IdeaProjects\SWIReservationSystem\target\surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

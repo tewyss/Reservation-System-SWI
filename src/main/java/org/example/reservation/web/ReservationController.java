@@ -1,8 +1,11 @@
 package org.example.reservation.web;
 
 import org.example.reservation.domain.Reservation;
+import org.example.reservation.service.AvailabilityResult;
+import org.example.reservation.service.ReservationErrorCode;
 import org.example.reservation.service.ReservationException;
 import org.example.reservation.service.ReservationService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 /**
- * REST entry point. Implements the start of the CP1 walking skeleton:
- * {@code POST /reservations -> validate -> persist -> return reservation ID}.
+ * HTTP surface of the four core operations (Baseline v0.1).
+ *
+ * The actor (BR-05) is carried in the {@code X-Actor-Id} header. Assumption A-1:
+ * the identity is asserted by the caller, not authenticated - establishing it is
+ * architecture driver AD-3 for C03.
  */
 @RestController
 @RequestMapping("/reservations")
@@ -30,41 +37,58 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    /** CP1 walking skeleton: create a DRAFT reservation and return its ID. */
+    /** OP-01 Create Reservation. */
     @PostMapping
-    public ResponseEntity<ReservationResponse> create(@RequestBody CreateReservationRequest request) {
+    public ResponseEntity<ReservationResponse> create(@RequestHeader(value = "X-Actor-Id", required = false) Long actorId,
+                                                      @RequestBody CreateReservationRequest request) {
         Reservation reservation = reservationService.create(
-                request.courtId(), request.userId(), request.start(), request.end());
+                actorId, request.courtId(), request.start(), request.end());
         return ResponseEntity.status(HttpStatus.CREATED).body(ReservationResponse.from(reservation));
     }
 
+    /** OP-03 Confirm Reservation. */
     @PostMapping("/{id}/confirm")
-    public ReservationResponse confirm(@PathVariable Long id) {
-        return ReservationResponse.from(reservationService.confirm(id));
+    public ReservationResponse confirm(@RequestHeader(value = "X-Actor-Id", required = false) Long actorId,
+                                       @PathVariable Long id) {
+        return ReservationResponse.from(reservationService.confirm(actorId, id));
     }
 
+    /** OP-04 Cancel Reservation. */
     @PostMapping("/{id}/cancel")
-    public ReservationResponse cancel(@PathVariable Long id) {
-        return ReservationResponse.from(reservationService.cancel(id));
+    public ReservationResponse cancel(@RequestHeader(value = "X-Actor-Id", required = false) Long actorId,
+                                      @PathVariable Long id) {
+        return ReservationResponse.from(reservationService.cancel(actorId, id));
     }
 
+    /** OP-02 Check Availability. No actor required - see consistency finding C-5. */
     @GetMapping("/availability")
     public AvailabilityResponse availability(@RequestParam Long courtId,
-                                             @RequestParam LocalDateTime start,
-                                             @RequestParam LocalDateTime end) {
-        return new AvailabilityResponse(reservationService.isAvailable(courtId, start, end));
+                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+        AvailabilityResult result = reservationService.checkAvailability(courtId, start, end);
+        return new AvailabilityResponse(result.available(), result.reason().name());
     }
 
     @ExceptionHandler(ReservationException.class)
-    public ResponseEntity<String> handleBusinessRule(ReservationException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    public ResponseEntity<ErrorResponse> handle(ReservationException e) {
+        return ResponseEntity.status(statusFor(e.getCode()))
+                .body(new ErrorResponse(e.getCode().name(), e.getMessage()));
     }
 
-    public record CreateReservationRequest(Long courtId, Long userId,
-                                           LocalDateTime start, LocalDateTime end) {
+    private static HttpStatus statusFor(ReservationErrorCode code) {
+        return switch (code) {
+            case UNAUTHORIZED -> HttpStatus.FORBIDDEN;
+            case NOT_FOUND, COURT_NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case CONFLICT, INVALID_STATE -> HttpStatus.CONFLICT;
+            case INVALID_INTERVAL, COURT_INACTIVE, OUTSIDE_OPENING_HOURS, TOO_LATE_TO_CANCEL ->
+                    HttpStatus.BAD_REQUEST;
+        };
     }
 
-    public record ReservationResponse(Long id, Long courtId, Long userId,
+    public record CreateReservationRequest(Long courtId, LocalDateTime start, LocalDateTime end) {
+    }
+
+    public record ReservationResponse(Long id, Long courtId, Long ownerId,
                                       LocalDateTime start, LocalDateTime end, String state) {
         static ReservationResponse from(Reservation r) {
             return new ReservationResponse(r.getId(), r.getCourt().getId(), r.getUser().getId(),
@@ -72,6 +96,9 @@ public class ReservationController {
         }
     }
 
-    public record AvailabilityResponse(boolean available) {
+    public record AvailabilityResponse(boolean available, String reason) {
+    }
+
+    public record ErrorResponse(String code, String message) {
     }
 }
