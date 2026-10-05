@@ -1,0 +1,254 @@
+# C03 control run - is BR-02 really guaranteed by Court Allocation's hold? (ADR-6)
+# Temporary edit (reverted, not committed): CourtAllocation.hold uses findById instead of findByIdForUpdate.
+# Nothing else changed. Expected: both allocating paths double-book.
+
+## mvn clean test -Dtest=BaselineV01VerificationTest*#v03_9   (OP-03, 8 threads)
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< org.example:SWIReservationSystem >------------------
+[INFO] Building SWIReservationSystem 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ SWIReservationSystem ---
+[INFO] Deleting C:\Users\rosti\IdeaProjects\SWIReservationSystem\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ SWIReservationSystem ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 26 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ SWIReservationSystem ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 8 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ SWIReservationSystem ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.example.reservation.BaselineV01VerificationTest
+20:38:23.008 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest]: BaselineV01VerificationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+20:38:23.181 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest
+[INFO] Running OP-03 Confirm Reservation
+20:38:23.294 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest$Op03Confirm]: Op03Confirm does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+20:38:23.299 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest$Op03Confirm
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-10-05T20:38:23.641+02:00  INFO 18944 --- [           main] o.e.r.BaselineV01VerificationTest        : Starting BaselineV01VerificationTest using Java 21.0.4 with PID 18944 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-10-05T20:38:23.643+02:00  INFO 18944 --- [           main] o.e.r.BaselineV01VerificationTest        : No active profile set, falling back to 1 default profile: "default"
+2026-10-05T20:38:24.405+02:00  INFO 18944 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-05T20:38:24.475+02:00  INFO 18944 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 59 ms. Found 3 JPA repository interfaces.
+2026-10-05T20:38:25.006+02:00  INFO 18944 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-05T20:38:25.099+02:00  INFO 18944 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.36.Final
+2026-10-05T20:38:25.143+02:00  INFO 18944 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-05T20:38:25.482+02:00  INFO 18944 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-05T20:38:25.519+02:00  INFO 18944 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-05T20:38:25.739+02:00  INFO 18944 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:swi_test user=SA
+2026-10-05T20:38:25.741+02:00  INFO 18944 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-05T20:38:25.805+02:00  INFO 18944 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-05T20:38:26.748+02:00  INFO 18944 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-05T20:38:26.808+02:00  INFO 18944 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-05T20:38:27.082+02:00  INFO 18944 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-05T20:38:27.948+02:00  WARN 18944 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-10-05T20:38:28.516+02:00  INFO 18944 --- [           main] o.e.r.BaselineV01VerificationTest        : Started BaselineV01VerificationTest in 5.17 seconds (process running for 6.385)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\rosti\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-05T20:38:29.332+02:00  INFO 18944 --- [pool-3-thread-4] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+1239384522113000@example.com: reservation 4 for court 'Court 1' is CONFIRMED
+2026-10-05T20:38:29.332+02:00  INFO 18944 --- [pool-3-thread-6] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+1239384522113000@example.com: reservation 6 for court 'Court 1' is CONFIRMED
+2026-10-05T20:38:29.332+02:00  INFO 18944 --- [pool-3-thread-2] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+1239384522113000@example.com: reservation 2 for court 'Court 1' is CONFIRMED
+2026-10-05T20:38:29.332+02:00  INFO 18944 --- [pool-3-thread-8] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+1239384522113000@example.com: reservation 8 for court 'Court 1' is CONFIRMED
+2026-10-05T20:38:29.332+02:00  INFO 18944 --- [pool-3-thread-7] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+1239384522113000@example.com: reservation 7 for court 'Court 1' is CONFIRMED
+2026-10-05T20:38:29.333+02:00  INFO 18944 --- [pool-3-thread-1] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+1239384522113000@example.com: reservation 1 for court 'Court 1' is CONFIRMED
+2026-10-05T20:38:29.334+02:00  INFO 18944 --- [pool-3-thread-5] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+1239384522113000@example.com: reservation 5 for court 'Court 1' is CONFIRMED
+2026-10-05T20:38:29.334+02:00  INFO 18944 --- [pool-3-thread-3] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+1239384522113000@example.com: reservation 3 for court 'Court 1' is CONFIRMED
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 6.217 s <<< FAILURE! -- in OP-03 Confirm Reservation
+[ERROR] org.example.reservation.BaselineV01VerificationTest.v03_9 -- Time elapsed: 0.957 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1L
+ but was: 8L
+	at org.example.reservation.BaselineV01VerificationTest$Op03Confirm.v03_9(BaselineV01VerificationTest.java:382)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.599 s -- in org.example.reservation.BaselineV01VerificationTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   BaselineV01VerificationTest.v03_9 
+expected: 1L
+ but was: 8L
+[INFO] 
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  12.933 s
+[INFO] Finished at: 2026-10-05T20:38:29+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.4:test (default-test) on project SWIReservationSystem: There are test failures.
+[ERROR] 
+[ERROR] See C:\Users\rosti\IdeaProjects\SWIReservationSystem\target\surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+
+## mvn clean test -Dtest=BaselineV02ApprovalVerificationTest*#v05_9   (OP-05, 2 threads)
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< org.example:SWIReservationSystem >------------------
+[INFO] Building SWIReservationSystem 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ SWIReservationSystem ---
+[INFO] Deleting C:\Users\rosti\IdeaProjects\SWIReservationSystem\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ SWIReservationSystem ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 26 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ SWIReservationSystem ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 8 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ SWIReservationSystem ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.example.reservation.BaselineV02ApprovalVerificationTest
+20:38:45.858 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.example.reservation.BaselineV02ApprovalVerificationTest]: BaselineV02ApprovalVerificationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+20:38:46.068 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV02ApprovalVerificationTest
+[INFO] Running OP-05 Approve Reservation
+20:38:46.183 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.example.reservation.BaselineV02ApprovalVerificationTest$Op05Approve]: Op05Approve does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+20:38:46.186 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV02ApprovalVerificationTest$Op05Approve
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-10-05T20:38:46.530+02:00  INFO 23020 --- [           main] .e.r.BaselineV02ApprovalVerificationTest : Starting BaselineV02ApprovalVerificationTest using Java 21.0.4 with PID 23020 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-10-05T20:38:46.531+02:00  INFO 23020 --- [           main] .e.r.BaselineV02ApprovalVerificationTest : No active profile set, falling back to 1 default profile: "default"
+2026-10-05T20:38:47.210+02:00  INFO 23020 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-05T20:38:47.273+02:00  INFO 23020 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 53 ms. Found 3 JPA repository interfaces.
+2026-10-05T20:38:47.754+02:00  INFO 23020 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-05T20:38:47.831+02:00  INFO 23020 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.36.Final
+2026-10-05T20:38:47.875+02:00  INFO 23020 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-05T20:38:48.216+02:00  INFO 23020 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-05T20:38:48.253+02:00  INFO 23020 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-05T20:38:48.468+02:00  INFO 23020 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:swi_test user=SA
+2026-10-05T20:38:48.470+02:00  INFO 23020 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-05T20:38:48.534+02:00  INFO 23020 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-05T20:38:49.541+02:00  INFO 23020 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-05T20:38:49.597+02:00  INFO 23020 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-05T20:38:49.860+02:00  INFO 23020 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-05T20:38:50.557+02:00  WARN 23020 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-10-05T20:38:50.967+02:00  INFO 23020 --- [           main] .e.r.BaselineV02ApprovalVerificationTest : Started BaselineV02ApprovalVerificationTest in 4.737 seconds (process running for 5.931)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Users\rosti\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-10-05T20:38:51.576+02:00  INFO 23020 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 1 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-10-05T20:38:51.585+02:00  INFO 23020 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 2 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:30
+2026-10-05T20:38:51.598+02:00  INFO 23020 --- [pool-3-thread-2] o.e.r.s.LoggingNotificationService       : NOTIFY owner bob+1239406845247500@example.com: reservation 2 for court 'Centre Court (approval)' is CONFIRMED
+2026-10-05T20:38:51.599+02:00  INFO 23020 --- [pool-3-thread-1] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+1239406841068200@example.com: reservation 1 for court 'Centre Court (approval)' is CONFIRMED
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 5.524 s <<< FAILURE! -- in OP-05 Approve Reservation
+[ERROR] org.example.reservation.BaselineV02ApprovalVerificationTest.v05_9 -- Time elapsed: 0.709 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1L
+ but was: 2L
+	at org.example.reservation.BaselineV02ApprovalVerificationTest$Op05Approve.v05_9(BaselineV02ApprovalVerificationTest.java:348)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.946 s -- in org.example.reservation.BaselineV02ApprovalVerificationTest
+2026-10-05T20:38:51.780+02:00  INFO 23020 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   BaselineV02ApprovalVerificationTest.v05_9 
+expected: 1L
+ but was: 2L
+[INFO] 
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  11.842 s
+[INFO] Finished at: 2026-10-05T20:38:51+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.4:test (default-test) on project SWIReservationSystem: There are test failures.
+[ERROR] 
+[ERROR] See C:\Users\rosti\IdeaProjects\SWIReservationSystem\target\surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

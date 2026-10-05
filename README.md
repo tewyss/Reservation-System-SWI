@@ -38,6 +38,15 @@ against that specification:
 | [`docs/c02-change-v0.2-approval.md`](docs/c02-change-v0.2-approval.md) | **The approval-workflow change → Baseline v0.2** — impact analysis (affected *and* unaffected, with reasons), BR-08…BR-11, REQ-09…REQ-15, OP-05 Approve / OP-06 Reject / OP-07 Expire, updated views, architecture drivers. |
 | [`docs/c02-evidence.md`](docs/c02-evidence.md) | **Evidence** — which examples were executed, the four mismatches found and where each defect actually was, and the architecture drivers carried into C03. |
 
+## Architecture (C03)
+| Document | Contents |
+| --- | --- |
+| [`docs/c03-architecture.md`](docs/c03-architecture.md) | AS-IS mapping (Part A), drivers, domain model, responsibilities, the decision question with two alternatives walked through one scenario, **ADR-6** (one owner of the transition into CONFIRMED) and **ADR-7** (atomic transitions, notify after commit), context / component / state-ownership / runtime / sequence / design-class views, cross-view check, AS-IS→TO-BE delta, verification. |
+| [`docs/evidence-and-evolution.md`](docs/evidence-and-evolution.md#c03--architecture-evidence) | C03 evidence summary. |
+
+The architecture rule *"only Court Allocation moves a reservation into CONFIRMED or takes
+the court hold"* is an ArchUnit test (`C03ArchitectureRuleTest`) in the normal build.
+
 Every test in the suite is named with the verification-example id (`V-03.9`,
 `V-04.4`, …) it executes, so `mvn test` output doubles as the traceability matrix.
 
@@ -52,11 +61,11 @@ Java 21 · Spring Boot 3.5 · Spring Data JPA · **H2** (dev/test) / **PostgreSQ
 - JDK 21 (`java -version` → 21.x)
 - Maven 3.9+ (or the Maven bundled with IntelliJ IDEA)
 
-### Run the tests (the specification verification suites + the C01 persistence spike)
+### Run the tests (specification verification suites, C03 race + architecture tests, C01 spike)
 ```bash
 mvn test
 ```
-Expected: `Tests run: 62, Failures: 0, Errors: 0` → `BUILD SUCCESS`.
+Expected: `Tests run: 67, Failures: 0, Errors: 0` → `BUILD SUCCESS`.
 
 ### Watch the specification run (scripted demonstration)
 ```bash
@@ -65,7 +74,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=demo
 Boots the application, walks a member, a second member and an approver through all
 seven operations, and prints the observed outcome of each check. Expected:
 `RESULT: 28 checks, 0 failed`. A committed transcript is in
-[`docs/evidence/c02-baseline-v0.2-demo-run.log`](docs/evidence/c02-baseline-v0.2-demo-run.log).
+[`docs/evidence/c03-to-be-demo-run.log`](docs/evidence/c03-to-be-demo-run.log).
 
 ### Run the application (H2, default profile)
 ```bash
@@ -118,19 +127,25 @@ README.md
 docs/
   intent-and-change.md            # Project Frame (C01)
   architecture-and-decisions.md   # stack rationale, ADRs, future pressure (C01)
-  evidence-and-evolution.md       # C01 spike: question, method, result, decision
+  evidence-and-evolution.md       # C01 spike + C03 architecture evidence
   c01-engineering-spike.md        # C01 change + review-cycle record
   c02-baseline-v0.1.md            # Specification Baseline v0.1 (accepted)
   c02-change-v0.2-approval.md     # approval change: impact analysis -> Baseline v0.2
   c02-evidence.md                 # C02 evidence, mismatches, architecture drivers
+  c03-architecture.md             # C03: drivers, ADR-6/7, views, delta, verification
   evidence/
     spike-A-persistence-run.log             # C01 spike run output
     c02-baseline-v0.1-verification.log      # v0.1: 34/34 green
     c02-baseline-v0.2-verification.log      # v0.2: 62/62 green
     c02-baseline-v0.2-demo-run.log          # running app, 28 checks, 0 failed
     c02-req04-control-run-without-serialisation.log  # control: 3 double-bookings
+    c03-as-is-lifecycle-race.log            # AS-IS: approve+reject both succeed (F-A4)
+    c03-to-be-verification.log              # TO-BE: 67/67 green
+    c03-to-be-demo-run.log                  # TO-BE running app: 28 checks, 0 failed
+    c03-court-hold-control-run.log          # control: no hold -> 8 / 2 double-bookings
+    c03-architecture-rule-control-run.log   # control: bypass -> ArchUnit fails the build
 src/
   main/java/org/example/reservation/   # config, demo, domain, repository, service, web
   main/resources/                      # application(-postgres|-demo).properties
-  test/java/org/example/reservation/   # v0.1 + v0.2 verification suites, persistence spike
+  test/java/org/example/reservation/   # v0.1 + v0.2 suites, C03 race + ArchUnit tests, spike
 ```

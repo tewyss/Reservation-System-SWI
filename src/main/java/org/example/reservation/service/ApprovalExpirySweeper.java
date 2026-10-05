@@ -6,10 +6,11 @@ import org.springframework.stereotype.Component;
 
 /**
  * OP-07's trigger: the periodic sweep that closes approval requests nobody
- * decided in time (REQ-12).
+ * decided in time (REQ-12). Part of the Approval Workflow element; only the
+ * trigger technology lives here, the transition is {@link ApprovalExpiry}'s.
  *
  * The sweep affects the TIMELINESS of reporting and notification, never
- * correctness - {@link ReservationService#approve} expires a due request lazily
+ * correctness - {@link ApprovalWorkflow#approve} expires a due request lazily
  * (outcome G2). That is what makes the frequency an operational choice (A-12)
  * rather than a business requirement.
  *
@@ -20,14 +21,14 @@ import org.springframework.stereotype.Component;
         havingValue = "true", matchIfMissing = true)
 public class ApprovalExpirySweeper {
 
-    private final ReservationService reservationService;
+    private final ApprovalWorkflow approvalWorkflow;
 
-    public ApprovalExpirySweeper(ReservationService reservationService) {
-        this.reservationService = reservationService;
+    public ApprovalExpirySweeper(ApprovalWorkflow approvalWorkflow) {
+        this.approvalWorkflow = approvalWorkflow;
     }
 
     @Scheduled(fixedDelayString = "${reservation.approval.sweep-interval:PT5M}")
     public void sweep() {
-        reservationService.expirePendingApprovals();
+        approvalWorkflow.expirePendingApprovals();
     }
 }

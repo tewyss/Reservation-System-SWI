@@ -1,0 +1,20 @@
+# C03 Part A - AS-IS control run (commit 672c20d, code unchanged)
+# mvn clean test -Dtest=C03LifecycleConcurrencyTest
+# FlushGate parks approve() after its source-state check, before its UPDATE; the rival runs to completion.
+
+[ERROR] Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 7.856 s <<< FAILURE! -- in org.example.reservation.C03LifecycleConcurrencyTest
+[ERROR] org.example.reservation.C03LifecycleConcurrencyTest.v04_11 -- Time elapsed: 0.843 s <<< FAILURE!
+[approve=Outcome[state=CONFIRMED, failure=null], rival=Outcome[state=CANCELLED, failure=null], persisted=CONFIRMED] 
+expected: 1L
+ but was: 2L
+[ERROR] org.example.reservation.C03LifecycleConcurrencyTest.v06_5 -- Time elapsed: 0.053 s <<< FAILURE!
+[approve=Outcome[state=CONFIRMED, failure=null], rival=Outcome[state=REJECTED, failure=null], persisted=CONFIRMED] 
+expected: 1L
+ but was: 2L
+[ERROR]   C03LifecycleConcurrencyTest.v04_11:109->assertExactlyOneDecisionStands:140 [approve=Outcome[state=CONFIRMED, failure=null], rival=Outcome[state=CANCELLED, failure=null], persisted=CONFIRMED] 
+expected: 1L
+ but was: 2L
+[ERROR]   C03LifecycleConcurrencyTest.v06_5:98->assertExactlyOneDecisionStands:140 [approve=Outcome[state=CONFIRMED, failure=null], rival=Outcome[state=REJECTED, failure=null], persisted=CONFIRMED] 
+expected: 1L
+ but was: 2L
+[ERROR] Tests run: 2, Failures: 2, Errors: 0, Skipped: 0

@@ -10,6 +10,7 @@ import org.example.reservation.repository.ReservationRepository;
 import org.example.reservation.service.AvailabilityResult;
 import org.example.reservation.service.ReservationErrorCode;
 import org.example.reservation.service.ReservationException;
+import org.example.reservation.service.ApprovalWorkflow;
 import org.example.reservation.service.ReservationService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -41,6 +42,7 @@ import java.util.function.Supplier;
 public class SpecificationDemoRunner implements ApplicationRunner {
 
     private final ReservationService service;
+    private final ApprovalWorkflow approvals;
     private final CourtRepository courts;
     private final AppUserRepository users;
     private final ReservationRepository reservations;
@@ -49,10 +51,12 @@ public class SpecificationDemoRunner implements ApplicationRunner {
     private int checks;
     private int failures;
 
-    public SpecificationDemoRunner(ReservationService service, CourtRepository courts,
-                                   AppUserRepository users, ReservationRepository reservations,
+    public SpecificationDemoRunner(ReservationService service, ApprovalWorkflow approvals,
+                                   CourtRepository courts, AppUserRepository users,
+                                   ReservationRepository reservations,
                                    ConfigurableApplicationContext context) {
         this.service = service;
+        this.approvals = approvals;
         this.courts = courts;
         this.users = users;
         this.reservations = reservations;
@@ -155,26 +159,26 @@ public class SpecificationDemoRunner implements ApplicationRunner {
                 describe(disclosed));
 
         expectRejected("V-05.2 negative: a MEMBER cannot approve -> UNAUTHORIZED",
-                ReservationErrorCode.UNAUTHORIZED, () -> service.approve(bob, pending.getId()));
-        Reservation approved = service.approve(dana, pending.getId());
+                ReservationErrorCode.UNAUTHORIZED, () -> approvals.approve(bob, pending.getId()));
+        Reservation approved = approvals.approve(dana, pending.getId());
         expect("V-05.1 success: approver Dana -> CONFIRMED, decision recorded",
                 approved.getState() == ReservationState.CONFIRMED
                         && approved.getDecidedBy() != null,
                 "state=" + approved.getState() + ", decidedBy=" + approved.getDecidedBy().getId());
         expectRejected("V-05.5 negative: the rival request lost the slot -> CONFLICT (stays PENDING_APPROVAL)",
-                ReservationErrorCode.CONFLICT, () -> service.approve(dana, rival.getId()));
+                ReservationErrorCode.CONFLICT, () -> approvals.approve(dana, rival.getId()));
         expect("V-05.5 postcondition: a failed approval is NOT a decision",
                 reload(rival.getId()) == ReservationState.PENDING_APPROVAL,
                 "state=" + reload(rival.getId()));
 
         // ---------------------------------------------------------------
         section("OP-06 Reject Reservation  (REQ-11)");
-        Reservation rejected = service.reject(dana, rival.getId(), "Court reserved for a tournament");
+        Reservation rejected = approvals.reject(dana, rival.getId(), "Court reserved for a tournament");
         expect("V-06.1 success: reject -> REJECTED, terminal, nothing allocated",
                 rejected.getState() == ReservationState.REJECTED, "state=" + rejected.getState()
                         + ", reason=" + rejected.getDecisionReason());
         expectRejected("V-06.2 BR-11 terminality: a REJECTED request cannot be approved",
-                ReservationErrorCode.INVALID_STATE, () -> service.approve(dana, rival.getId()));
+                ReservationErrorCode.INVALID_STATE, () -> approvals.approve(dana, rival.getId()));
 
         // ---------------------------------------------------------------
         section("OP-07 Expire Pending Approvals  (REQ-12)");
@@ -186,18 +190,18 @@ public class SpecificationDemoRunner implements ApplicationRunner {
                 overdue.getApprovalDeadline().equals(at(yesterday, 14, 0)),
                 "deadline=" + overdue.getApprovalDeadline() + ", start=" + at(yesterday, 14, 0));
         expectRejected("V-05.4 boundary: approving past the deadline -> APPROVAL_EXPIRED",
-                ReservationErrorCode.APPROVAL_EXPIRED, () -> service.approve(dana, overdue.getId()));
+                ReservationErrorCode.APPROVAL_EXPIRED, () -> approvals.approve(dana, overdue.getId()));
         expect("V-05.4 / REQ-12 lazy expiry: the failed attempt left it EXPIRED",
                 reload(overdue.getId()) == ReservationState.EXPIRED, "state=" + reload(overdue.getId()));
 
         Reservation overdue2 = service.confirm(alice,
                 service.create(alice, gatedCourt, at(yesterday, 16, 0), at(yesterday, 17, 0)).getId());
-        int swept = service.expirePendingApprovals();
+        int swept = approvals.expirePendingApprovals();
         expect("V-07.1 success: the sweep expires the overdue request",
                 swept >= 1 && reload(overdue2.getId()) == ReservationState.EXPIRED,
                 "swept=" + swept + ", state=" + reload(overdue2.getId()));
         expect("V-07.4 G1: the sweep is idempotent - nothing left to do",
-                service.expirePendingApprovals() == 0, "second sweep changed 0");
+                approvals.expirePendingApprovals() == 0, "second sweep changed 0");
         expectRejected("V-04.10 D7: an EXPIRED request cannot be cancelled",
                 ReservationErrorCode.INVALID_STATE, () -> service.cancel(alice, overdue2.getId()));
 

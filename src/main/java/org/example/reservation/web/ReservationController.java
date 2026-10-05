@@ -1,10 +1,12 @@
 package org.example.reservation.web;
 
 import org.example.reservation.domain.Reservation;
+import org.example.reservation.service.ApprovalWorkflow;
 import org.example.reservation.service.AvailabilityResult;
 import org.example.reservation.service.ReservationErrorCode;
 import org.example.reservation.service.ReservationException;
 import org.example.reservation.service.ReservationService;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,15 +29,21 @@ import java.time.LocalDateTime;
  * The actor (BR-05) is carried in the {@code X-Actor-Id} header. Assumption A-1:
  * the identity is asserted by the caller, not authenticated - establishing it is
  * architecture driver AD-3 for C03.
+ *
+ * Reservation API element (C03 G2): it decides nothing. Member operations go to
+ * the Reservation Lifecycle ({@link ReservationService}), approval operations to
+ * the {@link ApprovalWorkflow}.
  */
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final ApprovalWorkflow approvalWorkflow;
 
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(ReservationService reservationService, ApprovalWorkflow approvalWorkflow) {
         this.reservationService = reservationService;
+        this.approvalWorkflow = approvalWorkflow;
     }
 
     /** OP-01 Create Reservation. */
@@ -65,7 +73,7 @@ public class ReservationController {
     @PostMapping("/{id}/approve")
     public ReservationResponse approve(@RequestHeader(value = "X-Actor-Id", required = false) Long actorId,
                                        @PathVariable Long id) {
-        return ReservationResponse.from(reservationService.approve(actorId, id));
+        return ReservationResponse.from(approvalWorkflow.approve(actorId, id));
     }
 
     /** OP-06 Reject Reservation (v0.2). */
@@ -74,7 +82,7 @@ public class ReservationController {
                                       @PathVariable Long id,
                                       @RequestBody(required = false) RejectRequest request) {
         return ReservationResponse.from(
-                reservationService.reject(actorId, id, request == null ? null : request.reason()));
+                approvalWorkflow.reject(actorId, id, request == null ? null : request.reason()));
     }
 
     /**
@@ -84,7 +92,7 @@ public class ReservationController {
      */
     @PostMapping("/expire-due")
     public ExpiryResponse expireDue() {
-        return new ExpiryResponse(reservationService.expirePendingApprovals());
+        return new ExpiryResponse(approvalWorkflow.expirePendingApprovals());
     }
 
     /** OP-02 Check Availability. No actor required - see consistency finding C-5. */
@@ -101,6 +109,19 @@ public class ReservationController {
     public ResponseEntity<ErrorResponse> handle(ReservationException e) {
         return ResponseEntity.status(statusFor(e.getCode()))
                 .body(new ErrorResponse(e.getCode().name(), e.getMessage()));
+    }
+
+    /**
+     * C03 ADR-7: another operation changed this reservation between our read and
+     * our write (e.g. approve vs reject of the same request), so our transition
+     * was rolled back. Per the C02 REQ-11 gate the loser "fails on the
+     * source-state guard" - reported as INVALID_STATE; the client should re-read.
+     */
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handle(OptimisticLockingFailureException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(
+                ReservationErrorCode.INVALID_STATE.name(),
+                "The reservation was changed by a concurrent operation; re-read its state."));
     }
 
     private static HttpStatus statusFor(ReservationErrorCode code) {

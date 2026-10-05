@@ -55,6 +55,25 @@ public enum ReservationState {
         return this == CANCELLED || this == REJECTED || this == EXPIRED;
     }
 
+    /**
+     * The edges of the v0.2 lifecycle statechart (c02-change-v0.2-approval.md
+     * section 7b), encoded once (C03 ADR-7, responsibility R5). Which operation may
+     * REQUEST an edge, and which element DECIDES it, is in docs/c03-architecture.md
+     * G3; this table only says whether the edge exists at all.
+     *
+     * The CANCELLED self-loop of REQ-06 is not an edge here: a repeated cancel is
+     * a no-op that never writes.
+     */
+    public boolean canTransitionTo(ReservationState target) {
+        return switch (this) {
+            case DRAFT -> target == CONFIRMED || target == PENDING_APPROVAL || target == CANCELLED;
+            case PENDING_APPROVAL -> target == CONFIRMED || target == REJECTED
+                    || target == EXPIRED || target == CANCELLED;
+            case CONFIRMED -> target == CANCELLED;
+            case CANCELLED, REJECTED, EXPIRED -> false;
+        };
+    }
+
     /** The single source of truth for the BR-02 blocking set. */
     public static Set<ReservationState> blockingStates() {
         Set<ReservationState> blocking = EnumSet.noneOf(ReservationState.class);

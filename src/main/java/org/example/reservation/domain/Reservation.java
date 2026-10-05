@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -69,6 +70,15 @@ public class Reservation {
     @Column(length = 500)
     private String decisionReason;
 
+    /**
+     * C03 ADR-7: every transition is a compare-and-set on this row. Two operations
+     * deciding the same reservation at once (approve vs reject, approve vs cancel,
+     * two sweeps) cannot both commit - the second UPDATE matches no row and its
+     * whole transaction rolls back (V-06.5, V-04.11).
+     */
+    @Version
+    private long version;
+
     protected Reservation() {
         // required by JPA
     }
@@ -93,27 +103,33 @@ public class Reservation {
         return state.blocksCourt();
     }
 
-    /** OP-03 on a self-service court: DRAFT -> CONFIRMED. */
+    /**
+     * OP-03 on a self-service court: DRAFT -> CONFIRMED.
+     * Only Court Allocation may call this (C03 ADR-6, checked by C03ArchitectureRuleTest).
+     */
     public void confirm() {
-        this.state = ReservationState.CONFIRMED;
+        moveTo(ReservationState.CONFIRMED);
     }
 
     /** OP-03 on an approval-gated court (REQ-09): DRAFT -> PENDING_APPROVAL. */
     public void submitForApproval(LocalDateTime deadline) {
-        this.state = ReservationState.PENDING_APPROVAL;
+        moveTo(ReservationState.PENDING_APPROVAL);
         this.approvalDeadline = deadline;
     }
 
-    /** OP-05 (REQ-10): PENDING_APPROVAL -> CONFIRMED, recording the decision. */
+    /**
+     * OP-05 (REQ-10): PENDING_APPROVAL -> CONFIRMED, recording the decision.
+     * Only Court Allocation may call this (C03 ADR-6, checked by C03ArchitectureRuleTest).
+     */
     public void approve(AppUser approver, Instant at) {
-        this.state = ReservationState.CONFIRMED;
+        moveTo(ReservationState.CONFIRMED);
         this.decidedBy = approver;
         this.decidedAt = at;
     }
 
     /** OP-06 (REQ-11): PENDING_APPROVAL -> REJECTED, recording the decision. */
     public void reject(AppUser approver, Instant at, String reason) {
-        this.state = ReservationState.REJECTED;
+        moveTo(ReservationState.REJECTED);
         this.decidedBy = approver;
         this.decidedAt = at;
         this.decisionReason = reason;
@@ -121,13 +137,27 @@ public class Reservation {
 
     /** OP-05 E7 / OP-07 (REQ-12): PENDING_APPROVAL -> EXPIRED. No actor decided. */
     public void expire(Instant at) {
-        this.state = ReservationState.EXPIRED;
+        moveTo(ReservationState.EXPIRED);
         this.decidedAt = at;
     }
 
     public void cancel(Instant at) {
-        this.state = ReservationState.CANCELLED;
+        moveTo(ReservationState.CANCELLED);
         this.cancelledAt = at;
+    }
+
+    /**
+     * R5: the entity refuses an edge the statechart does not have, whoever calls
+     * it. The operations check the source state first and report INVALID_STATE;
+     * reaching this exception means a caller skipped that check - a defect, not a
+     * business outcome.
+     */
+    private void moveTo(ReservationState target) {
+        if (!state.canTransitionTo(target)) {
+            throw new IllegalStateException("The lifecycle statechart has no edge "
+                    + state + " -> " + target + " (reservation " + id + ").");
+        }
+        this.state = target;
     }
 
     public Long getId() {
@@ -176,5 +206,9 @@ public class Reservation {
 
     public String getDecisionReason() {
         return decisionReason;
+    }
+
+    public long getVersion() {
+        return version;
     }
 }

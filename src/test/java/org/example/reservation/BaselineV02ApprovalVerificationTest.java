@@ -10,6 +10,7 @@ import org.example.reservation.repository.ReservationRepository;
 import org.example.reservation.service.AvailabilityResult;
 import org.example.reservation.service.ReservationErrorCode;
 import org.example.reservation.service.ReservationException;
+import org.example.reservation.service.ApprovalWorkflow;
 import org.example.reservation.service.ReservationService;
 import org.example.reservation.support.MutableClock;
 import org.example.reservation.support.TestClockConfig;
@@ -50,6 +51,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class BaselineV02ApprovalVerificationTest {
 
     @Autowired private ReservationService service;
+    @Autowired private ApprovalWorkflow approvals;
     @Autowired private CourtRepository courts;
     @Autowired private AppUserRepository users;
     @Autowired private ReservationRepository reservations;
@@ -116,7 +118,7 @@ class BaselineV02ApprovalVerificationTest {
             // make [10:00,11:00) CONFIRMED on the gated court via an approved request
             Reservation first = service.create(memberId, gatedCourtId, at(10, 0), at(11, 0));
             service.confirm(memberId, first.getId());
-            service.approve(approverId, first.getId());
+            approvals.approve(approverId, first.getId());
 
             Reservation clashing = service.create(otherMemberId, gatedCourtId, at(10, 30), at(11, 30));
 
@@ -186,7 +188,7 @@ class BaselineV02ApprovalVerificationTest {
         void v05_1() {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
 
-            Reservation approved = service.approve(approverId, pending.getId());
+            Reservation approved = approvals.approve(approverId, pending.getId());
 
             assertThat(approved.getState()).isEqualTo(ReservationState.CONFIRMED);
             assertThat(approved.getDecidedBy().getId()).isEqualTo(approverId);
@@ -201,7 +203,7 @@ class BaselineV02ApprovalVerificationTest {
         void v05_2() {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
 
-            assertThatThrownBy(() -> service.approve(otherMemberId, pending.getId()))
+            assertThatThrownBy(() -> approvals.approve(otherMemberId, pending.getId()))
                     .isInstanceOf(ReservationException.class)
                     .extracting(e -> ((ReservationException) e).getCode())
                     .isEqualTo(ReservationErrorCode.UNAUTHORIZED);
@@ -214,14 +216,14 @@ class BaselineV02ApprovalVerificationTest {
         void v05_3() {
             Reservation pending = submitted(staffBookerId, gatedCourtId, at(10, 0), at(11, 0));
 
-            assertThatThrownBy(() -> service.approve(staffBookerId, pending.getId()))
+            assertThatThrownBy(() -> approvals.approve(staffBookerId, pending.getId()))
                     .isInstanceOf(ReservationException.class)
                     .extracting(e -> ((ReservationException) e).getCode())
                     .isEqualTo(ReservationErrorCode.SELF_APPROVAL);
 
             assertThat(reload(pending).getState()).isEqualTo(ReservationState.PENDING_APPROVAL);
             // ... but a different approver may decide it
-            assertThat(service.approve(approverId, pending.getId()).getState())
+            assertThat(approvals.approve(approverId, pending.getId()).getState())
                     .isEqualTo(ReservationState.CONFIRMED);
         }
 
@@ -233,7 +235,7 @@ class BaselineV02ApprovalVerificationTest {
 
             clock.setTo(at(10, 0));     // exactly on the boundary
 
-            assertThatThrownBy(() -> service.approve(approverId, pending.getId()))
+            assertThatThrownBy(() -> approvals.approve(approverId, pending.getId()))
                     .isInstanceOf(ReservationException.class)
                     .extracting(e -> ((ReservationException) e).getCode())
                     .isEqualTo(ReservationErrorCode.APPROVAL_EXPIRED);
@@ -248,9 +250,9 @@ class BaselineV02ApprovalVerificationTest {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
             // another request for the same slot gets approved first
             Reservation rival = submitted(otherMemberId, gatedCourtId, at(10, 30), at(11, 30));
-            service.approve(approverId, rival.getId());
+            approvals.approve(approverId, rival.getId());
 
-            assertThatThrownBy(() -> service.approve(approverId, pending.getId()))
+            assertThatThrownBy(() -> approvals.approve(approverId, pending.getId()))
                     .isInstanceOf(ReservationException.class)
                     .extracting(e -> ((ReservationException) e).getCode())
                     .isEqualTo(ReservationErrorCode.CONFLICT);
@@ -267,7 +269,7 @@ class BaselineV02ApprovalVerificationTest {
             court.deactivate();
             courts.save(court);
 
-            assertThatThrownBy(() -> service.approve(approverId, pending.getId()))
+            assertThatThrownBy(() -> approvals.approve(approverId, pending.getId()))
                     .isInstanceOf(ReservationException.class)
                     .extracting(e -> ((ReservationException) e).getCode())
                     .isEqualTo(ReservationErrorCode.COURT_INACTIVE);
@@ -280,7 +282,7 @@ class BaselineV02ApprovalVerificationTest {
         void v05_7() {
             Reservation draft = service.create(memberId, gatedCourtId, at(10, 0), at(11, 0));
 
-            assertThatThrownBy(() -> service.approve(approverId, draft.getId()))
+            assertThatThrownBy(() -> approvals.approve(approverId, draft.getId()))
                     .isInstanceOf(ReservationException.class)
                     .extracting(e -> ((ReservationException) e).getCode())
                     .isEqualTo(ReservationErrorCode.INVALID_STATE);
@@ -292,9 +294,9 @@ class BaselineV02ApprovalVerificationTest {
         @DisplayName("V-05.8 negative: approving an already CONFIRMED reservation -> INVALID_STATE")
         void v05_8() {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
-            service.approve(approverId, pending.getId());
+            approvals.approve(approverId, pending.getId());
 
-            assertThatThrownBy(() -> service.approve(approverId, pending.getId()))
+            assertThatThrownBy(() -> approvals.approve(approverId, pending.getId()))
                     .isInstanceOf(ReservationException.class)
                     .extracting(e -> ((ReservationException) e).getCode())
                     .isEqualTo(ReservationErrorCode.INVALID_STATE);
@@ -317,7 +319,7 @@ class BaselineV02ApprovalVerificationTest {
                     futures.add(pool.submit((Callable<Void>) () -> {
                         start.await();
                         try {
-                            service.approve(approverId, id);
+                            approvals.approve(approverId, id);
                             approved.incrementAndGet();
                         } catch (Exception e) {
                             rejected.incrementAndGet();
@@ -363,7 +365,7 @@ class BaselineV02ApprovalVerificationTest {
         void v06_1() {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
 
-            Reservation rejected = service.reject(approverId, pending.getId(), "Court booked for a tournament");
+            Reservation rejected = approvals.reject(approverId, pending.getId(), "Court booked for a tournament");
 
             assertThat(rejected.getState()).isEqualTo(ReservationState.REJECTED);
             assertThat(rejected.getDecidedBy().getId()).isEqualTo(approverId);
@@ -376,9 +378,9 @@ class BaselineV02ApprovalVerificationTest {
         @DisplayName("V-06.2 BR-11 terminality: a REJECTED request cannot be approved")
         void v06_2() {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
-            service.reject(approverId, pending.getId(), "no");
+            approvals.reject(approverId, pending.getId(), "no");
 
-            assertThatThrownBy(() -> service.approve(approverId, pending.getId()))
+            assertThatThrownBy(() -> approvals.approve(approverId, pending.getId()))
                     .isInstanceOf(ReservationException.class)
                     .extracting(e -> ((ReservationException) e).getCode())
                     .isEqualTo(ReservationErrorCode.INVALID_STATE);
@@ -391,7 +393,7 @@ class BaselineV02ApprovalVerificationTest {
         void v06_3() {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
 
-            assertThatThrownBy(() -> service.reject(otherMemberId, pending.getId(), "nope"))
+            assertThatThrownBy(() -> approvals.reject(otherMemberId, pending.getId(), "nope"))
                     .isInstanceOf(ReservationException.class)
                     .extracting(e -> ((ReservationException) e).getCode())
                     .isEqualTo(ReservationErrorCode.UNAUTHORIZED);
@@ -405,7 +407,7 @@ class BaselineV02ApprovalVerificationTest {
             Reservation confirmed = service.create(memberId, openCourtId, at(10, 0), at(11, 0));
             service.confirm(memberId, confirmed.getId());
 
-            assertThatThrownBy(() -> service.reject(approverId, confirmed.getId(), "too late"))
+            assertThatThrownBy(() -> approvals.reject(approverId, confirmed.getId(), "too late"))
                     .isInstanceOf(ReservationException.class)
                     .extracting(e -> ((ReservationException) e).getCode())
                     .isEqualTo(ReservationErrorCode.INVALID_STATE);
@@ -419,7 +421,7 @@ class BaselineV02ApprovalVerificationTest {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
             clock.setTo(at(10, 30));    // past the deadline
 
-            assertThat(service.reject(approverId, pending.getId(), "late refusal").getState())
+            assertThat(approvals.reject(approverId, pending.getId(), "late refusal").getState())
                     .isEqualTo(ReservationState.REJECTED);
         }
     }
@@ -438,7 +440,7 @@ class BaselineV02ApprovalVerificationTest {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
             clock.setTo(at(10, 30));
 
-            int expired = service.expirePendingApprovals();
+            int expired = approvals.expirePendingApprovals();
 
             assertThat(expired).isEqualTo(1);
             assertThat(reload(pending).getState()).isEqualTo(ReservationState.EXPIRED);
@@ -452,7 +454,7 @@ class BaselineV02ApprovalVerificationTest {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
             clock.setTo(at(9, 59));
 
-            assertThat(service.expirePendingApprovals()).isZero();
+            assertThat(approvals.expirePendingApprovals()).isZero();
             assertThat(reload(pending).getState()).isEqualTo(ReservationState.PENDING_APPROVAL);
         }
 
@@ -462,7 +464,7 @@ class BaselineV02ApprovalVerificationTest {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
             clock.setTo(at(10, 0));
 
-            assertThat(service.expirePendingApprovals()).isEqualTo(1);
+            assertThat(approvals.expirePendingApprovals()).isEqualTo(1);
             assertThat(reload(pending).getState()).isEqualTo(ReservationState.EXPIRED);
         }
 
@@ -471,8 +473,8 @@ class BaselineV02ApprovalVerificationTest {
         void v07_4() {
             submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
 
-            assertThat(service.expirePendingApprovals()).isZero();
-            assertThat(service.expirePendingApprovals()).isZero();
+            assertThat(approvals.expirePendingApprovals()).isZero();
+            assertThat(approvals.expirePendingApprovals()).isZero();
         }
 
         @Test
@@ -483,7 +485,7 @@ class BaselineV02ApprovalVerificationTest {
 
             clock.setTo(at(10, 30));
 
-            assertThat(service.expirePendingApprovals()).isZero();
+            assertThat(approvals.expirePendingApprovals()).isZero();
             assertThat(reload(pending).getState()).isEqualTo(ReservationState.CANCELLED);
         }
     }
@@ -509,7 +511,7 @@ class BaselineV02ApprovalVerificationTest {
         @DisplayName("V-04.10 D7: a REJECTED reservation cannot be cancelled -> INVALID_STATE")
         void v04_10() {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
-            service.reject(approverId, pending.getId(), "no");
+            approvals.reject(approverId, pending.getId(), "no");
 
             assertThatThrownBy(() -> service.cancel(memberId, pending.getId()))
                     .isInstanceOf(ReservationException.class)
@@ -524,9 +526,9 @@ class BaselineV02ApprovalVerificationTest {
         void d7_expiredNotCancellable() {
             Reservation pending = submitted(memberId, gatedCourtId, at(10, 0), at(11, 0));
             clock.setTo(at(9, 59, 59));
-            service.expirePendingApprovals();               // not yet due
+            approvals.expirePendingApprovals();               // not yet due
             clock.setTo(at(10, 0));
-            service.expirePendingApprovals();               // now due
+            approvals.expirePendingApprovals();               // now due
             assertThat(reload(pending).getState()).isEqualTo(ReservationState.EXPIRED);
 
             clock.setTo(TestClockConfig.FIXTURE_NOW);       // back before start, so only state blocks it

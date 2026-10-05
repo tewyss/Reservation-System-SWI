@@ -687,7 +687,7 @@ New uncertainty is stated, not invented.
 | Feasible | Yes — it allocates nothing, so it needs none of OP-05's allocation guards (the asymmetry is stated in the slice). |
 | Verifiable | V-06.1, V-06.3, V-06.4, and V-06.2 for terminality. |
 | State / time | Source state only. Deliberately **not** deadline-bound (F5) — a refusal remains recordable after the deadline. |
-| Concurrency | Reject vs Approve on one reservation: both serialise on the court hold; the loser fails on the source-state guard. |
+| Concurrency | Reject vs Approve on one reservation: both serialise on the court hold; the loser fails on the source-state guard. *C03 erratum (X-1): the outcome is right but the mechanism was wrong. Reject takes no court hold, and in the v0.2 code both operations could succeed (F-A4, executed). Since C03 ADR-7 the loser fails on the row version and gets `INVALID_STATE` (V-06.5) — see [`c03-architecture.md`](c03-architecture.md).* |
 | Consistency | Distinct from CANCELLED per BR-11 and D-3; the statechart has no edge out of REJECTED. |
 | Unknown? | A-9 (no resubmission specified). |
 
@@ -700,7 +700,7 @@ New uncertainty is stated, not invented.
 | Feasible | Yes. The double enforcement is consistent: both use the same predicate on the same clock. |
 | Verifiable | V-05.4 (`now == deadline`), V-07.1, V-07.2 (09:59), V-07.3 (10:00). |
 | State / time | Purely time-driven — the only rule in the system whose trigger is the clock alone. |
-| Concurrency | Sweep vs cancel (G3) and sweep vs approve (E7) both resolve on the source-state guard; expiry never removes an allocation, so no invariant is at risk. |
+| Concurrency | Sweep vs cancel (G3) and sweep vs approve (E7) both resolve on the source-state guard; expiry never removes an allocation, so no invariant is at risk. *C03 erratum (X-1): a source-state guard is only atomic together with its write. Since C03 ADR-7 every expiry is a versioned write in its own transaction, so a concurrent cancel or a second sweep makes it a no-op (see [`c03-architecture.md`](c03-architecture.md)).* |
 | Consistency | Boundary is the mirror of BR-03.2 and is checked as C-18. Correctness does not depend on the sweep (G2). |
 | Unknown? | **A-7** (the window value) and **A-12** (sweep frequency) — both explicit. |
 

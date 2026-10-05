@@ -1,0 +1,137 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-10-05T20:37:26.193+02:00  INFO 18696 --- [           main] o.e.reservation.ReservationApplication   : Starting ReservationApplication using Java 21.0.4 with PID 18696 (C:\Users\rosti\IdeaProjects\SWIReservationSystem\target\classes started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-10-05T20:37:26.195+02:00  INFO 18696 --- [           main] o.e.reservation.ReservationApplication   : The following 1 profile is active: "demo"
+2026-10-05T20:37:26.735+02:00  INFO 18696 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-05T20:37:26.794+02:00  INFO 18696 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 51 ms. Found 3 JPA repository interfaces.
+2026-10-05T20:37:27.241+02:00  INFO 18696 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-10-05T20:37:27.255+02:00  INFO 18696 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-05T20:37:27.255+02:00  INFO 18696 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.49]
+2026-10-05T20:37:27.305+02:00  INFO 18696 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-05T20:37:27.306+02:00  INFO 18696 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1077 ms
+2026-10-05T20:37:27.447+02:00  INFO 18696 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-05T20:37:27.494+02:00  INFO 18696 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.36.Final
+2026-10-05T20:37:27.522+02:00  INFO 18696 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-05T20:37:27.764+02:00  INFO 18696 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-05T20:37:27.794+02:00  INFO 18696 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-05T20:37:27.958+02:00  INFO 18696 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:reservations user=SA
+2026-10-05T20:37:27.959+02:00  INFO 18696 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-05T20:37:28.009+02:00  INFO 18696 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-05T20:37:28.785+02:00  INFO 18696 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-05T20:37:28.851+02:00  INFO 18696 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-05T20:37:29.056+02:00  INFO 18696 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-05T20:37:29.541+02:00  WARN 18696 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-10-05T20:37:29.763+02:00  INFO 18696 --- [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:reservations'
+2026-10-05T20:37:29.836+02:00  INFO 18696 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-10-05T20:37:29.842+02:00  INFO 18696 --- [           main] o.e.reservation.ReservationApplication   : Started ReservationApplication in 4.008 seconds (process running for 4.299)
+
+==============================================================================
+SWI Reservation System - Specification Baseline v0.2 demonstration
+==============================================================================
+  self-service court id=1, approval-gated court id=2
+  member Alice id=1, member Bob id=2, approver Dana id=3 (STAFF)
+  fixture day = 2026-10-06 (tomorrow), past day = 2026-10-04
+
+--- OP-01 Create Reservation  (REQ-01) --------------------------------------
+  [PASS] V-01.1 success: valid interval -> DRAFT with an id
+         observed: state=DRAFT, id=1
+  [PASS] V-01.3 boundary: start == end -> INVALID_INTERVAL
+         observed: INVALID_INTERVAL - Reservation start must be strictly before end (half-open interval [start,end)).
+
+--- OP-02 Check Availability  (REQ-02, REQ-13) ------------------------------
+  [PASS] V-01.1 postcondition: a DRAFT allocates nothing -> still AVAILABLE
+         observed: available=true, reason=AVAILABLE, approvalRequired=false, pendingApprovalCount=0
+  [PASS] V-02.7 boundary: 21:30-22:30 past a 22:00 closing -> OUTSIDE_OPENING_HOURS
+         observed: available=false, reason=OUTSIDE_OPENING_HOURS, approvalRequired=false, pendingApprovalCount=0
+
+--- OP-03 Confirm Reservation  (REQ-03, REQ-08, REQ-09) ---------------------
+2026-10-05T20:37:30.021+02:00  INFO 18696 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice@example.com: reservation 1 for court 'Court 2 (self-service)' is CONFIRMED
+  [PASS] V-03.1 success: self-service court -> CONFIRMED
+         observed: state=CONFIRMED
+  [PASS] V-03.1 postcondition: the slot now blocks -> UNAVAILABLE / CONFLICT
+         observed: available=false, reason=CONFLICT, approvalRequired=false, pendingApprovalCount=0
+  [PASS] V-02.3 boundary: [11:00,12:00) touching a CONFIRMED [10:00,11:00) -> AVAILABLE
+         observed: available=true, reason=AVAILABLE, approvalRequired=false, pendingApprovalCount=0
+  [PASS] V-03.2 negative: overlapping confirm -> CONFLICT
+         observed: CONFLICT - Slot overlaps an existing CONFIRMED reservation of this court.
+  [PASS] V-03.2 postcondition: the loser REMAINS DRAFT
+         observed: state=DRAFT
+
+--- OP-04 Cancel Reservation  (REQ-05, REQ-06) ------------------------------
+  [PASS] V-04.2 success: cancelling a CONFIRMED reservation -> CANCELLED
+         observed: state=CANCELLED
+  [PASS] V-04.2 postcondition: the slot is AVAILABLE again
+         observed: available=true, reason=AVAILABLE, approvalRequired=false, pendingApprovalCount=0
+  [PASS] V-04.3 REQ-06 idempotency: a repeated cancel SUCCEEDS and stays CANCELLED
+         observed: state=CANCELLED
+  [PASS] V-04.5 boundary: cancelling a slot that already started -> TOO_LATE_TO_CANCEL
+         observed: TOO_LATE_TO_CANCEL - Cancellation is only allowed before the reservation starts (2026-10-04T10:00); now is 2026-10-05T20:37:30.059452700.
+  [PASS] V-04.6 negative: Bob cancels Alice's reservation -> UNAUTHORIZED
+         observed: UNAUTHORIZED - Actor 2 does not own reservation 3.
+
+--- OP-03 + OP-05 the approval gate  (REQ-09, REQ-10, REQ-13, REQ-14) -------
+2026-10-05T20:37:30.071+02:00  INFO 18696 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 4 for court 'Centre Court (approval)' awaits approval until 2026-10-06T14:00
+  [PASS] V-03.10 success: confirm on a GATED court -> PENDING_APPROVAL, deadline set
+         observed: state=PENDING_APPROVAL, deadline=2026-10-06T14:00
+2026-10-05T20:37:30.078+02:00  INFO 18696 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 5 for court 'Centre Court (approval)' awaits approval until 2026-10-06T14:00
+  [PASS] V-02.11 REQ-13: 2 pending requests do NOT block, but ARE disclosed
+         observed: available=true, reason=AVAILABLE, approvalRequired=true, pendingApprovalCount=2
+  [PASS] V-05.2 negative: a MEMBER cannot approve -> UNAUTHORIZED
+         observed: UNAUTHORIZED - Only STAFF may decide approval requests; actor 2 is MEMBER.
+2026-10-05T20:37:30.097+02:00  INFO 18696 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice@example.com: reservation 4 for court 'Centre Court (approval)' is CONFIRMED
+  [PASS] V-05.1 success: approver Dana -> CONFIRMED, decision recorded
+         observed: state=CONFIRMED, decidedBy=3
+  [PASS] V-05.5 negative: the rival request lost the slot -> CONFLICT (stays PENDING_APPROVAL)
+         observed: CONFLICT - Slot overlaps an existing CONFIRMED reservation of this court.
+  [PASS] V-05.5 postcondition: a failed approval is NOT a decision
+         observed: state=PENDING_APPROVAL
+
+--- OP-06 Reject Reservation  (REQ-11) --------------------------------------
+2026-10-05T20:37:30.108+02:00  INFO 18696 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner bob@example.com: reservation 5 is now REJECTED (Court reserved for a tournament)
+  [PASS] V-06.1 success: reject -> REJECTED, terminal, nothing allocated
+         observed: state=REJECTED, reason=Court reserved for a tournament
+  [PASS] V-06.2 BR-11 terminality: a REJECTED request cannot be approved
+         observed: INVALID_STATE - Only a PENDING_APPROVAL reservation can be approved; state was REJECTED.
+
+--- OP-07 Expire Pending Approvals  (REQ-12) --------------------------------
+2026-10-05T20:37:30.118+02:00  INFO 18696 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 6 for court 'Centre Court (approval)' awaits approval until 2026-10-04T14:00
+  [PASS] BR-10: the approval deadline is clamped to the reservation start
+         observed: deadline=2026-10-04T14:00, start=2026-10-04T14:00
+2026-10-05T20:37:30.126+02:00  INFO 18696 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice@example.com: reservation 6 is now EXPIRED
+  [PASS] V-05.4 boundary: approving past the deadline -> APPROVAL_EXPIRED
+         observed: APPROVAL_EXPIRED - The approval deadline (2026-10-04T14:00) has passed; the request is now EXPIRED.
+  [PASS] V-05.4 / REQ-12 lazy expiry: the failed attempt left it EXPIRED
+         observed: state=EXPIRED
+2026-10-05T20:37:30.137+02:00  INFO 18696 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 7 for court 'Centre Court (approval)' awaits approval until 2026-10-04T16:00
+2026-10-05T20:37:30.171+02:00  INFO 18696 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice@example.com: reservation 7 is now EXPIRED
+2026-10-05T20:37:30.171+02:00  INFO 18696 --- [           main] o.e.r.service.ApprovalWorkflow           : OP-07: expired 1 pending approval request(s) at 2026-10-05T20:37:30.137341500
+  [PASS] V-07.1 success: the sweep expires the overdue request
+         observed: swept=1, state=EXPIRED
+  [PASS] V-07.4 G1: the sweep is idempotent - nothing left to do
+         observed: second sweep changed 0
+  [PASS] V-04.10 D7: an EXPIRED request cannot be cancelled
+         observed: INVALID_STATE - A reservation in state EXPIRED cannot be cancelled.
+
+==============================================================================
+RESULT: 28 checks, 0 failed
+==============================================================================
+2026-10-05T20:37:30.179+02:00  INFO 18696 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-05T20:37:30.185+02:00  INFO 18696 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-10-05T20:37:30.188+02:00  INFO 18696 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-10-05T20:37:30.190+02:00  INFO 18696 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-05T20:37:30.191+02:00  INFO 18696 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

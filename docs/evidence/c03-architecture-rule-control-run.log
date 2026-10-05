@@ -1,0 +1,76 @@
+# C03 L2 control run - the architecture rule must fail when the rule is broken.
+# Temporary edit (reverted, not committed): ApprovalWorkflow.approve calls reservation.approve(..)
+# directly instead of courtAllocation.confirmApproved(..). Command: mvn clean test -Dtest=C03ArchitectureRuleTest
+
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< org.example:SWIReservationSystem >------------------
+[INFO] Building SWIReservationSystem 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ SWIReservationSystem ---
+[INFO] Deleting C:\Users\rosti\IdeaProjects\SWIReservationSystem\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ SWIReservationSystem ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 26 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ SWIReservationSystem ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 8 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ SWIReservationSystem ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.example.reservation.C03ArchitectureRuleTest
+20:36:49.797 [main] INFO com.tngtech.archunit.core.PluginLoader -- Detected Java version 21.0.4
+[ERROR] Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1.610 s <<< FAILURE! -- in org.example.reservation.C03ArchitectureRuleTest
+[ERROR] org.example.reservation.C03ArchitectureRuleTest.only_court_allocation_moves_a_reservation_into_confirmed -- Time elapsed: 1.597 s <<< FAILURE!
+java.lang.AssertionError: 
+Architecture Violation [Priority: MEDIUM] - Rule 'no classes that do not have fully qualified name 'org.example.reservation.service.CourtAllocation' should call method Reservation.confirm() or should call method Reservation.approve(AppUser, Instant), because ADR-6: the transition into CONFIRMED is decided by Court Allocation under the court hold, whichever operation requests it' was violated (1 times):
+Method <org.example.reservation.service.ApprovalWorkflow.approve(java.lang.Long, java.lang.Long)> calls method <org.example.reservation.domain.Reservation.approve(org.example.reservation.domain.AppUser, java.time.Instant)> in (ApprovalWorkflow.java:116)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.assertNoViolation(ArchRule.java:94)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.check(ArchRule.java:86)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.check(ArchRule.java:165)
+	at com.tngtech.archunit.junit.internal.ArchUnitTestDescriptor$ArchUnitRuleDescriptor.execute(ArchUnitTestDescriptor.java:168)
+	at com.tngtech.archunit.junit.internal.ArchUnitTestDescriptor$ArchUnitRuleDescriptor.execute(ArchUnitTestDescriptor.java:151)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   C03ArchitectureRuleTest.only_court_allocation_moves_a_reservation_into_confirmed Architecture Violation [Priority: MEDIUM] - Rule 'no classes that do not have fully qualified name 'org.example.reservation.service.CourtAllocation' should call method Reservation.confirm() or should call method Reservation.approve(AppUser, Instant), because ADR-6: the transition into CONFIRMED is decided by Court Allocation under the court hold, whichever operation requests it' was violated (1 times):
+Method <org.example.reservation.service.ApprovalWorkflow.approve(java.lang.Long, java.lang.Long)> calls method <org.example.reservation.domain.Reservation.approve(org.example.reservation.domain.AppUser, java.time.Instant)> in (ApprovalWorkflow.java:116)
+[INFO] 
+[ERROR] Tests run: 3, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  7.019 s
+[INFO] Finished at: 2026-10-05T20:36:51+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.4:test (default-test) on project SWIReservationSystem: There are test failures.
+[ERROR] 
+[ERROR] See C:\Users\rosti\IdeaProjects\SWIReservationSystem\target\surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
