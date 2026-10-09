@@ -19,8 +19,11 @@ question → alternatives → evaluation → ADR → TO-BE views → scenario re
 
 ## A. Part A — AS-IS mapping of the current implementation
 
-No Part A document existed in the repository, so it was produced here from the code at
-`672c20d` before any design work.
+The full Part A (A1–A8: scenario, step-to-code trace, failure path, elements, state and
+BR-02 enforcement points, dependencies, AS-IS diagram, carried question) is in
+[`architecture-and-decisions.md` § C03 Part A](architecture-and-decisions.md#c03-part-a--as-is-realisation-of-one-scenario).
+It was traced from the code at `672c20d` before any design work. This section condenses it
+into the findings F-A1…F-A6 that the rest of this document uses.
 
 ### A.1 Where each responsibility lives today
 

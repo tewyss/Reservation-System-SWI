@@ -64,8 +64,12 @@ Full work: [`c03-architecture.md`](c03-architecture.md) (sections A–L referenc
 
 **Baseline:** v0.2 — [`c02-change-v0.2-approval.md`](c02-change-v0.2-approval.md), application at tag `baseline-v0.2` (`672c20d`).
 
-**Part A:** the AS-IS mapping was produced from the code at `672c20d` (§A), since no Part A
-document existed in the repository. Six findings. The decisive one is **F-A4**: approve + reject
+**Part A:** [`architecture-and-decisions.md` § C03 Part A](architecture-and-decisions.md#c03-part-a--as-is-realisation-of-one-scenario)
+(A1–A8) traces OP-03 on a gated court → OP-05 through the code at `672c20d`. It covers the
+step-to-code mapping, the E10 conflict path, three v0.2 ↔ code mismatches, the BR-02
+enforcement points (decided in two methods, performed by two setters), dependencies, and the
+AS-IS diagram. The question it carries forward became decision question D. Condensed into
+findings F-A1…F-A6 in `c03-architecture.md` §A. The decisive one is **F-A4**: approve + reject
 (or approve + cancel) of the *same* pending request both succeed, the database keeps the last
 writer (`CONFIRMED`), and the owner is told both outcomes. This was proven by an executed test
 before any code changed: [`evidence/c03-as-is-lifecycle-race.log`](evidence/c03-as-is-lifecycle-race.log).
@@ -103,7 +107,7 @@ which shows that the same-row race needs a decision of its own (ADR-7).
 - state ownership — §G3 (every §7b edge: decision owner vs requester)
 - runtime/deployment — §G4 (one JVM process, scheduler thread, H2/PostgreSQL, Notification Service)
 - design sequence — §H1 (confirm → pending → later approve, `alt` conflict, version check at commit)
-- focused design class — §H2 (12 classes/interfaces, every H1 message owned)
+- focused design class — §H2 (11 classes/interfaces, every H1 message owned)
 
 **Cross-view issues found/resolved:** seven (§I), all resolved in the artifacts before code changed.
 - **X-1** C02 REQ-11/REQ-12 gates claimed court-hold serialisation that neither design nor code had → ADR-7 + erratum notes in the C02 change doc.
