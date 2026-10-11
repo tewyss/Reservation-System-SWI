@@ -53,7 +53,9 @@ reservations do not block the court.
 **Opening-hours rule:** a reservation must lie entirely within its court's
 opening hours (e.g. 08:00–22:00) and within a single calendar day. A court cannot
 be confirmed for a slot that starts before opening, ends after closing, or spans
-midnight. *(Enforced in `ReservationService.confirm` and `isAvailable`.)*
+midnight. *(C01: enforced in `ReservationService.confirm` and `isAvailable`. Since C03
+(ADR-6) the rule is enforced by `CourtAllocation` on confirm and approve. `ReservationService.checkAvailability`
+reports it as `OUTSIDE_OPENING_HOURS`. It is specified as BR-04 in the C02 baseline.)*
 
 ## External / system boundary
 **Notification Service.** When a reservation is confirmed, the system calls the

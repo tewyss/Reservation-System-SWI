@@ -61,11 +61,11 @@ Java 21 · Spring Boot 3.5 · Spring Data JPA · **H2** (dev/test) / **PostgreSQ
 - JDK 21 (`java -version` → 21.x)
 - Maven 3.9+ (or the Maven bundled with IntelliJ IDEA)
 
-### Run the tests (specification verification suites, C03 race + architecture tests, C01 spike)
+### Run the tests (specification verification suites, C03 race + architecture tests, CP1 walking skeleton, C01 spike)
 ```bash
 mvn test
 ```
-Expected: `Tests run: 67, Failures: 0, Errors: 0` → `BUILD SUCCESS`.
+Expected: `Tests run: 69, Failures: 0, Errors: 0` → `BUILD SUCCESS`.
 
 ### Watch the specification run (scripted demonstration)
 ```bash
@@ -117,9 +117,14 @@ POST /reservations
   → automated check (a test posts a reservation and asserts a persisted id is returned)
 ```
 
-Status in C01: the route and layers exist
-(`ReservationController.create` → `ReservationService.create` → `ReservationRepository`);
-the dedicated end-to-end automated check is completed by CP1.
+**Status after C03: runnable and checked automatically.**
+- Path: `ReservationController.create` → `ReservationService.create` → `ReservationRepository`.
+- Automated check: `CP1WalkingSkeletonTest` starts the application on a random port and sends a real
+  HTTP `POST /reservations`. It asserts `201` + `id` + `state = DRAFT` and then loads the
+  reservation from the database under that id (court, user, interval, state). The negative
+  case `start == end` must return `400 INVALID_INTERVAL` and persist nothing.
+- Runs in the normal build (`mvn test`), or alone: `mvn test -Dtest=CP1WalkingSkeletonTest`.
+  Transcript: [`docs/evidence/cp1-walking-skeleton-run.log`](docs/evidence/cp1-walking-skeleton-run.log).
 
 ## Repository layout
 ```
@@ -127,7 +132,7 @@ README.md
 docs/
   intent-and-change.md            # Project Frame (C01)
   architecture-and-decisions.md   # stack rationale, ADRs, future pressure (C01)
-  evidence-and-evolution.md       # C01 spike + C03 architecture evidence
+  evidence-and-evolution.md       # C01 spike, C02 summary, C03 architecture, CP1 evidence
   c01-engineering-spike.md        # C01 change + review-cycle record
   c02-baseline-v0.1.md            # Specification Baseline v0.1 (accepted)
   c02-change-v0.2-approval.md     # approval change: impact analysis -> Baseline v0.2
@@ -144,8 +149,9 @@ docs/
     c03-to-be-demo-run.log                  # TO-BE running app: 28 checks, 0 failed
     c03-court-hold-control-run.log          # control: no hold -> 8 / 2 double-bookings
     c03-architecture-rule-control-run.log   # control: bypass -> ArchUnit fails the build
+    cp1-walking-skeleton-run.log            # CP1: POST /reservations over HTTP, 2/2 green
 src/
   main/java/org/example/reservation/   # config, demo, domain, repository, service, web
   main/resources/                      # application(-postgres|-demo).properties
-  test/java/org/example/reservation/   # v0.1 + v0.2 suites, C03 race + ArchUnit tests, spike
+  test/java/org/example/reservation/   # v0.1 + v0.2 suites, C03 race + ArchUnit tests, CP1 skeleton, spike
 ```

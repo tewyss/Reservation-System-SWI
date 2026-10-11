@@ -58,6 +58,58 @@ green: `Tests run: 6, Failures: 0, Errors: 0`.
 
 ---
 
+## Evidence C02: specifikace → běžící aplikace
+
+Short form of the C02 evidence. The full version, with every table, is in
+[`c02-evidence.md`](c02-evidence.md) (section numbers below refer to it).
+
+**Přijatá baseline (accepted baseline):**
+- **v0.1:** [`c02-baseline-v0.1.md`](c02-baseline-v0.1.md), accepted by the team in §9.3. It contains BR-01…BR-07, REQ-01…REQ-08 and OP-01…OP-04, plus the use-case view, the statechart and the activity flows.
+- **v0.2:** [`c02-change-v0.2-approval.md`](c02-change-v0.2-approval.md), accepted by the team in §9. It adds BR-08…BR-11, REQ-09…REQ-15 and OP-05 Approve / OP-06 Reject / OP-07 Expire.
+
+**Předvedené základní operace (core operations demonstrated):** all four core operations
+(create, availability, confirm, cancel) and the three approval operations, demonstrated two ways (§2):
+- the verification suites: `mvn test` → 62/62 at `baseline-v0.2`;
+- a scripted run of the real application: `mvn spring-boot:run -Dspring-boot.run.profiles=demo` → 28 checks, 0 failed.
+
+**Skutečně provedené příklady ověření (verification examples actually executed):** at least one success and one
+negative/boundary example per operation, each test named by its V-id (§3). Examples:
+- OP-01: V-01.1 valid → DRAFT / V-01.3 `start == end` → rejected;
+- OP-02: V-02.3 `[11:00,12:00)` next to a CONFIRMED `[10:00,11:00)` → AVAILABLE / V-02.4 → CONFLICT;
+- OP-03: V-03.1 → CONFIRMED / V-03.2 overlap → rejected, stays DRAFT;
+- concurrency: V-03.9, 8 parallel confirms → exactly 1 CONFIRMED;
+- OP-04: V-04.1 before start → CANCELLED / V-04.4 `now == start` → rejected;
+- OP-05: V-05.1 → CONFIRMED / V-05.4 `now == deadline` → EXPIRED.
+
+A control run without the per-court serialisation produced 3 CONFIRMED reservations for one slot
+([`evidence/c02-req04-control-run-without-serialisation.log`](evidence/c02-req04-control-run-without-serialisation.log)).
+This shows the concurrency test really detects a double-booking.
+
+**Nalezený nesoulad a způsob vyřešení (mismatches found and how they were resolved):** four (§4), each fixed in the source where the defect actually was:
+- **M-1:** availability disagreed with confirm. Defect in the **specification**; REQ-02 was widened and a reason code added.
+- **M-2:** the lazy expiry write was rolled back together with the thrown error. Defect in the **implementation**; the expiry now commits in its own transaction, which became driver AD-8.
+- **M-3:** OP-07 counted reservations left by other examples. Defect in the **verification example**; each example now starts from a known set.
+- **M-4:** the demo script used the wrong owner. Defect in the **demonstration**.
+
+**Shrnutí dopadu změny (change impact summary):** the analysis was written against the frozen `baseline-v0.1` tag,
+before any edit (change doc §2).
+- **Affected:** OP-03 (on a gated court the target state becomes `PENDING_APPROVAL`), REQ-03, OP-04/REQ-05/BR-03.1
+  (`PENDING_APPROVAL` can be cancelled), OP-02/REQ-02 (approval disclosure added), REQ-04 → REQ-15, the statechart,
+  the use-case view and the Notification interface.
+- **Unaffected, with reasons:** OP-01, BR-01, BR-02 (the blocking set is still exactly `{CONFIRMED}`), BR-04, BR-06,
+  REQ-06 and REQ-07.
+- **New:** the Approver actor and the operations OP-05/06/07; the states `PENDING_APPROVAL`, `REJECTED` and `EXPIRED`.
+
+**Zbývající předpoklad / neznámá (remaining assumption / unknown):** A-1 says identity is asserted (`X-Actor-Id`), not authenticated.
+A-7 says the approval window (24 h) has no value from any stakeholder. The full list A-1…A-12 is in §6.
+
+**Architektonické drivery přenesené do C03 (architecture drivers carried into C03):** AD-1…AD-8 (§7). The primary one is
+**AD-1 + AD-6**: BR-02 under concurrency, now enforced in two separate service methods (confirm and approve).
+
+**Commit / tag aplikace (application commit / tag):** `baseline-v0.1` (`2eae622`, 34/34) and `baseline-v0.2` (`672c20d`, 62/62).
+
+---
+
 ## C03 — Architecture Evidence
 
 Full work: [`c03-architecture.md`](c03-architecture.md) (sections A–L referenced below).
@@ -148,5 +200,23 @@ which shows that the same-row race needs a decision of its own (ADR-7).
 - The `version` column is `NOT NULL` and is not migrated for existing PostgreSQL rows. No production data exists yet.
 - Identity is still asserted (`X-Actor-Id`, A-1/AD-3). BR-05/BR-09 ownership is only as strong as that header.
 
-**Commit/tag:** tag **`c03-architecture`** — the commit that contains this section, the
-architecture document, the code changes and the logs above.
+**Commit/tag:**
+- tag **`c03-architecture`** (`5f9c424`): the architecture document, the code changes and the logs above;
+- tag **`c03-part-a`** (`c177da8`): adds the Part A trace to `architecture-and-decisions.md` and the Part A paragraph of this section. No code changed.
+
+---
+
+## CP1 walking skeleton — evidence
+
+**Path (README):** `POST /reservations` → validate → persist → return reservation ID → automated check.
+
+**Automated check:** `CP1WalkingSkeletonTest`
+(`src/test/java/org/example/reservation/CP1WalkingSkeletonTest.java`). It starts the full application on a
+random port and sends real HTTP requests. Unlike the specification suites, it does not call the services directly.
+- **Success:** a valid request returns `201` with `id` and `state = DRAFT`. The reservation is then loaded from the
+  database under that id, and its court, user, interval and state match the request.
+- **Validation:** `start == end` returns `400 INVALID_INTERVAL`, and the number of reservations does not change.
+
+**Result:** `Tests run: 2, Failures: 0` → `BUILD SUCCESS`. The transcript in
+[`evidence/cp1-walking-skeleton-run.log`](evidence/cp1-walking-skeleton-run.log) shows the embedded server start, the `INSERT` and the reload by id.
+Full suite with the test: `mvn clean test` → **69 / 69**.

@@ -1,0 +1,12 @@
+# CP1 walking skeleton - executed 2026-10-11 13:10 with: mvn test -Dtest=CP1WalkingSkeletonTest
+# Filtered to: test lifecycle, embedded server start, SQL on the reservation table, result.
+
+[INFO] Running CP1 walking skeleton - POST /reservations end to end
+INFO 12864 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 49605 (http) with context path '/'
+Hibernate: select count(*) from reservation r1_0
+Hibernate: select count(*) from reservation r1_0
+Hibernate: insert into reservation (approval_deadline,cancelled_at,court_id,created_at,decided_at,decided_by_id,decision_reason,end_time,start_time,state,user_id,version,id) values (?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type,r1_0.created_at,r1_0.decided_at,db1_0.id,db1_0.email,db1_0.full_name,db1_0.role,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role,r1_0.version from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id left join app_user db1_0 on db1_0.id=r1_0.decided_by_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.749 s -- in CP1 walking skeleton - POST /reservations end to end
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS

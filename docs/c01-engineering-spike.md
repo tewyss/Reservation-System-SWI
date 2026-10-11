@@ -35,3 +35,13 @@ Reviewer sign-off: _Pavel Mynář, Pavel Valošek_
 ## Integration
 Integrated to `master`. (Team chose to commit on `master` in the shared repo;
 the peer review above is completed before the team pushes / treats it as final.)
+
+**Traceability in git:**
+- **The spike** was committed directly to `master` (`95c52ad`). The review sign-off above was recorded in
+  `60d0bf4`.
+- **Reviewer changes** followed as GitHub pull requests by other team members, each integrated only after
+  another member merged it:
+  - [PR #2](https://github.com/tewyss/Reservation-System-SWI/pull/2), `c01-review-fix`, by `PawelON`;
+  - [PR #3](https://github.com/tewyss/Reservation-System-SWI/pull/3), `docs/c01-review-and-links-fix`, by Pavel Valošek;
+  - [PR #4](https://github.com/tewyss/Reservation-System-SWI/pull/4), `docs/c01-doc-refinements`, by Pavel Valošek.
+- **Merges:** Rostislav Nevoral merged all three PRs (`ec48c3b`, `4ff3a5a`, `6930ee8`).
