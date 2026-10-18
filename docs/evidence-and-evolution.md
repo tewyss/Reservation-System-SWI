@@ -220,3 +220,79 @@ random port and sends real HTTP requests. Unlike the specification suites, it do
 **Result:** `Tests run: 2, Failures: 0` → `BUILD SUCCESS`. The transcript in
 [`evidence/cp1-walking-skeleton-run.log`](evidence/cp1-walking-skeleton-run.log) shows the embedded server start, the `INSERT` and the reload by id.
 Full suite with the test: `mvn clean test` → **69 / 69**.
+
+---
+
+## C05 DD Verification Evidence
+
+**Unit:** Court Allocation (C03 R2, ADR-6). Detailed design:
+[`architecture-and-decisions.md` § C05 Detailed Design](architecture-and-decisions.md#c05-detailed-design).
+The DD was written first, against commit `3cc1114`. The code was then compared with it and
+changed where it did not follow it (see the mismatch table below).
+
+### Tests derived from DD
+
+17 new tests: 15 unit tests in `service/CourtAllocationTest` (no Spring, repositories mocked)
+and 2 component tests in `C05CourtAllocationComponentTest` (Spring context + H2).
+
+| DD element / decision | What must hold? | Test level | Test case |
+| --- | --- | --- | --- |
+| **Algorithm**: decision table, row order (rule 2 before 3 before 4) | a slot that breaks several rules gets the reason of the **first** one, and no DB query runs if a static rule already failed | unit | `DecisionTable.row2_inactiveWinsOverLaterRules`, `row3_outsideHoursWinsOverConflict` |
+| **Algorithm**: every row of the table | each row yields its `Reason`. Edges: `start == end`, `start > end`, `null`, crossing midnight, exactly `08:00–22:00` is inside | unit | `DecisionTable.row1…row5` |
+| **Required-interface contract** `findOverlapping` (DR-3) | the query receives exactly `ReservationState.blockingStates()` = `{CONFIRMED}` and the interval unchanged, **once** | unit | `Predicate.predicateUsesTheSingleBlockingSet` |
+| **State transition** `DRAFT → CONFIRMED`, `PENDING_APPROVAL → CONFIRMED` (DR-5) | the target state is reached, the decision (`decidedBy`, `decidedAt`) is recorded, and `save` is called once | unit | `Transitions.confirm_draftBecomesConfirmed`, `confirmApproved_pendingBecomesConfirmedWithDecision` |
+| **Failure behaviour**: business outcome (DR-4, DR-6) | refusal → the specified code, the state is unchanged, **no half-written decision**, nothing saved | unit | `Transitions.confirm_conflictChangesNothing`, `confirmApproved_inactiveCourtChangesNothing`, `requireAdmissible_outsideHoursCode` |
+| **Failure behaviour**: defect vs business outcome | a wrong source state or a hold on another court → an unchecked JDK exception, **not** a `ReservationException`, and nothing changes | unit | `Transitions.confirm_wrongSourceStateIsADefect`, `Hold.holdOnAnotherCourtIsRefused` |
+| **Interface contract** `hold` (DR-1) | it locks the reservation's own court; a missing court → `COURT_NOT_FOUND`; **no transaction → refused** | unit + component | `Hold.hold_locksTheReservationsCourt`, `hold_missingCourt`; `C05CourtAllocationComponentTest.holdWithoutTransactionIsRefused` |
+| **Collaboration**: one decision table, two consumers (DR-2) | for the same slot, OP-02 (advisory, no hold) and OP-03 (binding, under the hold) give the **same** verdict on every row, including a slot that breaks rules 2, 3 and 4 at once | component | `C05CourtAllocationComponentTest.availabilityAndConfirmAgreeOnEveryRow` |
+| **Concurrency** (DR-1 under load) | at most one `CONFIRMED` per overlapping slot, for confirm and approve alike | integration (existing, re-executed) | V-03.9, V-05.9 in `BaselineV01/V02…Test`; control run from C03 |
+
+**Two tests in detail**
+
+*`DecisionTable.row2_inactiveWinsOverLaterRules`*
+- **Selected level:** unit. `CourtAllocation` is constructed directly. `ReservationRepository` is a Mockito mock that would report a conflict if it were asked.
+- **Why this level:** the decision being tested is *order and short-circuit*. Only a mock can show that the DB rule was **not evaluated** (`verifyNoInteractions`). With a real database, the test could only see the returned reason, not whether the query ran. The test needs no Spring and no H2 and runs in milliseconds.
+- **Design decision verified:** the decision table is evaluated top-down, the first failing rule wins, and the only DB rule is last. This is what makes OP-02 and OP-03 report the same reason, and what saves a query for statically refused slots.
+
+*`C05CourtAllocationComponentTest.availabilityAndConfirmAgreeOnEveryRow`*
+- **Selected level:** component, with the real Spring context, transaction proxies and H2. `ReservationService` is called, not `CourtAllocation`.
+- **Why this level:** the decision is about a **collaboration**. Two callers of the unit (the advisory OP-02 path without a hold and the binding OP-03 path with one) must get the same answer. A unit test of `assess` alone cannot show that both callers actually use it. That is exactly the gap the code had at `3cc1114` (mismatch C05-M1).
+- **Design decision verified:** DR-2, *one decision table, two consumers*. The row-2 slot is inactive, outside hours *and* conflicting at once, so the test also checks that both paths use the same rule order.
+
+### Unit/component tests executed
+
+- `mvn clean test` → **86 / 86**, `BUILD SUCCESS` (69 before C05, plus the 17 above). Transcript: [`evidence/c05-dd-verification.log`](evidence/c05-dd-verification.log).
+- The scripted demo of the real application, `mvn spring-boot:run -Dspring-boot.run.profiles=demo` → `RESULT: 28 checks, 0 failed`. It is unchanged from C03 and covers OP-02 through the real app.
+- **Control run** (do the derived tests detect a violated DD?): `assess` was mutated so that the BR-02 rule runs *before* BR-07/BR-04. Result: **4 of 17 fail**: `row2…`, `row3…` (expected `COURT_INACTIVE` / `OUTSIDE_OPENING_HOURS`, got `CONFLICT`), `predicateUses…` (query ran twice), and the component test on its row-2 slot. The mutation was reverted afterwards. Transcript: [`evidence/c05-dd-control-run.log`](evidence/c05-dd-control-run.log). The control run was made before the C05-M2 fix, which changed `requireAdmissible` only. `assess` is identical in both versions.
+
+### Design ↔ implementation mismatch
+
+| DD decision | Implemented at `3cc1114`? | Evidence | Action |
+| --- | --- | --- | --- |
+| DR-1 hold with a proof token, only in the caller's transaction | YES | `CourtAllocation.hold` (`MANDATORY`), `CourtHold` with a package-private constructor | keep |
+| **DR-2 one decision table, used by OP-02 *and* by confirm/approve** | **PARTLY (C05-M1)**: only rule 4 (`isFree`) was shared. `ReservationService.checkAvailability` had its **own copy** of rules 1–3 (`git show 3cc1114:…/ReservationService.java`, lines 111–125), and `requireAdmissible` had a second copy of rules 2–3. The two copies agreed only by convention. This is the same drift C02 M-1 had already produced once. | `CourtAllocation.assess` (`:61`); `ReservationService.checkAvailability` now delegates (`:114`); `availabilityAndConfirmAgreeOnEveryRow` | **update code**. The DD is right: C03 §C2 already required that R8 use the predicate R2 enforces. The code had implemented that requirement only for BR-02. |
+| Rule order BR-01 → BR-07 → BR-04 → BR-02, DB rule last | YES in both copies, but only by convention | `DecisionTable.row2/row3`; control run | keep; it is now protected by the tests |
+| DR-3 blocking set taken only from `ReservationState` | YES | `isFree`; `Predicate.predicateUsesTheSingleBlockingSet` | keep |
+| **DR-4 mapping `Reason → code` is 1:1 and compile-checked** (variation point "new rule") | **NO (C05-M2)**. This mismatch was found in the *first C05 implementation*, not in the old code. `requireAdmissible` used a switch *statement*, and Java does not require those to be exhaustive over an enum. A new `Reason` without a `case` would have fallen through, and the allocation would have **proceeded**. | `CourtAllocation.requireAdmissible` (`:87`), now a switch *expression* | **update code**. The DD's variation point ("the compiler refuses the build until the new `Reason` is mapped") is the intent. The DD text was made explicit in "Important methods". |
+| DR-5 transition only after the guard; the entity checks the edge | YES | `Transitions.*` | keep |
+| DR-6 a refusal changes nothing (no half-written decision) | YES: the guard runs before `Reservation.approve` sets `decidedBy` | `confirmApproved_inactiveCourtChangesNothing` | keep |
+| Business outcome vs defect | YES | `confirm_wrongSourceStateIsADefect`, `holdOnAnotherCourtIsRefused` | keep |
+| Precondition "the hold was obtained in **this** transaction" | **PARTLY**: `CourtHold` does not know its transaction. A hold kept beyond its transaction (e.g. stored in a field) would still be accepted. | — | **keep the DD, do not change the code**. Only `service`-package code can construct a hold, and ArchUnit restricts who calls the transitions. Binding the hold to a transaction id would add state and complexity for a misuse that no current caller can commit. Recorded as a remaining risk. |
+
+### Resolution
+
+- **C05-M1**: the code followed the design. `CourtAllocation.assess` is now the only place the admissibility rules live. OP-02 calls it without a hold, and `requireAdmissible` calls it under the hold. `checkAvailability` lost its own rule copy. It keeps the REQ-13 disclosure and counts pending requests only for a valid interval, as before. All C02 verification examples (`BaselineV01`/`V02` suites, 61 tests) and the demo pass unchanged. One behaviour change at the Java API: `checkAvailability` with a `null` bound now returns `INVALID_INTERVAL` instead of throwing a `NullPointerException`. This cannot happen over HTTP, where both bounds are required request parameters.
+- **C05-M2**: the code followed the design (an exhaustive switch expression). The DD was made more explicit, but its intent did not change.
+- **Hold bound to its transaction**: the design was kept and the gap accepted, see the risks below.
+
+### Remaining design risk
+
+- **Leaked hold**: see the last row of the mismatch table. This is mitigated by package-private construction and the ArchUnit rule, not by a runtime check.
+- **`Reason` serves two purposes.** It is OP-02's public response type and also the unit's internal verdict. A future reason that only availability needs (e.g. "pending requests exist") would have to be kept out of `assess`, or it would become a binding refusal. Reconsider splitting the types when the first such reason appears.
+- **Lock wait** under the C01 "10× members" pressure is still unmeasured. The DD makes the lock scope explicit (one court per transaction, taken before any reservation write) but does not change it.
+- The DD inherits the C03 risks: BR-02 is guaranteed only for writes through this application, and identity is only asserted (`X-Actor-Id`).
+
+### Commit/tag
+
+Tag **`c05-detailed-design`**. It contains the DD section, the code change (`CourtAllocation`,
+`ReservationService`), the 17 tests and the two logs above.

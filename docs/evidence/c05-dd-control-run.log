@@ -1,0 +1,279 @@
+# C05 control run: CourtAllocation.assess mutated so the BR-02 rule (DB query) is evaluated FIRST,
+# before BR-07/BR-04 - i.e. the DD decision-table order is violated. Mutation (reverted after this run):
+#   inserted at the top of assess(), after the BR-01 check:
+#   +        if (!isFree(court.getId(), start, end)) {   // CONTROL RUN: BR-02 moved first
+#   +            return AvailabilityResult.Reason.CONFLICT;
+#   +        }
+# Command: mvn clean test -Dtest=CourtAllocationTest,C05CourtAllocationComponentTest
+
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< org.example:SWIReservationSystem >------------------
+[INFO] Building SWIReservationSystem 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ SWIReservationSystem ---
+[INFO] Deleting C:\Users\rosti\IdeaProjects\SWIReservationSystem\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ SWIReservationSystem ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 27 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ SWIReservationSystem ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 11 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] /C:/Users/rosti/IdeaProjects/SWIReservationSystem/src/test/java/org/example/reservation/CP1WalkingSkeletonTest.java: C:\Users\rosti\IdeaProjects\SWIReservationSystem\src\test\java\org\example\reservation\CP1WalkingSkeletonTest.java uses unchecked or unsafe operations.
+[INFO] /C:/Users/rosti/IdeaProjects/SWIReservationSystem/src/test/java/org/example/reservation/CP1WalkingSkeletonTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ SWIReservationSystem ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running C05 DD - Court Allocation (component)
+18:33:40.152 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.example.reservation.C05CourtAllocationComponentTest]: C05CourtAllocationComponentTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+18:33:40.306 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.C05CourtAllocationComponentTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-10-18T18:33:40.694+02:00  INFO 27240 --- [           main] o.e.r.C05CourtAllocationComponentTest    : Starting C05CourtAllocationComponentTest using Java 21.0.4 with PID 27240 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-10-18T18:33:40.694+02:00  INFO 27240 --- [           main] o.e.r.C05CourtAllocationComponentTest    : No active profile set, falling back to 1 default profile: "default"
+2026-10-18T18:33:41.325+02:00  INFO 27240 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-18T18:33:41.385+02:00  INFO 27240 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 54 ms. Found 3 JPA repository interfaces.
+2026-10-18T18:33:41.838+02:00  INFO 27240 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-18T18:33:41.906+02:00  INFO 27240 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.36.Final
+2026-10-18T18:33:41.942+02:00  INFO 27240 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-18T18:33:42.229+02:00  INFO 27240 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-18T18:33:42.263+02:00  INFO 27240 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-18T18:33:42.449+02:00  INFO 27240 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:swi_test user=SA
+2026-10-18T18:33:42.451+02:00  INFO 27240 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-18T18:33:42.500+02:00  INFO 27240 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-18T18:33:43.330+02:00  INFO 27240 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: drop table if exists app_user cascade 
+Hibernate: drop table if exists court cascade 
+Hibernate: drop table if exists reservation cascade 
+Hibernate: create table app_user (id bigint generated by default as identity, email varchar(255) not null unique, full_name varchar(255) not null, role enum ('MEMBER','STAFF') not null, primary key (id))
+Hibernate: create table court (active boolean not null, closing_time time(6) not null, opening_time time(6) not null, requires_approval boolean not null, id bigint generated by default as identity, location varchar(255) not null, name varchar(255) not null, type enum ('BADMINTON','BASKETBALL','FOOTBALL','SQUASH','TENNIS') not null, primary key (id))
+Hibernate: create table reservation (approval_deadline timestamp(6), cancelled_at timestamp(6) with time zone, court_id bigint not null, created_at timestamp(6) with time zone not null, decided_at timestamp(6) with time zone, decided_by_id bigint, end_time timestamp(6) not null, id bigint generated by default as identity, start_time timestamp(6) not null, user_id bigint not null, version bigint not null, decision_reason varchar(500), state enum ('CANCELLED','CONFIRMED','DRAFT','EXPIRED','PENDING_APPROVAL','REJECTED') not null, primary key (id))
+Hibernate: alter table if exists reservation add constraint FKpxnu37u6x3lp9jvebvujghn4e foreign key (court_id) references court
+Hibernate: alter table if exists reservation add constraint FKjfh4sk669q9okl27ir86ldr3o foreign key (decided_by_id) references app_user
+Hibernate: alter table if exists reservation add constraint FKm25r28103jb9lske61acewdlf foreign key (user_id) references app_user
+2026-10-18T18:33:43.379+02:00  INFO 27240 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-18T18:33:43.600+02:00  INFO 27240 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-18T18:33:44.246+02:00  WARN 27240 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-10-18T18:33:44.591+02:00  INFO 27240 --- [           main] o.e.r.C05CourtAllocationComponentTest    : Started C05CourtAllocationComponentTest in 4.156 seconds (process running for 5.154)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\rosti\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0
+Hibernate: insert into court (active,closing_time,location,name,opening_time,requires_approval,type,id) values (?,?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (approval_deadline,cancelled_at,court_id,created_at,decided_at,decided_by_id,decision_reason,end_time,start_time,state,user_id,version,id) values (?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type,r1_0.created_at,r1_0.decided_at,db1_0.id,db1_0.email,db1_0.full_name,db1_0.role,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role,r1_0.version from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id left join app_user db1_0 on db1_0.id=r1_0.decided_by_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=? for update
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: update reservation set approval_deadline=?,cancelled_at=?,court_id=?,decided_at=?,decided_by_id=?,decision_reason=?,end_time=?,start_time=?,state=?,user_id=?,version=? where id=? and version=?
+2026-10-18T18:33:45.119+02:00  INFO 27240 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner mia+2355095251428300@example.com: reservation 1 for court 'Court C05' is CONFIRMED
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (approval_deadline,cancelled_at,court_id,created_at,decided_at,decided_by_id,decision_reason,end_time,start_time,state,user_id,version,id) values (?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type,r1_0.created_at,r1_0.decided_at,db1_0.id,db1_0.email,db1_0.full_name,db1_0.role,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role,r1_0.version from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id left join app_user db1_0 on db1_0.id=r1_0.decided_by_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=? for update
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: update reservation set approval_deadline=?,cancelled_at=?,court_id=?,decided_at=?,decided_by_id=?,decision_reason=?,end_time=?,start_time=?,state=?,user_id=?,version=? where id=? and version=?
+2026-10-18T18:33:45.179+02:00  INFO 27240 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner mia+2355095251428300@example.com: reservation 2 for court 'Court C05' is CONFIRMED
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (approval_deadline,cancelled_at,court_id,created_at,decided_at,decided_by_id,decision_reason,end_time,start_time,state,user_id,version,id) values (?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type,r1_0.created_at,r1_0.decided_at,db1_0.id,db1_0.email,db1_0.full_name,db1_0.role,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role,r1_0.version from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id left join app_user db1_0 on db1_0.id=r1_0.decided_by_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=? for update
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type,r1_0.created_at,r1_0.decided_at,db1_0.id,db1_0.email,db1_0.full_name,db1_0.role,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role,r1_0.version from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id left join app_user db1_0 on db1_0.id=r1_0.decided_by_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (approval_deadline,cancelled_at,court_id,created_at,decided_at,decided_by_id,decision_reason,end_time,start_time,state,user_id,version,id) values (?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type,r1_0.created_at,r1_0.decided_at,db1_0.id,db1_0.email,db1_0.full_name,db1_0.role,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role,r1_0.version from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id left join app_user db1_0 on db1_0.id=r1_0.decided_by_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=? for update
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type,r1_0.created_at,r1_0.decided_at,db1_0.id,db1_0.email,db1_0.full_name,db1_0.role,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role,r1_0.version from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id left join app_user db1_0 on db1_0.id=r1_0.decided_by_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (approval_deadline,cancelled_at,court_id,created_at,decided_at,decided_by_id,decision_reason,end_time,start_time,state,user_id,version,id) values (?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: update court set active=?,closing_time=?,location=?,name=?,opening_time=?,requires_approval=?,type=? where id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0 where r1_0.court_id=? and r1_0.state in (?) and r1_0.start_time<? and ?<r1_0.end_time
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,r1_0.created_at,r1_0.decided_at,r1_0.decided_by_id,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,r1_0.version from reservation r1_0
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: delete from reservation where id=? and version=?
+Hibernate: delete from reservation where id=? and version=?
+Hibernate: delete from reservation where id=? and version=?
+Hibernate: delete from reservation where id=? and version=?
+Hibernate: delete from reservation where id=? and version=?
+Hibernate: insert into court (active,closing_time,location,name,opening_time,requires_approval,type,id) values (?,?,?,?,?,?,?,default)
+Hibernate: insert into app_user (email,full_name,role,id) values (?,?,?,default)
+Hibernate: select au1_0.id,au1_0.email,au1_0.full_name,au1_0.role from app_user au1_0 where au1_0.id=?
+Hibernate: select c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type from court c1_0 where c1_0.id=?
+Hibernate: insert into reservation (approval_deadline,cancelled_at,court_id,created_at,decided_at,decided_by_id,decision_reason,end_time,start_time,state,user_id,version,id) values (?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select r1_0.id,r1_0.approval_deadline,r1_0.cancelled_at,r1_0.court_id,c1_0.id,c1_0.active,c1_0.closing_time,c1_0.location,c1_0.name,c1_0.opening_time,c1_0.requires_approval,c1_0.type,r1_0.created_at,r1_0.decided_at,db1_0.id,db1_0.email,db1_0.full_name,db1_0.role,r1_0.decision_reason,r1_0.end_time,r1_0.start_time,r1_0.state,r1_0.user_id,u1_0.id,u1_0.email,u1_0.full_name,u1_0.role,r1_0.version from reservation r1_0 join court c1_0 on c1_0.id=r1_0.court_id left join app_user db1_0 on db1_0.id=r1_0.decided_by_id join app_user u1_0 on u1_0.id=r1_0.user_id where r1_0.id=?
+[ERROR] Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 5.216 s <<< FAILURE! -- in C05 DD - Court Allocation (component)
+[ERROR] org.example.reservation.C05CourtAllocationComponentTest.availabilityAndConfirmAgreeOnEveryRow -- Time elapsed: 0.645 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+[OP-02 for [2026-09-20T14:30,2026-09-20T22:30)] 
+expected: COURT_INACTIVE
+ but was: CONFLICT
+	at org.example.reservation.C05CourtAllocationComponentTest.assertSameVerdict(C05CourtAllocationComponentTest.java:105)
+	at org.example.reservation.C05CourtAllocationComponentTest.availabilityAndConfirmAgreeOnEveryRow(C05CourtAllocationComponentTest.java:89)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running C05 DD - Court Allocation (unit)
+[INFO] Running DR-1 court hold
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.395 s -- in DR-1 court hold
+[INFO] Running DR-5 / DR-6 transitions into CONFIRMED
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s -- in DR-5 / DR-6 transitions into CONFIRMED
+[INFO] Running DR-3 BR-02 predicate (required-interface contract)
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.029 s <<< FAILURE! -- in DR-3 BR-02 predicate (required-interface contract)
+[ERROR] org.example.reservation.service.CourtAllocationTest.predicateUsesTheSingleBlockingSet -- Time elapsed: 0.023 s <<< FAILURE!
+org.mockito.exceptions.verification.TooManyActualInvocations: 
+
+reservationRepository.findOverlapping(
+    1L,
+    <Capturing argument: Collection>,
+    2026-09-20T10:00,
+    2026-09-20T11:00
+);
+Wanted 1 time:
+-> at org.example.reservation.service.CourtAllocationTest$Predicate.predicateUsesTheSingleBlockingSet(CourtAllocationTest.java:140)
+But was 2 times:
+-> at org.example.reservation.service.CourtAllocation.isFree(CourtAllocation.java:129)
+-> at org.example.reservation.service.CourtAllocation.isFree(CourtAllocation.java:129)
+
+
+	at org.example.reservation.service.CourtAllocationTest$Predicate.predicateUsesTheSingleBlockingSet(CourtAllocationTest.java:140)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Running DR-2 decision table: first failing rule wins
+[ERROR] Tests run: 5, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.023 s <<< FAILURE! -- in DR-2 decision table: first failing rule wins
+[ERROR] org.example.reservation.service.CourtAllocationTest.row3_outsideHoursWinsOverConflict -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: OUTSIDE_OPENING_HOURS
+ but was: CONFLICT
+	at org.example.reservation.service.CourtAllocationTest$DecisionTable.row3_outsideHoursWinsOverConflict(CourtAllocationTest.java:102)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] org.example.reservation.service.CourtAllocationTest.row2_inactiveWinsOverLaterRules -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: COURT_INACTIVE
+ but was: CONFLICT
+	at org.example.reservation.service.CourtAllocationTest$DecisionTable.row2_inactiveWinsOverLaterRules(CourtAllocationTest.java:92)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.504 s -- in C05 DD - Court Allocation (unit)
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   C05CourtAllocationComponentTest.availabilityAndConfirmAgreeOnEveryRow:89->assertSameVerdict:105 [OP-02 for [2026-09-20T14:30,2026-09-20T22:30)] 
+expected: COURT_INACTIVE
+ but was: CONFLICT
+[ERROR]   CourtAllocationTest.predicateUsesTheSingleBlockingSet 
+reservationRepository.findOverlapping(
+    1L,
+    <Capturing argument: Collection>,
+    2026-09-20T10:00,
+    2026-09-20T11:00
+);
+Wanted 1 time:
+-> at org.example.reservation.service.CourtAllocationTest$Predicate.predicateUsesTheSingleBlockingSet(CourtAllocationTest.java:140)
+But was 2 times:
+-> at org.example.reservation.service.CourtAllocation.isFree(CourtAllocation.java:129)
+-> at org.example.reservation.service.CourtAllocation.isFree(CourtAllocation.java:129)
+
+
+[ERROR]   CourtAllocationTest.row2_inactiveWinsOverLaterRules 
+expected: COURT_INACTIVE
+ but was: CONFLICT
+[ERROR]   CourtAllocationTest.row3_outsideHoursWinsOverConflict 
+expected: OUTSIDE_OPENING_HOURS
+ but was: CONFLICT
+[INFO] 
+[ERROR] Tests run: 17, Failures: 4, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  10.963 s
+[INFO] Finished at: 2026-10-18T18:33:45+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.4:test (default-test) on project SWIReservationSystem: There are test failures.
+[ERROR] 
+[ERROR] See C:\Users\rosti\IdeaProjects\SWIReservationSystem\target\surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

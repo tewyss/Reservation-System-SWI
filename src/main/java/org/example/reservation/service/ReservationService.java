@@ -99,6 +99,10 @@ public class ReservationService {
      * reservations only (BR-02, unchanged by v0.2); the approval fields are
      * disclosure, because under change decision D-2 a pending request does not
      * block the slot.
+     *
+     * C05 DD: the verdict (B1, B3-B5) is Court Allocation's decision table, asked
+     * without a hold - the same rules, in the same order, that confirm and approve
+     * enforce under the hold.
      */
     @Transactional(readOnly = true)
     public AvailabilityResult checkAvailability(Long courtId, LocalDateTime start, LocalDateTime end) {
@@ -107,27 +111,15 @@ public class ReservationService {
                         ReservationErrorCode.COURT_NOT_FOUND, "Court not found: " + courtId));
 
         boolean gated = court.isRequiresApproval();
+        AvailabilityResult.Reason reason = courtAllocation.assess(court, start, end);   // B1, B3-B5
 
-        if (!start.isBefore(end)) {                                                     // B1 / BR-01
-            return AvailabilityResult.blocked(
-                    AvailabilityResult.Reason.INVALID_INTERVAL, gated, 0);
-        }
+        int pending = reason == AvailabilityResult.Reason.INVALID_INTERVAL              // no interval,
+                ? 0                                                                     // nothing to count
+                : approvalWorkflow.livePendingCount(courtId, start, end);               // REQ-13
 
-        int pending = approvalWorkflow.livePendingCount(courtId, start, end);           // REQ-13
-
-        if (!court.isActive()) {                                                        // B3 / BR-07
-            return AvailabilityResult.blocked(
-                    AvailabilityResult.Reason.COURT_INACTIVE, gated, pending);
-        }
-        if (!court.covers(start, end)) {                                                // B4 / BR-04
-            return AvailabilityResult.blocked(
-                    AvailabilityResult.Reason.OUTSIDE_OPENING_HOURS, gated, pending);
-        }
-        if (!courtAllocation.isFree(courtId, start, end)) {                             // B5 / BR-02
-            return AvailabilityResult.blocked(
-                    AvailabilityResult.Reason.CONFLICT, gated, pending);
-        }
-        return AvailabilityResult.free(gated, pending);
+        return reason == AvailabilityResult.Reason.AVAILABLE
+                ? AvailabilityResult.free(gated, pending)
+                : AvailabilityResult.blocked(reason, gated, pending);
     }
 
     // ==================================================================

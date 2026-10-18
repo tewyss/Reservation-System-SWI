@@ -51,26 +51,56 @@ public class CourtAllocation {
     }
 
     /**
+     * C05 DD: the admissibility decision table - evaluated top-down, the first
+     * failing rule wins. It is the ONE place the rules live: OP-02 asks it without
+     * a hold (the verdict is advisory, A-2), {@link #requireAdmissible} asks it
+     * under the hold (the verdict is the allocation decision), so availability and
+     * confirm cannot disagree on the same slot (C02 M-1, C03 C-14). The only rule
+     * that needs the database is evaluated last.
+     */
+    @Transactional(readOnly = true)
+    public AvailabilityResult.Reason assess(Court court, LocalDateTime start, LocalDateTime end) {
+        if (start == null || end == null || !start.isBefore(end)) {             // B1, BR-01
+            return AvailabilityResult.Reason.INVALID_INTERVAL;
+        }
+        if (!court.isActive()) {                                                 // B3 / C5 / E8, BR-07
+            return AvailabilityResult.Reason.COURT_INACTIVE;
+        }
+        if (!court.covers(start, end)) {                                         // B4 / C6 / E9, BR-04
+            return AvailabilityResult.Reason.OUTSIDE_OPENING_HOURS;
+        }
+        if (!isFree(court.getId(), start, end)) {                                // B5 / C7 / E10, BR-02
+            return AvailabilityResult.Reason.CONFLICT;
+        }
+        return AvailabilityResult.Reason.AVAILABLE;
+    }
+
+    /**
      * The guards that protect an allocation, evaluated under the hold. OP-03 on a
      * gated court calls this without allocating, so that an impossible request
      * never reaches an approver (V-03.12); OP-05 re-evaluates them at approval
      * time through {@link #confirmApproved} (REQ-10).
+     *
+     * A switch EXPRESSION, so a new verdict that has no failure code yet is a
+     * compile error rather than a silent "admissible".
      */
     public void requireAdmissible(CourtHold hold, Reservation reservation) {
         hold.requireCovers(reservation);
         Court court = hold.court();
-        if (!court.isActive()) {                                                 // C5 / E8, BR-07
-            throw new ReservationException(ReservationErrorCode.COURT_INACTIVE,
+        ReservationException refusal = switch (assess(court, reservation.getStartTime(), reservation.getEndTime())) {
+            case AVAILABLE -> null;
+            case INVALID_INTERVAL -> new ReservationException(ReservationErrorCode.INVALID_INTERVAL,
+                    "Reservation start must be strictly before end (half-open interval [start,end)).");
+            case COURT_INACTIVE -> new ReservationException(ReservationErrorCode.COURT_INACTIVE,
                     "Court '" + court.getName() + "' is not taking bookings.");
-        }
-        if (!court.covers(reservation.getStartTime(), reservation.getEndTime())) {  // C6 / E9, BR-04
-            throw new ReservationException(ReservationErrorCode.OUTSIDE_OPENING_HOURS, String.format(
-                    "Reservation must lie within opening hours %s-%s of court '%s' on a single day.",
-                    court.getOpeningTime(), court.getClosingTime(), court.getName()));
-        }
-        if (!isFree(court.getId(), reservation.getStartTime(), reservation.getEndTime())) {
-            throw new ReservationException(ReservationErrorCode.CONFLICT,         // C7 / E10, BR-02
+            case OUTSIDE_OPENING_HOURS -> new ReservationException(ReservationErrorCode.OUTSIDE_OPENING_HOURS,
+                    String.format("Reservation must lie within opening hours %s-%s of court '%s' on a single day.",
+                            court.getOpeningTime(), court.getClosingTime(), court.getName()));
+            case CONFLICT -> new ReservationException(ReservationErrorCode.CONFLICT,
                     "Slot overlaps an existing CONFIRMED reservation of this court.");
+        };
+        if (refusal != null) {
+            throw refusal;
         }
     }
 

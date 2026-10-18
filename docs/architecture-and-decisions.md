@@ -267,3 +267,339 @@ the adapter only logs.
 
 It becomes C03 decision question D and is answered by ADR-6. The same-row race became
 driver DR-2 and ADR-7. See [`c03-architecture.md`](c03-architecture.md).
+
+---
+
+## C05 Detailed Design
+
+**What this section is:** the detailed design of one C03 element, written as design intent
+*before* the C05 code change. It was written against commit `3cc1114`. Where the code at
+that commit did not yet follow the design, the design was kept and the code was changed. The
+comparison is in [`evidence-and-evolution.md` § C05](evidence-and-evolution.md#c05-dd-verification-evidence).
+
+### Selected architecture unit
+
+| Item | Value |
+| --- | --- |
+| **Selected architecture unit / responsibility** | **Court Allocation** (C03 static view G2, element *CA*): responsibility **R2**, *"decide allocation: evaluate admissibility and move a reservation into `CONFIRMED` under an exclusive hold"*, plus the BR-02 predicate that R8 (availability) must share with it (C03 §C2: *"the predicate must be the same one R2 enforces"*). Architectural decision: **ADR-6**. |
+| **Boundary of this DD** | **Inside:** `service.CourtAllocation`, `service.CourtHold`, and the decision table they apply. **Required from outside:** `CourtRepository.findByIdForUpdate`, `ReservationRepository.findOverlapping`, `Court.isActive/covers`, `Reservation.confirm/approve`, `ReservationState.blockingStates/canTransitionTo`. **Outside, owned by the callers:** actor authorization (BR-05, BR-09), source-state checks (`DRAFT` / `PENDING_APPROVAL`), routing self-service vs gated (BR-08), the approval deadline (BR-10) and notification. |
+| **Related requirement(s)** | REQ-03 (confirm), REQ-04 / REQ-15 (at most one `CONFIRMED` per overlapping slot under concurrency, whichever operation allocates), REQ-10 (approve re-evaluates the guards), REQ-09 (a gated request is checked for admissibility before it reaches an approver), REQ-02 (availability must agree with confirm) |
+| **Related scenario(s)** | OP-03 self-service: V-03.1 success, V-03.2 conflict. OP-03 gated: V-03.10, V-03.12 (impossible request refused up front). OP-05: V-05.1 success, V-05.5 slot taken while waiting (E10), V-05.9 two approvers, overlapping requests (E11). Concurrency: V-03.9. OP-02 availability: V-02.x |
+| **Relevant business rule(s)** | **BR-02** (no two overlapping `CONFIRMED` reservations of one court; the unit's invariant), BR-01 (half-open interval `[start, end)`), BR-04 (opening hours, single day), BR-07 (active court), statechart §7b edges `DRAFT → CONFIRMED` and `PENDING_APPROVAL → CONFIRMED` |
+
+### Detailed responsibilities
+
+| id | Detailed responsibility | Why is it needed? |
+| --- | --- | --- |
+| **DR-1** | Take an exclusive hold on one court for the caller's transaction, and give the caller **proof** of it | The BR-02 check is "read overlapping, then write `CONFIRMED`". It is correct only if no other allocation on the same court runs between the read and the write. Without the hold, 8 of 8 concurrent confirms succeeded ([control run](evidence/c03-court-hold-control-run.log)). |
+| **DR-2** | **Assess** whether a slot on a court is admissible: one verdict with one reason, rules in a fixed order, first failing rule wins | Two kinds of callers ask the same question: availability (advisory, no hold) and confirm/approve (binding, under the hold). If each kept its own rule list, they could give different answers for the same slot. That already happened once (C02 mismatch M-1). |
+| **DR-3** | Evaluate the **BR-02 predicate**: does the slot overlap a reservation in a *blocking* state on the same court (half-open)? | This is the invariant itself. The blocking set must be the single one defined in `ReservationState` (C02 consistency checks C-2, C-14). |
+| **DR-4** | Turn a negative verdict into the **specified failure outcome** (error code) | The C02 slices name one code per failure (C5/E8 → `COURT_INACTIVE`, C6/E9 → `OUTSIDE_OPENING_HOURS`, C7/E10 → `CONFLICT`). The API maps the codes to HTTP statuses and the verification examples assert them. |
+| **DR-5** | **Perform** the transition into `CONFIRMED`, self-service or approved, only after DR-2 passed under DR-1 | ADR-6: this is the single path into `CONFIRMED`. |
+| **DR-6** | **Change nothing** when an allocation is refused | V-03.2 / V-05.5: after a conflict the reservation stays `DRAFT` / `PENDING_APPROVAL`. A refused allocation must not leave a half-written decision (e.g. `decidedBy` set while the state is still pending). |
+
+### Design elements and ownership
+
+| Responsibility | Owner (design element) | State / data | Why here? |
+| --- | --- | --- | --- |
+| DR-1 hold | `CourtAllocation.hold()` creates a **`CourtHold`**: a value object whose constructor is package-private | a DB row lock on `court` (`SELECT … FOR UPDATE`) that lives until the caller's transaction ends. `CourtHold` keeps only the locked `Court`. | Only this element may lock (ArchUnit rule, C03 §L2). Every allocating operation takes a `CourtHold` parameter, and only `CourtAllocation` can make one. A caller therefore cannot request an allocation without having taken the hold. |
+| DR-2 assess | **`CourtAllocation.assess(court, start, end)`** returning `AvailabilityResult.Reason` (**new in C05**) | none, stateless. It reads `Court.active` and the opening hours, and calls DR-3. | It is the one decision table. Availability (advisory) and `requireAdmissible` (binding) both use it, so they cannot drift apart. The verdict type is the existing OP-02 `Reason` enum, because its values already are the rows of the table. |
+| DR-3 BR-02 predicate | `CourtAllocation.isFree()` → `ReservationRepository.findOverlapping()` | reservation rows. The blocking set comes from `ReservationState.blockingStates()`. | The *query* belongs to the persistence port (an interface). The *meaning* of "blocks" belongs to the domain enum, defined once. |
+| DR-4 failure outcome | `CourtAllocation.requireAdmissible()` | none | It is the binding consumer of DR-2. It maps each non-`AVAILABLE` verdict 1:1 to a `ReservationErrorCode`. |
+| DR-5 transition | `CourtAllocation.confirm()` / `confirmApproved()` → `Reservation.confirm()` / `approve()` | `reservation.state`, `decidedBy`, `decidedAt`, `version` | Court Allocation *decides*. The entity only checks that the edge exists in the statechart (ADR-7, R5). |
+| DR-6 no partial change | the order inside `confirm` / `confirmApproved`: **guard first, mutate after**. A failure throws, and the caller's transaction rolls back. | — | The guard throws before any field is touched. This does not rely on rollback alone, because the caller's entity object stays in memory after the rollback. |
+| local rules used by DR-2 | `Court.isActive()`, `Court.covers(start, end)` | court columns | Information expert: the court knows its own hours and status. |
+
+### Key interface(s) / contract(s)
+
+**Provided interface: the Court Allocation contract** (the class is concrete. It has one
+implementation and the ArchUnit rule names it, so no Java interface is extracted):
+
+```
+<<Court Allocation>>
+  hold(reservation)                               : CourtHold
+  assess(court, start, end)                       : AvailabilityResult.Reason      (C05)
+  requireAdmissible(hold, reservation)            : void   | throws ReservationException
+  confirm(hold, reservation)                      : void   | throws ReservationException
+  confirmApproved(hold, reservation, approver, at): void   | throws ReservationException
+  isFree(courtId, start, end)                     : boolean
+```
+
+**Contract of the central operation: `confirmApproved(hold, reservation, approver, at)`**
+(`confirm` has the same contract, minus `approver`/`at` and with source state `DRAFT`):
+
+```
+Preconditions (the caller's obligations):
+- an active transaction exists                                  (enforced: Propagation.MANDATORY)
+- hold was obtained by hold(reservation) in THIS transaction
+- hold.court is the reservation's court                         (enforced: CourtHold.requireCovers)
+- reservation.state = PENDING_APPROVAL                          (checked by the caller -> INVALID_STATE)
+- approver has authority (BR-09) and now < approvalDeadline     (checked by the caller)
+
+Postconditions (on normal return):
+- reservation.state = CONFIRMED, decidedBy = approver, decidedAt = at, the change is saved
+- when the caller's transaction commits: no other CONFIRMED reservation of this court
+  overlaps [start, end)                                          (BR-02)
+
+Failures, part 1: business outcomes (ReservationException, no field of the reservation changed):
+- COURT_INACTIVE          BR-07, court deactivated while the request waited
+- OUTSIDE_OPENING_HOURS   BR-04
+- CONFLICT                BR-02, an overlapping reservation is CONFIRMED
+- INVALID_INTERVAL        BR-01, only reachable if a corrupt row exists (create refuses it)
+
+Failures, part 2: defects (unchecked JDK/Spring exceptions; a caller broke a precondition):
+- IllegalArgumentException         hold of another court
+- IllegalStateException            illegal statechart edge (the caller skipped its state check)
+- IllegalTransactionStateException called without a transaction
+
+Failures, part 3: concurrency, surfacing from the caller's commit (ADR-7):
+- OptimisticLockingFailureException  another operation decided the same reservation first
+```
+
+The split between *business outcome* and *defect* is a design decision. A business outcome
+carries a specified code and becomes a 4xx response. A defect is never mapped to a
+specified code, because hiding it as e.g. `CONFLICT` would hide a programming error.
+
+**Required interfaces (Spring Data repository interfaces):**
+
+```
+<<interface>> ReservationRepository
+  findOverlapping(courtId, states, start, end) : List<Reservation>
+    Post: exactly the rows with court.id = courtId AND state ∈ states
+          AND row.start < end AND start < row.end      (half-open: touching intervals NOT returned)
+
+<<interface>> CourtRepository
+  findByIdForUpdate(courtId) : Optional<Court>
+    Post: the court row is write-locked until the calling transaction ends;
+          blocks while another transaction holds it; empty if the court does not exist
+    Failure: lock wait longer than the DB lock timeout -> PessimisticLockingFailureException
+```
+
+### Focused structural view
+
+```mermaid
+classDiagram
+  direction LR
+  class CourtAllocation {
+    <<Court Allocation - ADR-6>>
+    +hold(reservation) CourtHold
+    +assess(court, start, end) Reason
+    +requireAdmissible(hold, reservation)
+    +confirm(hold, reservation)
+    +confirmApproved(hold, reservation, approver, at)
+    +isFree(courtId, start, end) boolean
+  }
+  class CourtHold {
+    <<value object, proof of the lock>>
+    -court Court
+    ~CourtHold(court)
+    +court() Court
+    ~requireCovers(reservation)
+  }
+  class Reason {
+    <<enumeration - the verdict>>
+    AVAILABLE
+    INVALID_INTERVAL
+    COURT_INACTIVE
+    OUTSIDE_OPENING_HOURS
+    CONFLICT
+  }
+  class CourtRepository {
+    <<interface>>
+    +findByIdForUpdate(id) Optional~Court~
+  }
+  class ReservationRepository {
+    <<interface>>
+    +findOverlapping(courtId, states, start, end) List
+  }
+  class Court {
+    <<entity>>
+    -active boolean
+    -openingTime, closingTime
+    +isActive() boolean
+    +covers(start, end) boolean
+  }
+  class Reservation {
+    <<entity>>
+    -state ReservationState
+    -decidedBy, decidedAt
+    -version long
+    +confirm()
+    +approve(approver, at)
+  }
+  class ReservationState {
+    <<enumeration>>
+    +blockingStates() Set
+    +canTransitionTo(target) boolean
+  }
+
+  CourtAllocation ..> CourtHold : creates (sole creator)
+  CourtAllocation ..> Reason : returns verdict
+  CourtAllocation --> CourtRepository : DR-1 lock
+  CourtAllocation --> ReservationRepository : DR-3 overlap query
+  CourtAllocation ..> Court : DR-2 reads rules
+  CourtAllocation ..> Reservation : DR-5 sole caller of confirm/approve
+  CourtAllocation ..> ReservationState : blocking set
+  CourtHold --> Court : holds
+  Reservation --> ReservationState : edge checked by
+```
+
+Callers (not drawn): `ReservationService` uses `assess` (OP-02, advisory) and `hold`,
+`requireAdmissible`, `confirm` (OP-03). `ApprovalWorkflow` uses `hold` and `confirmApproved`
+(OP-05). **Dependency direction:** Court Allocation depends only on the domain and on the
+two repository interfaces. It never calls Lifecycle, Approval Workflow or Notification. The
+callers depend on it, never the reverse.
+
+### Detailed sequence
+
+C03 level (H1): `Approval Workflow → Court Allocation → Persistence`.
+C05 level: OP-05 Approve, success and conflict branch, with a rival approval of an
+overlapping request on the same court (V-05.9):
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant AW as ApprovalWorkflow.approve
+  participant CA as CourtAllocation
+  participant CR as CourtRepository
+  participant H as CourtHold
+  participant C as Court
+  participant RR as ReservationRepository
+  participant R as Reservation
+  participant RV as rival approval (other TX)
+
+  Note over AW: BR-05, BR-09 checked, TX open
+  AW->>CA: hold(reservation)
+  CA->>CR: findByIdForUpdate(courtId)
+  Note over CR,RV: rival already holds the court lock: this call BLOCKS until rival commits
+  RV-->>CR: commit (its reservation is now CONFIRMED), lock released
+  CR-->>CA: Court (row locked for this TX)
+  CA-->>AW: new CourtHold(court)
+  Note over AW: state = PENDING_APPROVAL? now < deadline? (caller's guards)
+  AW->>CA: confirmApproved(hold, reservation, approver, at)
+  CA->>CA: requireAdmissible(hold, reservation)
+  CA->>H: requireCovers(reservation)
+  CA->>CA: assess(court, start, end)
+  CA->>C: isActive()
+  CA->>C: covers(start, end)
+  CA->>RR: findOverlapping(courtId, {CONFIRMED}, start, end)
+  alt no overlapping CONFIRMED row
+    RR-->>CA: []
+    CA->>R: approve(approver, at)
+    R->>R: state.canTransitionTo(CONFIRMED)
+    CA->>RR: save(reservation)
+    CA-->>AW: return
+    Note over AW,R: commit: UPDATE ... WHERE version = v (ADR-7), court lock released
+  else rival's overlapping reservation is CONFIRMED
+    RR-->>CA: [rival]
+    CA-->>AW: throw ReservationException(CONFLICT), nothing changed
+    Note over AW,R: rollback, reservation stays PENDING_APPROVAL, lock released, HTTP 409
+  end
+```
+
+### Important methods / operations
+
+**`hold(reservation) : CourtHold`** (DR-1)
+- *Input:* a loaded reservation (its court id is used).
+- *Output:* a `CourtHold` on that court.
+- *Pre:* active transaction (`MANDATORY`).
+- *Post:* the court row is write-locked by the caller's transaction.
+- *Side effects:* the lock; it waits for any other holder.
+- *Failure:* `COURT_NOT_FOUND`; lock timeout → `PessimisticLockingFailureException`; no transaction → `IllegalTransactionStateException`.
+
+**`assess(court, start, end) : Reason`** (DR-2, DR-3; new in C05)
+- *Input:* a court and a candidate interval.
+- *Output:* the verdict of the decision table below.
+- *Pre:* `court` is not null.
+- *Post:* returns exactly one `Reason`.
+- *Side effects:* **none**, it is read-only. It runs at most one DB query, and only when rules 1–3 pass.
+- *Failure:* none; a negative outcome is a value, not an exception. **Advisory** without a hold, **binding** under one.
+
+**`requireAdmissible(hold, reservation)`** (DR-4)
+- *Input:* hold and reservation.
+- *Output:* returns normally or throws.
+- *Pre:* `hold` covers `reservation.court`.
+- *Post:* on normal return, `assess(...) = AVAILABLE` under the hold.
+- *Side effects:* none.
+- *Failure:* `Reason → ReservationErrorCode` 1:1; a hold on another court → `IllegalArgumentException`, before any query.
+- *Mapping:* written so that it must be **exhaustive** (a switch *expression* over `Reason`). A new verdict without a failure code is then a compile error, never a silent "admissible".
+- *Called directly* by OP-03 on a gated court (V-03.12), so that an impossible request never reaches an approver.
+
+**`confirm(hold, reservation)` / `confirmApproved(hold, reservation, approver, at)`** (DR-5, DR-6)
+- See the contract above.
+- *Algorithm:* `requireAdmissible` first, then the entity transition, then `save`.
+- *Side effects:* the reservation row is updated at commit.
+
+**`isFree(courtId, start, end) : boolean`** (DR-3)
+- *Input:* a court id and an interval.
+- *Output:* `findOverlapping(courtId, ReservationState.blockingStates(), start, end).isEmpty()`.
+- *Side effects:* one query.
+- *Note:* the blocking set is always taken from `ReservationState`. No caller passes its own set.
+
+### Algorithm / decision logic
+
+**Admissibility decision table** (DR-2): evaluated top-down, **first failing rule wins**.
+
+| # | Rule | Condition that fails the slot | Verdict (`Reason`) | Binding failure (`ReservationErrorCode`) | Touches DB? |
+| --- | --- | --- | --- | --- | --- |
+| 1 | BR-01 | `start == null` or `end == null` or `!(start < end)` | `INVALID_INTERVAL` | `INVALID_INTERVAL` | no |
+| 2 | BR-07 | `!court.active` | `COURT_INACTIVE` | `COURT_INACTIVE` | no |
+| 3 | BR-04 | `!court.covers(start, end)`, i.e. not (same calendar day ∧ `start.time ≥ opening` ∧ `end.time ≤ closing`) | `OUTSIDE_OPENING_HOURS` | `OUTSIDE_OPENING_HOURS` | no |
+| 4 | BR-02 | ∃ r: `r.court = court` ∧ `r.state ∈ blockingStates()` (= `{CONFIRMED}`) ∧ `r.start < end` ∧ `start < r.end` | `CONFLICT` | `CONFLICT` | **yes**, one query |
+| 5 | — | none of the above | `AVAILABLE` | — (allocation proceeds) | — |
+
+Why this order:
+- It is the order of the C02 slices: OP-02 B1→B5 and OP-03 C5→C7 / OP-05 E8→E10. So a slot that breaks several rules gets the *same* reason from availability and from confirm.
+- The only rule that needs the DB is last, so a slot that fails on static data costs no query.
+
+```
+assess(court, start, end):
+    if start == null or end == null or not start < end:  return INVALID_INTERVAL   # BR-01
+    if not court.active:                                 return COURT_INACTIVE     # BR-07
+    if not court.covers(start, end):                     return OUTSIDE_OPENING_HOURS  # BR-04
+    if not isFree(court.id, start, end):                 return CONFLICT           # BR-02
+    return AVAILABLE
+
+allocate(hold, reservation, transition):          # confirm / confirmApproved
+    hold.requireCovers(reservation)               # defect -> IllegalArgumentException
+    verdict = assess(hold.court, reservation.start, reservation.end)
+    if verdict != AVAILABLE:
+        throw ReservationException(codeFor(verdict))   # DR-6: nothing mutated yet
+    transition(reservation)                       # entity checks the statechart edge
+    save(reservation)                             # UPDATE at commit, version-checked
+```
+
+**State transitions performed by this unit** (both enter the BR-02 blocking set):
+
+| Source | Operation | Guard (under the hold) | Target | Recorded | Wrong source |
+| --- | --- | --- | --- | --- | --- |
+| `DRAFT` | `confirm` | verdict = `AVAILABLE` | `CONFIRMED` | — | `IllegalStateException` from the entity (the caller should have answered `INVALID_STATE` first) |
+| `PENDING_APPROVAL` | `confirmApproved` | verdict = `AVAILABLE` | `CONFIRMED` | `decidedBy`, `decidedAt` | same |
+
+**Concurrency behaviour.**
+- Two allocations on the **same court** are serialised by the court row lock. The second one evaluates rule 4 *after* the first has committed, so it sees the first `CONFIRMED` row.
+- Allocations on **different courts** do not wait for each other.
+- A transaction locks at most one court, and takes that lock before it writes a reservation row. Cancel and reject take no court lock. So there is no lock-order cycle.
+- Two operations on the **same reservation** (approve vs reject or cancel) are decided by the row version (ADR-7), not by this unit.
+
+**Persistence behaviour.**
+- `save` only marks the entity. The `UPDATE … WHERE version = ?` is sent at commit.
+- The rule-4 query runs inside the locked transaction at READ COMMITTED, which is enough because every writer of a `CONFIRMED` row holds the same lock.
+
+**Variation points (where a change goes):**
+
+| Change | Where |
+| --- | --- |
+| a new admissibility rule, e.g. "max 2 h per booking" | one row in `assess`, one `Reason` value, one `ReservationErrorCode`. Availability and confirm pick it up together, and the compiler refuses the build until `requireAdmissible` maps the new `Reason`. |
+| a different blocking set, e.g. a pending request blocks too | the `blocksCourt` flag in `ReservationState` only |
+| a new allocating operation, e.g. multi-level approval | a new method on `CourtAllocation` that takes a `CourtHold`. The ArchUnit rule fails the build if it is done anywhere else. |
+| a DB exclusion constraint added later (ADR-6 Alternative B) | inside `hold` / `isFree` only; the callers do not change |
+
+### DD decisions intentionally left to code
+
+- Exception message texts. Tests assert the *code*, not the wording.
+- Spring annotation details beyond the contract, e.g. `readOnly = true` on the advisory read.
+- The JPQL text of `findOverlapping` and the SQL Hibernate generates for the lock. The contract above fixes their semantics.
+- How `CourtHold.requireCovers` compares ids, and the null handling inside `Court.covers`.
+- The callers' own guard order (BR-05 before the hold, state check after it). That belongs to Lifecycle / Approval Workflow, see C03 H1.
+- Getters, constructors and JPA boilerplate of the entities.
