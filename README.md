@@ -76,6 +76,14 @@ seven operations, and prints the observed outcome of each check. Expected:
 `RESULT: 28 checks, 0 failed`. A committed transcript is in
 [`docs/evidence/c03-to-be-demo-run.log`](docs/evidence/c03-to-be-demo-run.log).
 
+### Run with sample data (stays running)
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=seed
+```
+Loads four courts (one approval-gated, one inactive), two members, two staff and a
+reservation in every lifecycle state, prints their ids and keeps running, so the data
+can be inspected in the H2 console or used with the REST API.
+
 ### Run the application (H2, default profile)
 ```bash
 mvn spring-boot:run
