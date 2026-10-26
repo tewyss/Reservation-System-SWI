@@ -85,7 +85,7 @@ public class CourtAllocation {
      * compile error rather than a silent "admissible".
      */
     public void requireAdmissible(CourtHold hold, Reservation reservation) {
-        hold.requireCovers(reservation);
+        hold.requireValidFor(reservation);
         Court court = hold.court();
         ReservationException refusal = switch (assess(court, reservation.getStartTime(), reservation.getEndTime())) {
             case AVAILABLE -> null;

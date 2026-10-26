@@ -65,7 +65,7 @@ Java 21 · Spring Boot 3.5 · Spring Data JPA · **H2** (dev/test) / **PostgreSQ
 ```bash
 mvn test
 ```
-Expected: `Tests run: 69, Failures: 0, Errors: 0` → `BUILD SUCCESS`.
+Expected: `Tests run: 90, Failures: 0, Errors: 0` → `BUILD SUCCESS`.
 
 ### Watch the specification run (scripted demonstration)
 ```bash

@@ -269,7 +269,7 @@ and 2 component tests in `C05CourtAllocationComponentTest` (Spring context + H2)
 
 | DD decision | Implemented at `3cc1114`? | Evidence | Action |
 | --- | --- | --- | --- |
-| DR-1 hold with a proof token, only in the caller's transaction | YES | `CourtAllocation.hold` (`MANDATORY`), `CourtHold` with a package-private constructor | keep |
+| DR-1 hold with a proof token, only in the caller's transaction | YES | `CourtAllocation.hold` (`MANDATORY`), `CourtHold` with a package-private constructor; since C06 also an ArchUnit rule on the constructor (C06-F3) | keep |
 | **DR-2 one decision table, used by OP-02 *and* by confirm/approve** | **PARTLY (C05-M1)**: only rule 4 (`isFree`) was shared. `ReservationService.checkAvailability` had its **own copy** of rules 1–3 (`git show 3cc1114:…/ReservationService.java`, lines 111–125), and `requireAdmissible` had a second copy of rules 2–3. The two copies agreed only by convention. This is the same drift C02 M-1 had already produced once. | `CourtAllocation.assess` (`:61`); `ReservationService.checkAvailability` now delegates (`:114`); `availabilityAndConfirmAgreeOnEveryRow` | **update code**. The DD is right: C03 §C2 already required that R8 use the predicate R2 enforces. The code had implemented that requirement only for BR-02. |
 | Rule order BR-01 → BR-07 → BR-04 → BR-02, DB rule last | YES in both copies, but only by convention | `DecisionTable.row2/row3`; control run | keep; it is now protected by the tests |
 | DR-3 blocking set taken only from `ReservationState` | YES | `isFree`; `Predicate.predicateUsesTheSingleBlockingSet` | keep |
@@ -277,17 +277,17 @@ and 2 component tests in `C05CourtAllocationComponentTest` (Spring context + H2)
 | DR-5 transition only after the guard; the entity checks the edge | YES | `Transitions.*` | keep |
 | DR-6 a refusal changes nothing (no half-written decision) | YES: the guard runs before `Reservation.approve` sets `decidedBy` | `confirmApproved_inactiveCourtChangesNothing` | keep |
 | Business outcome vs defect | YES | `confirm_wrongSourceStateIsADefect`, `holdOnAnotherCourtIsRefused` | keep |
-| Precondition "the hold was obtained in **this** transaction" | **PARTLY**: `CourtHold` does not know its transaction. A hold kept beyond its transaction (e.g. stored in a field) would still be accepted. | — | **keep the DD, do not change the code**. Only `service`-package code can construct a hold, and ArchUnit restricts who calls the transitions. Binding the hold to a transaction id would add state and complexity for a misuse that no current caller can commit. Recorded as a remaining risk. |
+| Precondition "the hold was obtained in **this** transaction" | **PARTLY**: `CourtHold` does not know its transaction. A hold kept beyond its transaction (e.g. stored in a field) would still be accepted. | — | ~~keep the DD, do not change the code~~ (C05). **Revised in C06 (finding C06-F1): update code.** `CourtHold` now registers a marker with the owning transaction's synchronizations and `requireAdmissible` refuses a hold whose marker is not in the current transaction. Tests: `Hold.holdFromEndedTransactionIsRefused`, `C05CourtAllocationComponentTest.holdFromEndedTransactionIsRefused`, `holdInInnerTransactionIsRefused`. |
 
 ### Resolution
 
 - **C05-M1**: the code followed the design. `CourtAllocation.assess` is now the only place the admissibility rules live. OP-02 calls it without a hold, and `requireAdmissible` calls it under the hold. `checkAvailability` lost its own rule copy. It keeps the REQ-13 disclosure and counts pending requests only for a valid interval, as before. All C02 verification examples (`BaselineV01`/`V02` suites, 61 tests) and the demo pass unchanged. One behaviour change at the Java API: `checkAvailability` with a `null` bound now returns `INVALID_INTERVAL` instead of throwing a `NullPointerException`. This cannot happen over HTTP, where both bounds are required request parameters.
 - **C05-M2**: the code followed the design (an exhaustive switch expression). The DD was made more explicit, but its intent did not change.
-- **Hold bound to its transaction**: the design was kept and the gap accepted, see the risks below.
+- **Hold bound to its transaction**: at C05 the gap was accepted; at C06 it was closed in code (see C06 below).
 
 ### Remaining design risk
 
-- **Leaked hold**: see the last row of the mismatch table. This is mitigated by package-private construction and the ArchUnit rule, not by a runtime check.
+- ~~**Leaked hold**~~: closed in C06 by a runtime check (C06-F1) and an ArchUnit rule on the `CourtHold` constructor (C06-F3).
 - **`Reason` serves two purposes.** It is OP-02's public response type and also the unit's internal verdict. A future reason that only availability needs (e.g. "pending requests exist") would have to be kept out of `assess`, or it would become a binding refusal. Reconsider splitting the types when the first such reason appears.
 - **Lock wait** under the C01 "10× members" pressure is still unmeasured. The DD makes the lock scope explicit (one court per transaction, taken before any reservation write) but does not change it.
 - The DD inherits the C03 risks: BR-02 is guaranteed only for writes through this application, and identity is only asserted (`X-Actor-Id`).
@@ -296,3 +296,24 @@ and 2 component tests in `C05CourtAllocationComponentTest` (Spring context + H2)
 
 Tag **`c05-detailed-design`**. It contains the DD section, the code change (`CourtAllocation`,
 `ReservationService`), the 17 tests and the two logs above.
+
+## C06 — Owner review of the internal evidence assessment
+
+The assessment was made at `ce3e589`. All three candidate findings were accepted and fixed;
+none was rejected or kept as a risk.
+
+| Finding | Disposition | Change | Evidence |
+| --- | --- | --- | --- |
+| **C06-F1** the hold is not bound to its transaction (C05 precondition "in THIS transaction" not enforced) | **ACCEPTED, fixed in code** | `CourtHold` registers a `TransactionSynchronization` marker with the transaction that took the lock. `requireAdmissible` (and so `confirm` / `confirmApproved`) calls `CourtHold.requireValidFor`, which refuses the hold with `IllegalStateException` (a defect, not a business outcome) unless the marker is among the **current** transaction's synchronizations. A transaction that has ended, an inner `REQUIRES_NEW` (the outer one is suspended) and another thread each see a different list. | unit `Hold.holdFromEndedTransactionIsRefused`; component `C05CourtAllocationComponentTest.holdFromEndedTransactionIsRefused`, `holdInInnerTransactionIsRefused` (real Spring transactions + H2; the reservation stays `DRAFT`) |
+| **C06-F2** README expects 69 tests | **ACCEPTED, fixed in docs** | README now expects the current count. | `README.md` §Run the tests |
+| **C06-F3** the `CourtHold` constructor is reachable by every class of the `service` package | **ACCEPTED, fixed by a conformance check** | Java cannot narrow a constructor to one other top-level class, so the rule is an ArchUnit rule: no class except `CourtAllocation` calls `new CourtHold(Court)`. The vacuity guard now also requires that `CourtAllocation` does call it. | `C03ArchitectureRuleTest.only_court_allocation_creates_the_hold_proof`, `court_allocation_is_the_path_that_exists` |
+
+**Test run after the fixes:** `mvn clean test` → **90 / 90**, `BUILD SUCCESS` (86 at `ce3e589`, plus
+1 unit, 2 component and 1 architecture test).
+
+**Control run** (do the new tests detect the violated precondition?): the call to
+`requireCurrentTransaction()` in `CourtHold.requireValidFor` was commented out. Result: **3 of 90 fail**,
+exactly the three C06-F1 tests; the mutation was reverted.
+
+**Remaining gap from the C06 assessment (§7):** none — the transactional lifetime of `CourtHold` is now
+enforced at runtime and tested.

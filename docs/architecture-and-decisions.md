@@ -329,7 +329,7 @@ comparison is in [`evidence-and-evolution.md` § C05](evidence-and-evolution.md#
 
 | Responsibility | Owner (design element) | State / data | Why here? |
 | --- | --- | --- | --- |
-| DR-1 hold | `CourtAllocation.hold()` creates a **`CourtHold`**: a value object whose constructor is package-private | a DB row lock on `court` (`SELECT … FOR UPDATE`) that lives until the caller's transaction ends. `CourtHold` keeps only the locked `Court`. | Only this element may lock (ArchUnit rule, C03 §L2). Every allocating operation takes a `CourtHold` parameter, and only `CourtAllocation` can make one. A caller therefore cannot request an allocation without having taken the hold. |
+| DR-1 hold | `CourtAllocation.hold()` creates a **`CourtHold`**: a value object whose constructor is package-private | a DB row lock on `court` (`SELECT … FOR UPDATE`) that lives until the caller's transaction ends. `CourtHold` keeps the locked `Court` and a marker registered with the transaction that took the lock (C06-F1). | Only this element may lock (ArchUnit rule, C03 §L2). Every allocating operation takes a `CourtHold` parameter, and only `CourtAllocation` can make one (ArchUnit rule on the constructor, C06-F3). A caller therefore cannot request an allocation without having taken the hold. |
 | DR-2 assess | **`CourtAllocation.assess(court, start, end)`** returning `AvailabilityResult.Reason` (**new in C05**) | none, stateless. It reads `Court.active` and the opening hours, and calls DR-3. | It is the one decision table. Availability (advisory) and `requireAdmissible` (binding) both use it, so they cannot drift apart. The verdict type is the existing OP-02 `Reason` enum, because its values already are the rows of the table. |
 | DR-3 BR-02 predicate | `CourtAllocation.isFree()` → `ReservationRepository.findOverlapping()` | reservation rows. The blocking set comes from `ReservationState.blockingStates()`. | The *query* belongs to the persistence port (an interface). The *meaning* of "blocks" belongs to the domain enum, defined once. |
 | DR-4 failure outcome | `CourtAllocation.requireAdmissible()` | none | It is the binding consumer of DR-2. It maps each non-`AVAILABLE` verdict 1:1 to a `ReservationErrorCode`. |
@@ -358,8 +358,8 @@ implementation and the ArchUnit rule names it, so no Java interface is extracted
 ```
 Preconditions (the caller's obligations):
 - an active transaction exists                                  (enforced: Propagation.MANDATORY)
-- hold was obtained by hold(reservation) in THIS transaction
-- hold.court is the reservation's court                         (enforced: CourtHold.requireCovers)
+- hold was obtained by hold(reservation) in THIS transaction   (enforced: CourtHold.requireValidFor, C06-F1)
+- hold.court is the reservation's court                         (enforced: CourtHold.requireValidFor)
 - reservation.state = PENDING_APPROVAL                          (checked by the caller -> INVALID_STATE)
 - approver has authority (BR-09) and now < approvalDeadline     (checked by the caller)
 
@@ -419,9 +419,10 @@ classDiagram
   class CourtHold {
     <<value object, proof of the lock>>
     -court Court
+    -owningTransaction TransactionSynchronization
     ~CourtHold(court)
     +court() Court
-    ~requireCovers(reservation)
+    ~requireValidFor(reservation)
   }
   class Reason {
     <<enumeration - the verdict>>
@@ -530,7 +531,7 @@ sequenceDiagram
 - *Input:* a loaded reservation (its court id is used).
 - *Output:* a `CourtHold` on that court.
 - *Pre:* active transaction (`MANDATORY`).
-- *Post:* the court row is write-locked by the caller's transaction.
+- *Post:* the court row is write-locked by the caller's transaction; the returned hold is registered with that transaction and is refused (`IllegalStateException`, a defect) in any other one - after it has ended, inside an inner `REQUIRES_NEW`, or on another thread.
 - *Side effects:* the lock; it waits for any other holder.
 - *Failure:* `COURT_NOT_FOUND`; lock timeout → `PessimisticLockingFailureException`; no transaction → `IllegalTransactionStateException`.
 
