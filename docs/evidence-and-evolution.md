@@ -332,7 +332,7 @@ treatment does not lower it.
 
 | ID | Category | Initial L / I → priority | Strategy | Expected residual | Actual residual |
 | --- | --- | --- | --- | --- | --- |
-| R-01 | Release / Operation | 2 / 3 → **HIGH (6)** | MITIGATE | 1 / 3 → MEDIUM (3) | NOT VERIFIED |
+| R-01 | Release / Operation | 2 / 3 → **HIGH (6)** | MITIGATE (done 2026-11-01) | 1 / 3 → MEDIUM (3) | 1 / 3 → MEDIUM (3), verified |
 | R-02 | Security / Privacy | 2 / 3 → **HIGH (6)** | ACCEPT (+ avoid public deployment) | 2 / 3 → HIGH (6), accepted | 2 / 3 → HIGH (6), accepted |
 | R-03 | Technical / Quality | 2 / 2 → MEDIUM (4) | MITIGATE | 1 / 2 → LOW (2) | NOT VERIFIED |
 | R-04 | People / Resources | 2 / 2 → MEDIUM (4) | MITIGATE | 1 / 2 → LOW (2) | NOT VERIFIED |
@@ -357,17 +357,29 @@ tests (see C06 above).
 - **Treatment, owner, due:** Start `postgres:16` (command in `application-postgres.properties`) and
   run the application with `-Dspring-boot.run.profiles=postgres`. Repeat the REST checks from the
   C06 assessment (create → confirm → overlapping confirm returns 409, approval path, cancel). Save
-  the log as `docs/evidence/c08-postgres-run.log`. Owner: Pavel Valošek; due 2026-11-03 12:30.
-- **Treatment evidence and verification status:** not done yet. The log does not exist.
-- **Expected residual risk:** L=1, I=3 → MEDIUM (3). Concurrency on PostgreSQL would still be
-  covered only by the manual run, not by `mvn test`.
-- **Actual residual risk / NOT VERIFIED:** NOT VERIFIED.
-- **Residual risk acceptance, owner, rationale:** The team (Rostislav Nevoral) will accept MEDIUM
-  once the log exists. Automated PostgreSQL tests (Testcontainers) would reverse the C01 decision
-  and are not needed for CP1.
+  the log as `docs/evidence/c08-postgres-run.log`. Planned owner Pavel Valošek, due 2026-11-03;
+  **carried out by Rostislav Nevoral on 2026-11-01**.
+- **Treatment evidence and verification status:** **done**,
+  [`docs/evidence/c08-postgres-run.log`](evidence/c08-postgres-run.log), produced by
+  [`docs/evidence/c08-postgres-checks.sh`](evidence/c08-postgres-checks.sh). Commit `1732e02`
+  (`c08-report`, same code as `c08-status`), PostgreSQL 16.15 in Docker, profiles `postgres,seed`.
+  The app started on PostgreSQL. Hibernate created the schema, and every C06 REST check gave the
+  same result as on H2: create, confirm, overlapping confirm `409 CONFLICT`, adjacent interval
+  available, approval path `DRAFT → PENDING_APPROVAL → CONFIRMED`, inactive court, cancel, and
+  `start == end` → `400 INVALID_INTERVAL`. **BR-02 under concurrency on PostgreSQL:** 8 DRAFTs for
+  the same slot were confirmed by 8 parallel HTTP requests. Result: 1 × `200`, 7 × `409`. The
+  database holds exactly 1 `CONFIRMED` and 7 `DRAFT` rows.
+- **Expected residual risk:** L=1, I=3 → MEDIUM (3). Concurrency on PostgreSQL is covered only by
+  this manual run, not by `mvn test`.
+- **Actual residual risk / NOT VERIFIED:** L=1, I=3 → **MEDIUM (3), verified** by the log above.
+  I stays 3: a later schema or locking change could still differ between H2 and PostgreSQL, and
+  `mvn test` would not show it.
+- **Residual risk acceptance, owner, rationale:** MEDIUM accepted by Rostislav Nevoral on 2026-11-01.
+  Automated PostgreSQL tests (Testcontainers) would reverse the C01 decision and are not needed
+  for CP1.
 - **Monitoring, trigger, contingency, next review:** Trigger: the run fails, or the schema or the
-  locking code changes. Contingency: present and defend on H2, and state that PostgreSQL is
-  unverified. Review at C08 (2026-11-03).
+  locking code changes. Then re-run `docs/evidence/c08-postgres-checks.sh` against PostgreSQL. Review at C08
+  (2026-11-03).
 
 ### R-02
 - **Risk statement:** Identity is only asserted in the `X-Actor-Id` header (A-1; AD-3 out of
