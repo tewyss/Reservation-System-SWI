@@ -317,3 +317,149 @@ exactly the three C06-F1 tests; the mutation was reverted.
 
 **Remaining gap from the C06 assessment (§7):** none — the transactional lifetime of `CourtHold` is now
 enforced at runtime and tested.
+
+Fixes in `f7312a4`, their tests in `d6974b7`; tag **`c08-status`** contains both.
+
+## C07/C08 — Risk Assessment
+
+**Reporting baseline:** tag `c08-status` (`d6974b7`, 2026-11-01): C06 findings F1–F3 fixed,
+`mvn clean test` 90 / 90. The C06 findings are reproduced against tag `c06-assessed` (`ce3e589`).
+**Next review:** C08, 2026-11-03 12:30.
+
+Classification before treatment: L × I (1–2 LOW, 3–4 MEDIUM, 6–9 HIGH). An actual residual is
+**NOT VERIFIED** until the treatment has been carried out and its effect has evidence. A planned
+treatment does not lower it.
+
+| ID | Category | Initial L / I → priority | Strategy | Expected residual | Actual residual |
+| --- | --- | --- | --- | --- | --- |
+| R-01 | Release / Operation | 2 / 3 → **HIGH (6)** | MITIGATE | 1 / 3 → MEDIUM (3) | NOT VERIFIED |
+| R-02 | Security / Privacy | 2 / 3 → **HIGH (6)** | ACCEPT (+ avoid public deployment) | 2 / 3 → HIGH (6), accepted | 2 / 3 → HIGH (6), accepted |
+| R-03 | Technical / Quality | 2 / 2 → MEDIUM (4) | MITIGATE | 1 / 2 → LOW (2) | NOT VERIFIED |
+| R-04 | People / Resources | 2 / 2 → MEDIUM (4) | MITIGATE | 1 / 2 → LOW (2) | NOT VERIFIED |
+| R-05 | Scope / Requirements | 1 / 2 → LOW (2) | ACCEPT | 1 / 2 → LOW (2) | 1 / 2 → LOW (2), accepted |
+
+**Open issues (not risks):** none known at `c08-status`. All three C06 findings are closed with
+tests (see C06 above).
+
+### R-01
+- **Risk statement:** All tests and every recorded run use H2 (`MODE=PostgreSQL`). The
+  `postgres` profile (`application-postgres.properties`) has never been run → on real PostgreSQL
+  the schema, the dialect or the `SELECT … FOR UPDATE` court lock could behave differently from H2
+  → the production configuration might not start, or the BR-02 guarantee would be unproven on the
+  database it is meant for.
+- **Category:** Release / Operation (also External dependency: the database).
+- **Initial risk (L/I/priority/rationale):** L=2: H2's PostgreSQL mode is not PostgreSQL, and no
+  run exists that shows they agree. I=3: BR-02 is the system's main invariant, and the lock is how
+  it is enforced (ADR-6). → HIGH (6).
+- **Response strategy and rationale:** MITIGATE. The decision not to require Docker in the build
+  (C01, C03 Alternative B) stays. A one-off run against PostgreSQL is cheap and would remove the
+  uncertainty.
+- **Treatment, owner, due:** Start `postgres:16` (command in `application-postgres.properties`) and
+  run the application with `-Dspring-boot.run.profiles=postgres`. Repeat the REST checks from the
+  C06 assessment (create → confirm → overlapping confirm returns 409, approval path, cancel). Save
+  the log as `docs/evidence/c08-postgres-run.log`. Owner: Pavel Valošek; due 2026-11-03 12:30.
+- **Treatment evidence and verification status:** not done yet. The log does not exist.
+- **Expected residual risk:** L=1, I=3 → MEDIUM (3). Concurrency on PostgreSQL would still be
+  covered only by the manual run, not by `mvn test`.
+- **Actual residual risk / NOT VERIFIED:** NOT VERIFIED.
+- **Residual risk acceptance, owner, rationale:** The team (Rostislav Nevoral) will accept MEDIUM
+  once the log exists. Automated PostgreSQL tests (Testcontainers) would reverse the C01 decision
+  and are not needed for CP1.
+- **Monitoring, trigger, contingency, next review:** Trigger: the run fails, or the schema or the
+  locking code changes. Contingency: present and defend on H2, and state that PostgreSQL is
+  unverified. Review at C08 (2026-11-03).
+
+### R-02
+- **Risk statement:** Identity is only asserted in the `X-Actor-Id` header (A-1; AD-3 out of
+  scope; `ReservationController.java:52`). Any client can send a STAFF user's id → anyone can
+  approve, reject or cancel reservations that are not theirs → the role rules (BR-08…BR-11) would
+  have no protection in a real deployment.
+- **Category:** Security / Privacy.
+- **Initial risk (L/I/priority/rationale):** L=2: the header can be set from any HTTP client, but
+  today the application runs only on developer machines. I=3: the approval rules can be bypassed
+  completely. → HIGH (6).
+- **Response strategy and rationale:** ACCEPT for the course scope. An identity provider is
+  explicitly outside the agreed scope (AD-3), and C06 did not count it as a finding. To keep the
+  scenario from occurring, the application is not deployed outside localhost.
+- **Treatment, owner, due:** No change to the code. The limitation stays stated in the README and
+  architecture docs and is said at the defence. Owner: Rostislav Nevoral; acceptance confirmed at
+  the C08 defence on 2026-11-03.
+- **Treatment evidence and verification status:** `docs/architecture-and-decisions.md` (identity
+  provider: none), `docs/c03-architecture.md` (A-1). The acceptance is documented. There is no
+  mitigation to verify.
+- **Expected residual risk:** unchanged, L=2, I=3 → HIGH (6), accepted.
+- **Actual residual risk / NOT VERIFIED:** HIGH (6), accepted. It is not lowered.
+- **Residual risk acceptance, owner, rationale:** Accepted by the team (owner Rostislav Nevoral).
+  Authentication is not a C01–C05 obligation, and the system has no real users.
+- **Monitoring, trigger, contingency, next review:** Trigger: a plan to deploy beyond localhost, or
+  CP2 requiring real users or roles. The risk then becomes a requirement (authentication in front
+  of `ReservationController`). Next review: 2026-11-17 (CP2 planning).
+
+### R-03
+- **Risk statement:** ADR-6 serialises every allocation on one court through a
+  `PESSIMISTIC_WRITE` lock. The lock wait under the C01 future pressure "10× members" has never
+  been measured (C05 "Remaining design risk") → at peak, Confirm/Approve requests on a popular
+  court queue or time out → users see slow or failed confirmations, and the C01 Q pressure has no
+  evidence.
+- **Category:** Technical / Quality.
+- **Initial risk (L/I/priority/rationale):** L=2: the lock is per court and held only for one short
+  transaction, but the wait has never been measured. I=2: correctness (BR-02) is not affected,
+  only response time. → MEDIUM (4).
+- **Response strategy and rationale:** MITIGATE: measure first. The lock scope is a deliberate
+  design decision (ADR-6), so change it only if the measurement shows a real problem.
+- **Treatment, owner, due:** A component test that runs N parallel confirms of non-overlapping
+  slots on one court (e.g. N = 50) and records the maximum and p95 duration. Stated condition: H2,
+  local machine. Owner: Pavel Mynář; due 2026-11-10.
+- **Treatment evidence and verification status:** not done yet. No measurement exists.
+- **Expected residual risk:** L=1, I=2 → LOW (2), if the measured wait is small relative to the
+  request.
+- **Actual residual risk / NOT VERIFIED:** NOT VERIFIED.
+- **Residual risk acceptance, owner, rationale:** Pavel Mynář accepts LOW once the measurement is
+  in `docs/evidence/`.
+- **Monitoring, trigger, contingency, next review:** Trigger: the measured p95 is above 1 s, or a
+  lock timeout appears in a test. Contingency: the lock stays (correctness first), and narrowing
+  the lock becomes a new ADR. Review on 2026-11-10, when the measurement is due.
+
+### R-04
+- **Risk statement:** All three members can build and run the project. The detailed reasoning
+  behind Court Allocation (C05 decision table, `CourtHold` transaction binding from C06-F1) was
+  mostly written by one member → at the C08 defence or during a CP2 change, the other members
+  cannot explain or safely modify the critical path → weaker defence (CP1 criterion "Engineering
+  Review & Defence") and slower changes.
+- **Category:** People / Resources.
+- **Initial risk (L/I/priority/rationale):** L=2: the knowledge is concentrated, and the defence
+  includes technical questions. I=2: it affects the grade and how fast changes can be made, not
+  delivery as a whole. → MEDIUM (4).
+- **Response strategy and rationale:** MITIGATE: spread the knowledge before the defence.
+- **Treatment, owner, due:** A rehearsal of part A before C08. Each member presents one step
+  (scope + BR-02; ADR-6; DD and C06-F1) and runs its test live. Owner: Rostislav Nevoral; due
+  2026-11-03 12:00.
+- **Treatment evidence and verification status:** not done yet. Evidence = the rehearsal took
+  place, and each member ran their test live.
+- **Expected residual risk:** L=1, I=2 → LOW (2).
+- **Actual residual risk / NOT VERIFIED:** NOT VERIFIED.
+- **Residual risk acceptance, owner, rationale:** The team accepts LOW after the rehearsal.
+- **Monitoring, trigger, contingency, next review:** Trigger: a member is unavailable on
+  2026-11-03, or cannot answer a question about their step at the rehearsal. Contingency: the
+  remaining members cover the step. Review after the defence (2026-11-03).
+
+### R-05
+- **Risk statement:** The `Reason` type serves two purposes: it is OP-02's public response and the
+  unit's binding verdict (C05 "Remaining design risk") → a future reason that only availability
+  needs (e.g. "pending requests exist") would be added to `assess` → it would silently become a
+  refusal of Confirm.
+- **Category:** Scope / Requirements.
+- **Initial risk (L/I/priority/rationale):** L=1: no such requirement is planned. I=2: Confirm
+  would refuse wrongly. The exhaustive switch in `requireAdmissible` forces a decision on every new
+  `Reason`, which limits the damage. → LOW (2).
+- **Response strategy and rationale:** ACCEPT. Splitting the type now would be a speculative
+  change.
+- **Treatment, owner, due:** none. Owner: Rostislav Nevoral; next review 2026-11-17.
+- **Treatment evidence and verification status:** the compile-time check is in place
+  (`CourtAllocation.requireAdmissible`, a switch expression; C05-M2).
+- **Expected residual risk:** LOW (2).
+- **Actual residual risk / NOT VERIFIED:** LOW (2), accepted.
+- **Residual risk acceptance, owner, rationale:** Rostislav Nevoral, for the reason above.
+- **Monitoring, trigger, contingency, next review:** Trigger: the first new `Reason` constant or an
+  availability-only requirement. Then split the advisory and binding types. Next review: 2026-11-17
+  (CP2 planning).
