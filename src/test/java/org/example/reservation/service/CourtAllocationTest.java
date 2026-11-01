@@ -6,12 +6,14 @@ import org.example.reservation.domain.Reservation;
 import org.example.reservation.domain.ReservationState;
 import org.example.reservation.repository.CourtRepository;
 import org.example.reservation.repository.ReservationRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -39,6 +41,10 @@ import static org.mockito.Mockito.when;
  * the unit's required interfaces and are mocked, so each test isolates one DD
  * decision - a row of the decision table, the predicate contract, a transition
  * or a failure behaviour. Display names cite the DD element they verify.
+ *
+ * Each test runs as if inside the caller's transaction: transaction
+ * synchronization is active on the test thread, which is all a
+ * {@link CourtHold} needs to bind itself to "this transaction".
  */
 @DisplayName("C05 DD - Court Allocation (unit)")
 class CourtAllocationTest {
@@ -60,6 +66,14 @@ class CourtAllocationTest {
         approver = user(20L, AppUser.Role.STAFF);
         when(courtRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(court));
         slotIsFree();
+        TransactionSynchronizationManager.initSynchronization();
+    }
+
+    @AfterEach
+    void endTransaction() {
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.clearSynchronization();
+        }
     }
 
     // =================================================================
@@ -265,6 +279,21 @@ class CourtAllocationTest {
 
             assertThatThrownBy(() -> allocation.confirm(holdOnOtherCourt, r))
                     .isInstanceOf(IllegalArgumentException.class);
+            assertThat(r.getState()).isEqualTo(ReservationState.DRAFT);
+            verifyNoInteractions(reservationRepository);
+        }
+
+        @Test
+        @DisplayName("C06-F1: a hold from a transaction that has ended is a defect: IllegalStateException, nothing changes")
+        void holdFromEndedTransactionIsRefused() {
+            Reservation r = draft(at(10, 0), at(11, 0));
+            CourtHold hold = allocation.hold(r);
+            TransactionSynchronizationManager.clearSynchronization();     // transaction A ends
+            TransactionSynchronizationManager.initSynchronization();      // transaction B begins
+
+            assertThatThrownBy(() -> allocation.confirm(hold, r))
+                    .isInstanceOf(IllegalStateException.class)
+                    .isNotInstanceOf(ReservationException.class);
             assertThat(r.getState()).isEqualTo(ReservationState.DRAFT);
             verifyNoInteractions(reservationRepository);
         }

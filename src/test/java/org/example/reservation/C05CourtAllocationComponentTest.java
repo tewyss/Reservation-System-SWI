@@ -9,6 +9,7 @@ import org.example.reservation.repository.CourtRepository;
 import org.example.reservation.repository.ReservationRepository;
 import org.example.reservation.service.AvailabilityResult;
 import org.example.reservation.service.CourtAllocation;
+import org.example.reservation.service.CourtHold;
 import org.example.reservation.service.ReservationException;
 import org.example.reservation.service.ReservationService;
 import org.example.reservation.support.MutableClock;
@@ -20,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.IllegalTransactionStateException;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -32,8 +36,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * ({@code docs/architecture-and-decisions.md} section "C05 Detailed Design").
  *
  * Component level: the real Spring context, transaction proxies and H2. These
- * DD decisions cannot be seen with mocks - one is a transaction-boundary
- * contract, the other a collaboration between two callers of the unit.
+ * DD decisions cannot be seen with mocks - the transaction-boundary contract
+ * of the hold, and a collaboration between two callers of the unit.
  */
 @SpringBootTest
 @Import(TestClockConfig.class)
@@ -46,6 +50,7 @@ class C05CourtAllocationComponentTest {
     @Autowired private AppUserRepository users;
     @Autowired private ReservationRepository reservations;
     @Autowired private MutableClock clock;
+    @Autowired private PlatformTransactionManager transactionManager;
 
     private Court court;
     private Long memberId;
@@ -67,6 +72,38 @@ class C05CourtAllocationComponentTest {
 
         assertThatThrownBy(() -> courtAllocation.hold(r))
                 .isInstanceOf(IllegalTransactionStateException.class);
+        assertThat(reservations.findById(r.getId()).orElseThrow().getState())
+                .isEqualTo(ReservationState.DRAFT);
+    }
+
+    @Test
+    @DisplayName("DR-1 contract (C06-F1): a hold kept beyond its transaction is refused in the next one, nothing changes")
+    void holdFromEndedTransactionIsRefused() {
+        Reservation r = service.create(memberId, court.getId(), at(10, 0), at(11, 0));
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+
+        CourtHold leaked = tx.execute(status -> courtAllocation.hold(r));      // transaction A ends, lock released
+
+        assertThatThrownBy(() -> tx.executeWithoutResult(status ->           // transaction B
+                courtAllocation.confirm(leaked, reservations.findById(r.getId()).orElseThrow())))
+                .isInstanceOf(IllegalStateException.class);
+        assertThat(reservations.findById(r.getId()).orElseThrow().getState())
+                .isEqualTo(ReservationState.DRAFT);
+    }
+
+    @Test
+    @DisplayName("DR-1 contract (C06-F1): a hold is refused in an inner REQUIRES_NEW transaction, which does not own the lock")
+    void holdInInnerTransactionIsRefused() {
+        Reservation r = service.create(memberId, court.getId(), at(10, 0), at(11, 0));
+        TransactionTemplate outer = new TransactionTemplate(transactionManager);
+        TransactionTemplate inner = new TransactionTemplate(transactionManager);
+        inner.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+
+        assertThatThrownBy(() -> outer.executeWithoutResult(o -> {
+            CourtHold hold = courtAllocation.hold(r);
+            inner.executeWithoutResult(i ->
+                    courtAllocation.confirm(hold, reservations.findById(r.getId()).orElseThrow()));
+        })).isInstanceOf(IllegalStateException.class);
         assertThat(reservations.findById(r.getId()).orElseThrow().getState())
                 .isEqualTo(ReservationState.DRAFT);
     }

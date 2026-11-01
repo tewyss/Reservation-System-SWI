@@ -5,9 +5,11 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 import org.example.reservation.domain.AppUser;
+import org.example.reservation.domain.Court;
 import org.example.reservation.domain.Reservation;
 import org.example.reservation.repository.CourtRepository;
 import org.example.reservation.service.CourtAllocation;
+import org.example.reservation.service.CourtHold;
 
 import java.time.Instant;
 
@@ -46,7 +48,18 @@ class C03ArchitectureRuleTest {
                     .because("ADR-6: the per-court exclusive hold has one owner");
 
     /**
-     * Guards the two rules above against passing vacuously: if a method were
+     * C06-F3: the {@link CourtHold} constructor is package-private, which Java
+     * cannot narrow to one class. A hold made anywhere else would be a proof of a
+     * lock nobody took.
+     */
+    @ArchTest
+    static final ArchRule only_court_allocation_creates_the_hold_proof =
+            noClasses().that().doNotHaveFullyQualifiedName(COURT_ALLOCATION)
+                    .should().callConstructor(CourtHold.class, Court.class)
+                    .because("C05 DR-1: a CourtHold proves the court lock, so only the lock owner may issue it");
+
+    /**
+     * Guards the rules above against passing vacuously: if a method were
      * renamed, "nobody else calls it" would be trivially true.
      */
     @ArchTest
@@ -54,5 +67,6 @@ class C03ArchitectureRuleTest {
             classes().that().haveFullyQualifiedName(COURT_ALLOCATION)
                     .should().callMethod(Reservation.class, "confirm")
                     .andShould().callMethod(Reservation.class, "approve", AppUser.class, Instant.class)
-                    .andShould().callMethod(CourtRepository.class, "findByIdForUpdate", Long.class);
+                    .andShould().callMethod(CourtRepository.class, "findByIdForUpdate", Long.class)
+                    .andShould().callConstructor(CourtHold.class, Court.class);
 }
