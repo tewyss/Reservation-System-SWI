@@ -105,8 +105,6 @@ public class ApprovalWorkflow {
 
         LocalDateTime now = LocalDateTime.now(clock);               // BR-06, read once
         if (!now.isBefore(reservation.getApprovalDeadline())) {     // E7 / BR-10, REQ-12
-            // A FAILURE THAT CHANGES STATE: the expiry commits on its own,
-            // because throwing rolls this transaction back.
             approvalExpiry.expire(reservation.getId(), clock.instant());
             throw new ReservationException(ReservationErrorCode.APPROVAL_EXPIRED,
                     "The approval deadline (" + reservation.getApprovalDeadline()
