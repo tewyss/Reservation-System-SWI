@@ -85,8 +85,8 @@ the court empty: nobody else can realistically book it any more. The facility as
 not be able to cancel a confirmed court at short notice; cancel at least 2 hours before the start."*
 This closes the open assumption **A-5** of Baseline v0.1 (`docs/c02-baseline-v0.1.md` §10), which
 the team deliberately left open in C02 (finding C-10: no stakeholder had supplied a figure). The
-figure **2 h** is the requester's value; it is configuration, not a constant (same treatment as the
-approval window, A-7).
+figure **2 h** is the requester's value, **confirmed by the team on 2026-11-20**; it is configuration,
+not a constant (same treatment as the approval window, A-7).
 
 **Before baseline.** commit `b558fc1` (master; = tag `c08-final` `07aacec` + two docs/comment-only
 commits) · spec: BR-03 @ `c02-baseline-v0.1.md` (BR-03.1 amended by `c02-change-v0.2-approval.md`),
@@ -154,13 +154,16 @@ states BR-03.2.
 **Inaction consequence.** Short-notice cancellations keep leaving courts empty; A-5 stays an open
 unknown that every future cancellation question runs into.
 
-**Peer reviewer and challenged assumption.** *TO FILL by the reviewer (proposed: Pavel Valošek).*
-Assumptions to challenge: (1) STAFF exemption — wanted, or must staff also respect `N`?
-(2) DRAFT / PENDING_APPROVAL exemption. (3) boundary `now == start − N` refused (strict).
-Reviewer: ______ · date: ______ · outcome: ______
+**Peer reviewer and challenged assumption.** Assumptions challenged: (1) STAFF exemption — wanted,
+or must staff also respect `N`? (2) DRAFT / PENDING_APPROVAL exemption. (3) boundary
+`now == start − N` refused (strict).
+Reviewer: **Pavel Valošek** · date: **2026-11-20** · outcome: **APPROVED, no change requested** —
+all three assumptions kept as written; the 2 h figure confirmed by the team.
+*Recorded by Rostislav Nevoral on the reviewer's behalf (the reviewer had no access to a PC that
+day).*
 
-**Decision.** **ACCEPT option A** — proposed by Rostislav Nevoral, 2026-11-20; final after the peer
-review above. Reason: it is the only option that meets AC-02, it is contained in one guard of the
+**Decision.** **ACCEPT option A** — proposed by Rostislav Nevoral, 2026-11-20; **final** after the
+peer review above (approved 2026-11-20). Reason: it is the only option that meets AC-02, it is contained in one guard of the
 existing owner (the containment A-5 predicted in C02), and `N = PT0S` gives a no-code fallback.
 
 **If ACCEPT — smallest change and tests to perform in C09.**
@@ -174,5 +177,5 @@ existing owner (the containment A-5 predicted in C02), and `N = PT0S` gives a no
 
 **If NO_CHANGE / REJECT:** not applicable.
 
-**Open uncertainty and next trigger.** The figure 2 h is the requester's value and may change
-(config only). A no-show penalty (rest of A-5) is not decided — trigger: a stakeholder asks for it.
+**Open uncertainty and next trigger.** The figure 2 h is confirmed (2026-11-20); if the facility
+changes it later, it is a config-only change. A no-show penalty (rest of A-5) is not decided — trigger: a stakeholder asks for it.

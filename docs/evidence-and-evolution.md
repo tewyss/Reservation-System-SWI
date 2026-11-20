@@ -558,8 +558,8 @@ availability.
 exactly the 3 tests the C08 Impact Matrix predicted failed (V-04.2, V-04.8, TC-C08-02), the other 90
 passed → [`evidence/c09-impact-prediction-run.log`](evidence/c09-impact-prediction-run.log).
 
-**Peer review of the diff:** *TO FILL — reviewer, challenged assumption, disposition.* Points to
-check: the guard runs after the BR-03.2 check (so `now ≥ start` keeps its old message); STAFF /
+**Peer review of the diff:** **Pavel Valošek, 2026-11-20 — APPROVED, no change requested**
+(recorded by Rostislav Nevoral on the reviewer's behalf). Points checked: the guard runs after the BR-03.2 check (so `now ≥ start` keeps its old message); STAFF /
 DRAFT / PENDING exemptions match the card; no write on refusal (exception → rollback).
 
 | Test ID | Accepted oracle | Exact command / data | Expected | Actual | Verdict | Evidence |
@@ -603,8 +603,9 @@ the push on 2026-11-20: tag `c09-rc1` (`399d5ef`) → run
 [44774921535](https://github.com/tewyss/Reservation-System-SWI/actions/runs/44774921535), both jobs
 **success**. Environment: GitHub-hosted `ubuntu-latest`, Temurin 21, PostgreSQL 16 service.
 
-**Independent reproducer:** **NOT RUN** — Pavel Valošek or Pavel Mynář: `git fetch --tags &&
-git checkout c09-rc1 && mvn clean verify` in a new directory, then record date / OS / result here.
+**Independent reproducer:** **PASS** — Pavel Mynář, 2026-11-20: `git fetch --tags &&
+git checkout c09-rc1 && mvn clean verify` in a new directory, build and tests passed (reported to and
+recorded by Rostislav Nevoral; the reproducer had no access to a PC to commit the record that day).
 
 **Artifact identity:** `SWIReservationSystem-1.0-SNAPSHOT.jar` built from `399d5ef` by
 `scripts/verify.sh`, sha256 `fe92e91752ae2c68fab5cdf028ae1dd56561818e01189ccc5122c6d4d1510ff3`
@@ -614,15 +615,15 @@ identity is commit + hash of the specific built file. No DB migration is require
 
 **Recovery / rollback limitation and remaining risks:** rollback = deploy the previous JAR, or set
 `notice-period=PT0S` (config-only, AC-05 tested). CR-01 writes no new data (a refusal writes nothing),
-so rolling back the code leaves no stale data. Remaining: peer review not recorded; independent
-reproduction not done; R-02 (asserted `X-Actor-Id`) still means anybody can
+so rolling back the code leaves no stale data. Peer review and independent reproduction are done
+(see above). Remaining: R-02 (asserted `X-Actor-Id`) still means anybody can
 claim to be STAFF and bypass the notice period — accepted in C07/C08 R-02, CP2 requirement.
 
-**Release candidate decision: CONDITIONAL** — owner Rostislav Nevoral, 2026-11-20. All new and
-regression checks pass on H2 and PostgreSQL, and a clean checkout passes. Conditions for READY:
-(1) peer review of the card and diff recorded, (2) independent clean checkout by another member,
-(3) the GitHub Actions run on the pushed commit is green — **met 2026-11-20** (runs above).
-Any FAIL in (1)–(2) → HOLD.
+**Release candidate decision: READY** — owner Rostislav Nevoral, 2026-11-20 (first recorded as
+CONDITIONAL the same day). All new and regression checks pass on H2 and PostgreSQL, and a clean
+checkout passes. Conditions for READY, all **met 2026-11-20**: (1) peer review of the card and diff
+recorded (Pavel Valošek, approved), (2) independent clean checkout by another member (Pavel Mynář,
+PASS), (3) the GitHub Actions run on the pushed commit is green (runs above).
 
 ## C10 — Operational situations and logs
 
