@@ -61,11 +61,25 @@ Java 21 · Spring Boot 3.5 · Spring Data JPA · **H2** (dev/test) / **PostgreSQ
 - JDK 21 (`java -version` → 21.x)
 - Maven 3.9+ (or the Maven bundled with IntelliJ IDEA)
 
-### Run the tests (specification verification suites, C03 race + architecture tests, CP1 walking skeleton, C01 spike)
+### Run the tests (specification verification suites, C03 race + architecture tests, CP1 walking skeleton, C08/C09 cancellation HTTP tests, C10 failure logging, C01 spike)
 ```bash
-mvn test
+mvn clean verify
 ```
-Expected: `Tests run: 90, Failures: 0, Errors: 0` → `BUILD SUCCESS`.
+Expected: `Tests run: 107, Failures: 0, Errors: 0` → `BUILD SUCCESS`, and
+`target/SWIReservationSystem-1.0-SNAPSHOT.jar`. No environment variables, no `.env` and no
+database are needed (tests use in-memory H2).
+
+### CI and the one-command check (C09)
+- **GitHub Actions** `.github/workflows/ci.yml` runs on every push / pull request:
+  job `build-test` = `mvn -B clean verify` + SHA-256 of the JAR (uploaded with the surefire
+  reports); job `postgres-integration` = the HTTP integration tests (CP1, C08, C09) against a
+  PostgreSQL 16 service container.
+- **Without CI** the same steps run locally:
+  ```bash
+  scripts/verify.sh              # clean verify + JAR hash, log in target/verify.log
+  scripts/verify.sh --postgres   # + HTTP integration tests on the swi-pg container (see below)
+  ```
+  Set `MVN=<path to mvn>` if Maven is not on `PATH`. Exit code 0 = all executed checks passed.
 
 ### Watch the specification run (scripted demonstration)
 ```bash
@@ -98,6 +112,14 @@ docker run --name swi-pg -e POSTGRES_DB=reservations -e POSTGRES_USER=swi \
 mvn spring-boot:run -Dspring-boot.run.profiles=postgres
 ```
 
+## Configuration (non-secret)
+| Property | Default | Meaning |
+| --- | --- | --- |
+| `reservation.approval.window` | `PT24H` | BR-10 approval window (A-7) |
+| `reservation.approval.sweep.enabled` / `sweep-interval` | `true` / `PT5M` | OP-07 background sweep |
+| `reservation.cancellation.notice-period` | `PT2H` | BR-03.6 (C08 CR-01): a MEMBER must cancel a CONFIRMED booking at least this long before start; `PT0S` = no notice period |
+| `spring.datasource.hikari.connection-timeout` (postgres profile) | `5000` ms | fail fast when the DB is down (C10) |
+
 ## REST surface
 The actor is carried in the `X-Actor-Id` header (assumption A-1: asserted, not yet
 authenticated — architecture driver AD-3 for C03).
@@ -108,7 +130,7 @@ GET  /reservations/availability    -> OP-02 Check Availability  {available, reas
                                                                  approvalRequired,
                                                                  pendingApprovalCount}
 POST /reservations/{id}/confirm     -> OP-03 Confirm / submit
-POST /reservations/{id}/cancel      -> OP-04 Cancel
+POST /reservations/{id}/cancel      -> OP-04 Cancel (member + CONFIRMED: >= notice period before start)
 POST /reservations/{id}/approve     -> OP-05 Approve
 POST /reservations/{id}/reject      -> OP-06 Reject
 POST /reservations/expire-due       -> OP-07 Expire (also runs on a timer)
@@ -138,9 +160,9 @@ POST /reservations
 ```
 README.md
 docs/
-  intent-and-change.md            # Project Frame (C01)
+  intent-and-change.md            # Project Frame (C01) + C08 Change Card CR-01
   architecture-and-decisions.md   # stack rationale, ADRs, future pressure (C01)
-  evidence-and-evolution.md       # C01 spike, C02 summary, C03 architecture, CP1 evidence
+  evidence-and-evolution.md       # C01 spike ... C07/C08 risks, C08 test cases, C09 release record, C10 operations
   c01-engineering-spike.md        # C01 change + review-cycle record
   c02-baseline-v0.1.md            # Specification Baseline v0.1 (accepted)
   c02-change-v0.2-approval.md     # approval change: impact analysis -> Baseline v0.2
@@ -158,6 +180,15 @@ docs/
     c03-court-hold-control-run.log          # control: no hold -> 8 / 2 double-bookings
     c03-architecture-rule-control-run.log   # control: bypass -> ArchUnit fails the build
     cp1-walking-skeleton-run.log            # CP1: POST /reservations over HTTP, 2/2 green
+    c08-cr01-baseline-run.log               # C08: TC-C08-01/02 on the before-baseline, 4/4
+    c09-impact-prediction-run.log           # C09: only the 3 predicted tests fail before test updates
+    c09-cr01-postgres-run.log               # C09: HTTP integration tests on PostgreSQL 16, 16/16
+    c09-verify-run.log                      # C09: scripts/verify.sh --postgres at 399d5ef
+    c09-clean-checkout.log                  # C09: fresh clone, clean verify, JAR smoke start
+    c10-operations-transcript.log           # C10: success, conflict, DB outage, restart (HTTP + SQL)
+    c10-operations-log-excerpts.log         # C10: matching application log lines
+.github/workflows/ci.yml           # C09 CI: build + tests + JAR hash; PostgreSQL integration job
+scripts/verify.sh                  # C09: the same checks without CI
 src/
   main/java/org/example/reservation/   # config, demo, domain, repository, service, web
   main/resources/                      # application(-postgres|-demo).properties

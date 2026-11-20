@@ -1,0 +1,68 @@
+# C10 - operational situations: HTTP calls (curl, X-Actor-Id header) and independent SQL checks (psql in swi-pg)
+# date 2026-11-20, Windows 10 Pro, Java 21.0.4, PostgreSQL 16.15 (docker container swi-pg), isolated database swi_ops
+# app: java -jar <RC jar> --spring.profiles.active=postgres[,seed] --server.port=8090
+#      --spring.datasource.url=jdbc:postgresql://localhost:5432/swi_ops
+# commits: S1, S2, S3, S4 on 399d5ef (C09 RC jar sha256 fe92e917...10ff3); S3-repeat on 8f64c9e (jar sha256 195d43db...196370)
+# seed: Alice=1, Bob=2 (MEMBER), Dana=3, Eva=4 (STAFF); Kurt 2 = court 2 (self-service). Test day 2026-11-23.
+# App log excerpts for the same timestamps: c10-operations-log-excerpts.log
+
+== S1 successful confirmation (run1)
+17:18:33.771  create Alice Kurt2 [10:00,11:00) 2026-11-23    -> HTTP 201  {"id":10,...,"state":"DRAFT",...}
+17:18:34.085  confirm 10 as Alice                            -> HTTP 200  {"id":10,...,"state":"CONFIRMED",...}
+SQL> select id,user_id,court_id,start_time,end_time,state,cancelled_at from reservation where id=10
+ 10 |       1 |        2 | 2026-11-23 10:00:00 | 2026-11-23 11:00:00 | CONFIRMED |
+
+== S2 conflict rejected (run1)
+17:18:34.842  create Bob Kurt2 [10:30,11:30)                 -> HTTP 201  {"id":11,...,"state":"DRAFT",...}
+17:18:34.979  confirm 11 as Bob (overlaps 10)                -> HTTP 409  {"code":"CONFLICT","message":"Slot overlaps an existing CONFIRMED reservation of this court."}
+SQL> select id,user_id,start_time,end_time,state from reservation where court_id=2 and start_time < '2026-11-23 11:30' and end_time > '2026-11-23 10:30'
+ 10 |       1 | 2026-11-23 10:00:00 | 2026-11-23 11:00:00 | CONFIRMED
+ 11 |       2 | 2026-11-23 10:30:00 | 2026-11-23 11:30:00 | DRAFT
+app log: no line for this request (only the S1 NOTIFY line before it)
+
+== S3 technical failure: database unavailable (run1, before the C10 logging change)
+17:18:44.497  docker stop swi-pg
+17:18:45.434  DB stopped
+17:18:45.460  create Alice Kurt2 [12:00,13:00) (DB down)     -> HTTP 500  {"timestamp":"2026-11-20T16:19:15.515+00:00","status":500,"error":"Internal Server Error","path":"/reservations"}
+              (the request hung 30 s: Hikari connection-timeout default 30000 ms)
+17:19:30.529  docker start swi-pg
+17:19:31.835  DB ready
+-- before any retry: did the failed create write anything?
+SQL> select id,state,start_time from reservation where court_id=2 and start_time='2026-11-23 12:00'
+(0 rows)
+17:19:32.459  availability Kurt2 [12:00,13:00) (DB back)     -> HTTP 200  {"available":true,"reason":"AVAILABLE",...}
+17:19:36.008  create Alice Kurt2 [12:00,13:00) (retry after check) -> HTTP 201  {"id":12,...,"state":"DRAFT",...}
+17:19:36.146  confirm 12 as Alice                            -> HTTP 200  {"id":12,...,"state":"CONFIRMED",...}
+SQL> ... where court_id=2 and start_time='2026-11-23 12:00'
+ 12 | CONFIRMED | 2026-11-23 12:00:00
+app log: no line about the DB coming back; recovery is visible only through the next successful request
+
+== S4 restart (run1 -> run2, same jar)
+17:21:10.609  stop app PID 19408 (taskkill without /F)
+              ERROR: The process with PID 19408 could not be terminated. This process can only be terminated forcefully (with /F option).
+17:21:13.917  taskkill /F -> SUCCESS
+17:21:15.123  start app (profile postgres, no seed)
+17:21:20.493  Started ReservationApplication in 4.79 seconds
+SQL> select id,user_id,court_id,start_time,end_time,state from reservation where id in (10,11,12)
+ 10 |       1 |        2 | 2026-11-23 10:00:00 | 2026-11-23 11:00:00 | CONFIRMED
+ 11 |       2 |        2 | 2026-11-23 10:30:00 | 2026-11-23 11:30:00 | DRAFT
+ 12 |       1 |        2 | 2026-11-23 12:00:00 | 2026-11-23 13:00:00 | CONFIRMED
+17:21:21.367  availability Kurt2 [10:00,11:00) after restart -> HTTP 200  {"available":false,"reason":"CONFLICT",...}
+17:21:21.695  create Bob Kurt2 [14:00,15:00) after restart   -> HTTP 201  {"id":13,...,"state":"DRAFT",...}
+17:21:21.913  confirm 13 as Bob                              -> HTTP 200  {"id":13,...,"state":"CONFIRMED",...}
+SQL> select id,state from reservation where id=13
+ 13 | CONFIRMED
+
+== S3 repeated after the C10 logging change (run3, commit 8f64c9e)
+17:21:48.694  create Alice Kurt2 [16:00,17:00)               -> HTTP 201  {"id":14,...,"state":"DRAFT",...}
+17:21:49.170  docker stop swi-pg
+17:21:50.041  DB stopped
+17:21:50.068  confirm 14 as Alice (DB down)                  -> HTTP 503  {"code":"TECHNICAL_FAILURE","message":"The reservation store is unavailable; nothing was changed. Try again later."}
+              (answered after 5 s: connection-timeout 5000 ms)
+17:21:55.300  docker start swi-pg
+17:21:56.752  DB ready
+SQL> select id,state from reservation where id=14
+ 14 | DRAFT
+17:21:57.441  confirm 14 as Alice (after check: still DRAFT) -> HTTP 200  {"id":14,...,"state":"CONFIRMED",...}
+SQL> select id,state from reservation where id=14
+ 14 | CONFIRMED

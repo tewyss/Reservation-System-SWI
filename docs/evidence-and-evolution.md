@@ -528,3 +528,134 @@ response. Each case runs twice on fresh data (step 5). Transcript:
 
 **Execution summary:** 2 designed cases, 4 executions, 4 PASS, 0 FAIL / BLOCKED / NOT RUN
 (surefire: `tests=4, failures=0, errors=0`), 2026-11-20, author R. Nevoral.
+
+## C09 — Integration, CI and Release Record (CR-01)
+
+**C08 Change Card and reviewed decision:** [`intent-and-change.md` → C08 / CR-01](intent-and-change.md#c08--cr-01--controlled-change-card-cancellation-notice-period)
+— ACCEPT option A (notice-period guard in the existing owner). Peer review of the card: **still to
+be filled in by the reviewer** (see the card).
+
+**Before / after:** before = `b558fc1` (code) / `07f530e` (C08 card + baseline tests, tag `c08-cr01`)
+→ after = **`399d5ef`** (tag `c09-rc1`). Schema identical before/after (no entity change);
+config adds `reservation.cancellation.notice-period=PT2H`.
+
+**Affected claims / new AC / unchanged regression basis:** BR-03.2 is refined by BR-03.6 for
+MEMBER + CONFIRMED (AC-01..AC-05). Unchanged: BR-02, BR-03.1/3/4/5, REQ-06, approval workflow,
+availability.
+
+**Changed code / data / config / spec and justified N/A:**
+
+| Item | Change |
+| --- | --- |
+| `ReservationService.cancel` | +1 guard (BR-03.6), notice period injected; negative value refused at start-up |
+| `application.properties`, test `application.properties` | `reservation.cancellation.notice-period=PT2H` |
+| `c02-baseline-v0.1.md` | BR-03.6 added, A-5 closed |
+| Tests | new `C09CancellationNoticeTest` (10); TC-C08-02 oracle changed per CR; V-04.2 / V-04.8 fixture moved from 1 h to 3 h notice (oracle unchanged) |
+| CI | `.github/workflows/ci.yml`, `scripts/verify.sh` |
+| Schema / migration, API endpoints, ADRs | N/A — no new column, error code reused, ownership unchanged (ArchUnit rule passes) |
+
+**Impact prediction check.** Before touching any test, the suite was run with only the code change:
+exactly the 3 tests the C08 Impact Matrix predicted failed (V-04.2, V-04.8, TC-C08-02), the other 90
+passed → [`evidence/c09-impact-prediction-run.log`](evidence/c09-impact-prediction-run.log).
+
+**Peer review of the diff:** *TO FILL — reviewer, challenged assumption, disposition.* Points to
+check: the guard runs after the BR-03.2 check (so `now ≥ start` keeps its old message); STAFF /
+DRAFT / PENDING exemptions match the card; no write on refusal (exception → rollback).
+
+| Test ID | Accepted oracle | Exact command / data | Expected | Actual | Verdict | Evidence |
+| --- | --- | --- | --- | --- | --- | --- |
+| TC-CR01-01 (AC-01) | member, CONFIRMED `[12:00,13:00)`, now 09:59:59 | `C09CancellationNoticeTest` over HTTP, SQL read | 200, row CANCELLED, slot free | 200, `STATE=CANCELLED` | PASS | H2 + PG logs |
+| TC-CR01-02 (AC-03) | now 10:00:00 = start − 2 h | same | 400 `TOO_LATE_TO_CANCEL`, row CONFIRMED | 400, `STATE=CONFIRMED, CANCELLED_AT=null` | PASS | H2 + PG |
+| TC-CR01-03 (AC-02) | now 11:00 | same | 400, CONFIRMED, slot blocked, message names PT2H / 10:00 | as expected | PASS | H2 + PG |
+| TC-CR01-04..06 (AC-04) | STAFF / DRAFT / PENDING at 11:00 | same | 200, CANCELLED | 200, CANCELLED | PASS | H2 + PG |
+| TC-CR01-07 (AC-04) | STAFF at now == start | same | 400, CONFIRMED | 400, CONFIRMED | PASS | H2 + PG |
+| TC-CR01-08 (AC-04) | repeated cancel at 11:00 | same | 200, `cancelled_at` unchanged | as expected | PASS | H2 + PG |
+| TC-CR01-09 (AC-04, BR-02) | refused late cancel, then overlapping confirm | same | 409 CONFLICT, exactly 1 CONFIRMED overlapping (SQL count) | 409, count = 1 | PASS | H2 + PG |
+| TC-CR01-10 (AC-05) | `notice-period=PT0S`, now 11:00 | nested context | 200, CANCELLED (old behaviour) | 200, CANCELLED | PASS | H2 + PG |
+| C08 regression TC-C08-01 | cancel 3 h ahead | `C08CancellationBaselineTest` ×2 | 200, CANCELLED, slot free | as expected | PASS | H2 + PG |
+| C08 regression TC-C08-02 | cancel 1 h ahead — **oracle changed by CR-01** | same ×2 | 400, stays CONFIRMED | 400, `STATE=CONFIRMED` | PASS | H2 + PG |
+| Full regression | all earlier suites (V-01..V-07, C03 race + ArchUnit, C05, CP1) | `mvn clean verify` | all pass | 104/104 | PASS | `c09-verify-run.log` |
+| Demo profile | 28 scripted checks incl. V-04.x cancel | `mvn spring-boot:run -Dspring-boot.run.profiles=demo` | 28 / 0 failed | 28 checks, 0 failed | PASS | run on 2026-11-20 (console) |
+
+**Real integration boundary and post-commit state check:** every C08/C09 case goes through the
+embedded HTTP server, controller, service, JPA and the database, and re-reads the committed row
+with plain SQL. Executed on H2 (in the full build) **and on PostgreSQL 16** (16 HTTP tests, 0
+failures): [`evidence/c09-cr01-postgres-run.log`](evidence/c09-cr01-postgres-run.log).
+
+**Dependency lock + runtime + DB schema + non-secret config:** Spring Boot parent `3.5.8` (all
+starter versions managed by it), ArchUnit `1.4.1`; Java 21; schema = Hibernate `ddl-auto=update`
+(postgres profile) from the entity mapping at `399d5ef`, no migration scripts; config as above.
+There is no lockfile beyond the pinned parent POM — a known limitation.
+
+**Clean checkout / build / test / run commands and environment:** see README *Build & run* and
+*CI*. Executed in a fresh `git clone` at `399d5ef`, no local files: `mvn -B clean verify` → 104/104,
+JAR started, smoke request answered →
+[`evidence/c09-clean-checkout.log`](evidence/c09-clean-checkout.log). Windows 10, Java 21.0.4,
+Maven 3.9 (IntelliJ bundled). **Performed by the author (R. Nevoral), not yet by another member.**
+
+**CI job or automated local script, observed result / log:** `scripts/verify.sh --postgres` (same
+steps as the CI workflow) at `399d5ef`: exit 0, `mvn clean verify` 104/104 + PostgreSQL 16/16 →
+[`evidence/c09-verify-run.log`](evidence/c09-verify-run.log). GitHub Actions workflow
+`.github/workflows/ci.yml` (build + tests + JAR hash; PostgreSQL 16 service job) is committed but
+**NOT RUN yet** — it starts on the first push to GitHub.
+
+**Independent reproducer:** **NOT RUN** — Pavel Valošek or Pavel Mynář: `git fetch --tags &&
+git checkout c09-rc1 && mvn clean verify` in a new directory, then record date / OS / result here.
+
+**Artifact identity:** `SWIReservationSystem-1.0-SNAPSHOT.jar` built from `399d5ef` by
+`scripts/verify.sh`, sha256 `fe92e91752ae2c68fab5cdf028ae1dd56561818e01189ccc5122c6d4d1510ff3`
+(this JAR was used for the C10 trials). The clean-checkout build of the same commit has sha256
+`051add29…2635e7`: the build is **not bit-for-bit reproducible** (timestamps inside the JAR), so the
+identity is commit + hash of the specific built file. No DB migration is required.
+
+**Recovery / rollback limitation and remaining risks:** rollback = deploy the previous JAR, or set
+`notice-period=PT0S` (config-only, AC-05 tested). CR-01 writes no new data (a refusal writes nothing),
+so rolling back the code leaves no stale data. Remaining: peer review not recorded; independent
+reproduction not done; GitHub CI not yet run; R-02 (asserted `X-Actor-Id`) still means anybody can
+claim to be STAFF and bypass the notice period — accepted in C07/C08 R-02, CP2 requirement.
+
+**Release candidate decision: CONDITIONAL** — owner Rostislav Nevoral, 2026-11-20. All new and
+regression checks pass on H2 and PostgreSQL, and a clean checkout passes. Conditions for READY:
+(1) peer review of the card and diff recorded, (2) independent clean checkout by another member,
+(3) the GitHub Actions run on the pushed commit is green. Any FAIL in (1)–(3) → HOLD.
+
+## C10 — Operational situations and logs
+
+**Tested commits:** `399d5ef` (C09 RC JAR, sha256 `fe92e917…10ff3`) for situations 1–4; `8f64c9e`
+(JAR sha256 `195d43db…196370`) for situation 3 repeated after the logging change. **Environment:**
+Windows 10, Java 21.0.4, PostgreSQL 16.15 in the Docker container `swi-pg`, isolated database
+`swi_ops` (created empty for this trial), app on port 8090 with profile `postgres` (+ `seed` on the
+first start). Disposable test data only. HTTP and SQL transcript:
+[`evidence/c10-operations-transcript.log`](evidence/c10-operations-transcript.log); application log
+excerpts: [`evidence/c10-operations-log-excerpts.log`](evidence/c10-operations-log-excerpts.log).
+
+| Situation | Expected and actual outcome | How correctness was verified | What do logs show / is a log needed? |
+| --- | --- | --- | --- |
+| **1. Successful confirmation** | *Expected:* create → 201 DRAFT, confirm → 200 CONFIRMED. *Actual:* 201 id 10, 200 CONFIRMED. **PASS** | SQL in a separate session: row 10 `CONFIRMED`, Kurt 2, `[2026-11-23 10:00, 11:00)`, owner 1. | Only the notification line `NOTIFY owner …: reservation 10 … CONFIRMED`. **No extra log needed** — the response plus the stored row prove the result. **Finding:** that line contained the member's **e-mail address** (personal data) → fixed in `8f64c9e`, it now logs `user#1`. |
+| **2. Conflict rejected** | *Expected:* confirm of an overlapping booking → 409 `CONFLICT`, nothing changes. *Actual:* 409 `CONFLICT`. **PASS** | SQL: in the overlapping window exactly one `CONFIRMED` (id 10); the new booking 11 stays `DRAFT`. | **Nothing is logged, and that is the decision:** a refused overlap is a normal business outcome, the client gets a precise answer, there is no audit requirement, and logging every refusal would be noise. If an audit is required later, it belongs in a stored record, not in the technical log. |
+| **3. Technical failure and recovery** | *Expected:* with the DB stopped an operation fails, writes nothing, and the app recovers after the DB is back. *Actual (before fix):* the request **hung 30 s**, then a generic **500**. After `docker start` the next request succeeded without restarting the app. **PASS** for data safety; **response and log were insufficient**. *Actual (after fix, `8f64c9e`):* **503 `TECHNICAL_FAILURE`** after 5 s, message "nothing was changed". **PASS** | Before any retry, SQL showed the failed create left **0 rows** (and the failed confirm in the repeat left id 14 `DRAFT`). Only then the operation was repeated → CONFIRMED. We did not retry blindly. | *Before:* Hikari / Hibernate lines gave the **time, the component and the failure type** (`SQLState 08001`, `Connection to localhost:5432 refused`, `CannotCreateTransactionException`), but **not which operation or actor** failed, and nothing about the outcome. *Added minimal record:* one ERROR line `TECHNICAL_FAILURE op=POST /reservations/14/confirm actor=1 type=CannotCreateTransactionException cause=ConnectException… outcome=NOT_STARTED (nothing written)`. No request body, no personal data. The DB **coming back is not logged**; it is visible only through the next successful request. |
+| **4. Application restart** | *Expected:* after stop + start the confirmed bookings are still there and a new operation works. *Actual:* 10 and 12 still `CONFIRMED`, availability of `[10:00,11:00)` = `CONFLICT`, new booking 13 created + confirmed. **PASS** | SQL after restart (rows 10–12 unchanged), availability query, then SQL for row 13 `CONFIRMED`. | The **start** is fully visible (`Starting…`, active profile, `HikariPool-1 - Start completed`, `Started ReservationApplication in 4.79 s`). The **stop is not visible at all**: on Windows `taskkill` without `/F` could not stop the console process, `/F` kills it without a shutdown hook, so no shutdown line was written. Persistence does not depend on it (each operation commits). Limit: graceful shutdown was not tested. |
+
+**Which events are worth logging?** Technical failures (DB / connection / transaction errors), with
+time, operation, actor id, failure type and outcome. Start-up and configuration (already there).
+Background jobs that change state (OP-07 already logs how many requests it expired). **Not**:
+ordinary successes and business refusals such as a conflict or a too-late cancel — the response
+and the stored state are the evidence, and the log would only fill with noise. Never personal data,
+passwords or tokens.
+
+**What did the logs actually tell us?** When the outage started and that it was a refused connection
+to `localhost:5432` (time, component, type). After the C10 change also which request and actor were
+affected and that nothing was written. That the application started, with which profile and pool.
+
+**What had to be verified differently?** Every data state: that a refused or failed request wrote
+nothing, that confirmed bookings survived the restart, that the conflict left only one CONFIRMED —
+all by independent SQL in `psql`, because a log line cannot prove the database state. The
+recovery after the outage (no log line) — by a successful request. The stop of the application —
+not observable in the log at all (forced kill).
+
+**Changes made because of C10** (commit `8f64c9e`, suite 107/107):
+`ReservationController` handler for `DataAccessException` / `TransactionException` → 503 + one
+ERROR line; `LoggingNotificationService` without e-mail; `spring.datasource.hikari.connection-timeout=5000`
+in the postgres profile; `C10TechnicalFailureLoggingTest` (3 tests) pins the log line and the
+response. **Not done / BLOCKED:** graceful shutdown on Windows (see situation 4); failure *during*
+a commit (outcome UNKNOWN path) is covered by a unit test only, not by a real fault injection.
