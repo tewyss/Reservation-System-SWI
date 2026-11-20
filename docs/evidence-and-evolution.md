@@ -475,3 +475,56 @@ tests (see C06 above).
 - **Monitoring, trigger, contingency, next review:** Trigger: the first new `Reason` constant or an
   availability-only requirement. Then split the advisory and binding types. Next review: 2026-11-17
   (CP2 planning).
+
+## C08 — Controlled Change: test cases (CR-01)
+
+Change Card (CR, impact, options, decision): [`intent-and-change.md` → C08 / CR-01](intent-and-change.md#c08--cr-01--controlled-change-card-cancellation-notice-period).
+
+**Before baseline.** commit `b558fc1` (src/main identical to tag `c08-final` `07aacec` apart from one
+removed comment) · BR-03 / REQ-05 @ `c02-baseline-v0.1.md` (+ v0.2 BR-03.1) · Java 21.0.4, Spring
+Boot 3.5 · schema = Hibernate `ddl-auto` · isolated in-memory H2 (`MODE=PostgreSQL`, `create-drop`)
+· `mvn test -Dtest=C08CancellationBaselineTest` · no secrets.
+
+Both cases run through the real integration boundary (embedded HTTP server → controller →
+`ReservationService` → JPA → H2) in `C08CancellationBaselineTest`. The oracle is the committed row
+re-read with plain SQL (`JdbcTemplate`, `select … from reservation where id = ?`), not the HTTP
+response. Each case runs twice on fresh data (step 5). Transcript:
+[`evidence/c08-cr01-baseline-run.log`](evidence/c08-cr01-baseline-run.log).
+
+### C08 / TC-C08-01 — member cancels a CONFIRMED booking well ahead (preserved behaviour)
+- **Test basis:** BR-03.2 (`now < start`), BR-03.4 (cancel is not delete), REQ-05, BR-02. Risk: N/A.
+- **Preconditions:** isolated DB; court R1 open 08:00–22:00; member M1; clock = 2026-09-20 09:00
+  facility-local (Europe/Prague, `07:00Z`).
+- **Test data:** B1 = M1, R1, `[2026-09-20 12:00, 13:00)` (half-open), created and confirmed over HTTP.
+
+| # | Action / input | Expected BEFORE execution | Actual AFTER execution | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | Reset: new R1, M1; `POST /reservations` + `POST /{id}/confirm` | B1 `CONFIRMED` | `200 … state=CONFIRMED` (ids 3, 4) | log `[setup]` |
+| 2 | SQL read of B1; availability `[12:00,13:00)` | `CONFIRMED`, `cancelled_at = null`; slot not available | `STATE=CONFIRMED, CANCELLED_AT=null`; available=false | log step 2 |
+| 3 | `POST /reservations/{B1}/cancel` as M1 (3 h before start) | allowed: `200`, `CANCELLED` | `200 OK … state=CANCELLED` | log step 3 |
+| 4 | SQL read of B1 after commit; availability | `CANCELLED`, `cancelled_at` set, row kept; slot available | `STATE=CANCELLED, CANCELLED_AT=2026-09-20T07:00Z`; available=true | log step 4 |
+| 5 | Repeat 1–4 on fresh data | same outcome | run 2/2 identical | surefire `[2]` |
+
+- **Final postcondition / oracle:** row exists with `CANCELLED`; slot free. **Verdict: PASS** (2/2).
+- **Not covered:** concurrent cancel vs confirm (covered by `C03LifecycleConcurrencyTest`), PostgreSQL (H2 only here).
+
+### C08 / TC-C08-02 — member cancels a CONFIRMED booking 1 h before start (behaviour CR-01 changes)
+- **Test basis:** BR-03.2 of the before-baseline (`now < start` is the only time limit). Risk: N/A.
+- **Preconditions:** as TC-C08-01.
+- **Test data:** B1 = M1, R1, `[2026-09-20 10:00, 11:00)`; now = 09:00 → 1 h notice.
+
+| # | Action / input | Expected BEFORE execution | Actual AFTER execution | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | Reset; create + confirm B1 over HTTP | B1 `CONFIRMED` | `200 … state=CONFIRMED` (ids 1, 2) | log `[setup]` |
+| 2 | SQL read of B1 | `CONFIRMED`, `cancelled_at = null` | `STATE=CONFIRMED, CANCELLED_AT=null` | log step 2 |
+| 3 | `POST /reservations/{B1}/cancel` as M1 | **allowed** under BR-03.2: `200`, `CANCELLED` | `200 OK … state=CANCELLED` | log step 3 |
+| 4 | SQL read after commit; availability | `CANCELLED`; slot available | `STATE=CANCELLED`; available=true | log step 4 |
+| 5 | Repeat on fresh data | same | run 2/2 identical | surefire `[2]` |
+
+- **Verdict: PASS** against the before-baseline (2/2). This is the observed limitation CR-01 is about:
+  the court is freed 1 h before start. **After CR-01 the oracle of this case changes** (AC-02:
+  refused, stays CONFIRMED) — a recorded contract change, not a regression.
+- **Not covered:** STAFF and DRAFT/PENDING variants (they become relevant only with CR-01; C09 tests).
+
+**Execution summary:** 2 designed cases, 4 executions, 4 PASS, 0 FAIL / BLOCKED / NOT RUN
+(surefire: `tests=4, failures=0, errors=0`), 2026-11-20, author R. Nevoral.

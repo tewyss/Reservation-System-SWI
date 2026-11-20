@@ -1,0 +1,28 @@
+# C08 TC-C08-01 / TC-C08-02 - executed against the before-baseline
+# baseline (src/main) = b558fc1 (master, = tag-less HEAD after c08-final); test file added uncommitted
+# date: 2026-11-20T17:09:00+01:00   runtime: java version "21.0.4" 2024-07-16 LTS   OS: Windows 10 Pro
+# command: mvn test -Dtest=C08CancellationBaselineTest   (test DB: isolated in-memory H2, MODE=PostgreSQL, create-drop)
+# oracle: committed row re-read with plain SQL (JdbcTemplate), not the HTTP response
+
+[setup] step 1 B1 created+confirmed [10:00,11:00) now=2026-09-20T07:00:00Z -> {id=1, courtId=1, ownerId=1, start=2026-09-20T10:00:00, end=2026-09-20T11:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-02] step 2 persisted before cancel -> {ID=1, STATE=CONFIRMED, START_TIME=2026-09-20 10:00:00.0, END_TIME=2026-09-20 11:00:00.0, CANCELLED_AT=null}
+[TC-C08-02] step 3 POST /reservations/1/cancel -> 200 OK {id=1, courtId=1, ownerId=1, start=2026-09-20T10:00:00, end=2026-09-20T11:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[TC-C08-02] step 4 persisted after commit -> {ID=1, STATE=CANCELLED, START_TIME=2026-09-20 10:00:00.0, END_TIME=2026-09-20 11:00:00.0, CANCELLED_AT=2026-09-20T07:00Z}
+[setup] step 1 B1 created+confirmed [10:00,11:00) now=2026-09-20T07:00:00Z -> {id=2, courtId=2, ownerId=2, start=2026-09-20T10:00:00, end=2026-09-20T11:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-02] step 2 persisted before cancel -> {ID=2, STATE=CONFIRMED, START_TIME=2026-09-20 10:00:00.0, END_TIME=2026-09-20 11:00:00.0, CANCELLED_AT=null}
+[TC-C08-02] step 3 POST /reservations/2/cancel -> 200 OK {id=2, courtId=2, ownerId=2, start=2026-09-20T10:00:00, end=2026-09-20T11:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[TC-C08-02] step 4 persisted after commit -> {ID=2, STATE=CANCELLED, START_TIME=2026-09-20 10:00:00.0, END_TIME=2026-09-20 11:00:00.0, CANCELLED_AT=2026-09-20T07:00Z}
+[setup] step 1 B1 created+confirmed [12:00,13:00) now=2026-09-20T07:00:00Z -> {id=3, courtId=3, ownerId=3, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 2 persisted before cancel -> {ID=3, STATE=CONFIRMED, START_TIME=2026-09-20 12:00:00.0, END_TIME=2026-09-20 13:00:00.0, CANCELLED_AT=null}
+[TC-C08-01] step 3 POST /reservations/3/cancel -> 200 OK {id=3, courtId=3, ownerId=3, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 4 persisted after commit -> {ID=3, STATE=CANCELLED, START_TIME=2026-09-20 12:00:00.0, END_TIME=2026-09-20 13:00:00.0, CANCELLED_AT=2026-09-20T07:00Z}
+[setup] step 1 B1 created+confirmed [12:00,13:00) now=2026-09-20T07:00:00Z -> {id=4, courtId=4, ownerId=4, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 2 persisted before cancel -> {ID=4, STATE=CONFIRMED, START_TIME=2026-09-20 12:00:00.0, END_TIME=2026-09-20 13:00:00.0, CANCELLED_AT=null}
+[TC-C08-01] step 3 POST /reservations/4/cancel -> 200 OK {id=4, courtId=4, ownerId=4, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 4 persisted after commit -> {ID=4, STATE=CANCELLED, START_TIME=2026-09-20 12:00:00.0, END_TIME=2026-09-20 13:00:00.0, CANCELLED_AT=2026-09-20T07:00Z}
+
+RESULT: tests=4, failures=0, errors=0, skipped=0 (surefire XML) -> all 4 executions PASS
+testcase name="tcC08_02_cancelAtShortNotice()[1]"
+testcase name="tcC08_02_cancelAtShortNotice()[2]"
+testcase name="tcC08_01_cancelWellAhead()[1]"
+testcase name="tcC08_01_cancelWellAhead()[2]"
