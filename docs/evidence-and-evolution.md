@@ -596,8 +596,12 @@ Maven 3.9 (IntelliJ bundled). **Performed by the author (R. Nevoral), not yet by
 **CI job or automated local script, observed result / log:** `scripts/verify.sh --postgres` (same
 steps as the CI workflow) at `399d5ef`: exit 0, `mvn clean verify` 104/104 + PostgreSQL 16/16 →
 [`evidence/c09-verify-run.log`](evidence/c09-verify-run.log). GitHub Actions workflow
-`.github/workflows/ci.yml` (build + tests + JAR hash; PostgreSQL 16 service job) is committed but
-**NOT RUN yet** — it starts on the first push to GitHub.
+`.github/workflows/ci.yml` (build + tests + JAR hash; PostgreSQL 16 service job) ran on GitHub after
+the push on 2026-11-20: tag `c09-rc1` (`399d5ef`) → run
+[44774923507](https://github.com/tewyss/Reservation-System-SWI/actions/runs/44774923507), jobs
+`build-test` **success** and `postgres-integration` **success**; `master` (`2ac0dbd`) → run
+[44774921535](https://github.com/tewyss/Reservation-System-SWI/actions/runs/44774921535), both jobs
+**success**. Environment: GitHub-hosted `ubuntu-latest`, Temurin 21, PostgreSQL 16 service.
 
 **Independent reproducer:** **NOT RUN** — Pavel Valošek or Pavel Mynář: `git fetch --tags &&
 git checkout c09-rc1 && mvn clean verify` in a new directory, then record date / OS / result here.
@@ -611,13 +615,14 @@ identity is commit + hash of the specific built file. No DB migration is require
 **Recovery / rollback limitation and remaining risks:** rollback = deploy the previous JAR, or set
 `notice-period=PT0S` (config-only, AC-05 tested). CR-01 writes no new data (a refusal writes nothing),
 so rolling back the code leaves no stale data. Remaining: peer review not recorded; independent
-reproduction not done; GitHub CI not yet run; R-02 (asserted `X-Actor-Id`) still means anybody can
+reproduction not done; R-02 (asserted `X-Actor-Id`) still means anybody can
 claim to be STAFF and bypass the notice period — accepted in C07/C08 R-02, CP2 requirement.
 
 **Release candidate decision: CONDITIONAL** — owner Rostislav Nevoral, 2026-11-20. All new and
 regression checks pass on H2 and PostgreSQL, and a clean checkout passes. Conditions for READY:
 (1) peer review of the card and diff recorded, (2) independent clean checkout by another member,
-(3) the GitHub Actions run on the pushed commit is green. Any FAIL in (1)–(3) → HOLD.
+(3) the GitHub Actions run on the pushed commit is green — **met 2026-11-20** (runs above).
+Any FAIL in (1)–(2) → HOLD.
 
 ## C10 — Operational situations and logs
 
