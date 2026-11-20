@@ -1,0 +1,19 @@
+# C09 step 5 - clean checkout (fresh directory, no files from the working copy)
+# performed by: Rostislav Nevoral (author's machine) - NOT yet the independent reproduction by another member
+# date: 2026-11-20T17:17:44+01:00   OS: Windows 10 Pro 10.0.19045   java: java version "21.0.4" 2024-07-16 LTS   maven: 3.9.x (IntelliJ bundled)
+# commands:
+#   git clone --no-local <repo> clean && cd clean && git checkout 399d5ef   (git status: 0 changes)
+#   mvn -B clean verify
+#   java -jar target/SWIReservationSystem-1.0-SNAPSHOT.jar --spring.profiles.active=seed --server.port=8095
+#   curl 'http://localhost:8095/reservations/availability?courtId=1&start=2030-01-07T10:00:00&end=2030-01-07T11:00:00'
+# no environment variables, no .env, no local config files needed (H2 in-memory)
+
+[INFO] Tests run: 104, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Building jar: <tmp>\clean\target\SWIReservationSystem-1.0-SNAPSHOT.jar
+[INFO] BUILD SUCCESS
+sha256: 051add29cefa71b0e57c5a7056ef29a3e67aab26c2748f14340789ca582635e7 *target/SWIReservationSystem-1.0-SNAPSHOT.jar
+
+o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8095 (http) with context path '/'
+o.e.reservation.ReservationApplication   : Started ReservationApplication in 4.652 seconds (process running for 5.121)
+smoke GET availability -> {"available":true,"reason":"AVAILABLE","approvalRequired":false,"pendingApprovalCount":0}
+RESULT: PASS (build 104/104, app started, smoke request answered); process stopped afterwards

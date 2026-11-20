@@ -1,0 +1,628 @@
+commit: 399d5ef5f111b9c1767bae587d0de8d382382278 
+date:   2026-11-20T17:15:59+01:00
+java:   java version "21.0.4" 2024-07-16 LTS
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< org.example:SWIReservationSystem >------------------
+[INFO] Building SWIReservationSystem 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ SWIReservationSystem ---
+[INFO] Deleting C:\Users\rosti\IdeaProjects\SWIReservationSystem\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ SWIReservationSystem ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 27 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ SWIReservationSystem ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ SWIReservationSystem ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 13 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] /C:/Users/rosti/IdeaProjects/SWIReservationSystem/src/test/java/org/example/reservation/C08CancellationBaselineTest.java: Some input files use unchecked or unsafe operations.
+[INFO] /C:/Users/rosti/IdeaProjects/SWIReservationSystem/src/test/java/org/example/reservation/C08CancellationBaselineTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ SWIReservationSystem ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.example.reservation.BaselineV01VerificationTest
+17:16:08.841 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest]: BaselineV01VerificationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+17:16:09.009 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest
+[INFO] Running OP-04 Cancel Reservation
+17:16:09.159 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest$Op04Cancel]: Op04Cancel does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+17:16:09.162 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest$Op04Cancel
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-11-20T17:16:09.512+01:00  INFO 28624 --- [           main] o.e.r.BaselineV01VerificationTest        : Starting BaselineV01VerificationTest using Java 21.0.4 with PID 28624 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-11-20T17:16:09.513+01:00  INFO 28624 --- [           main] o.e.r.BaselineV01VerificationTest        : No active profile set, falling back to 1 default profile: "default"
+2026-11-20T17:16:10.216+01:00  INFO 28624 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-20T17:16:10.280+01:00  INFO 28624 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 53 ms. Found 3 JPA repository interfaces.
+2026-11-20T17:16:10.783+01:00  INFO 28624 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-20T17:16:10.845+01:00  INFO 28624 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.36.Final
+2026-11-20T17:16:10.883+01:00  INFO 28624 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-20T17:16:11.204+01:00  INFO 28624 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-20T17:16:11.241+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-11-20T17:16:11.449+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:swi_test user=SA
+2026-11-20T17:16:11.451+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-11-20T17:16:11.513+01:00  INFO 28624 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-20T17:16:12.397+01:00  INFO 28624 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-20T17:16:12.449+01:00  INFO 28624 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-20T17:16:12.703+01:00  INFO 28624 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-20T17:16:13.405+01:00  WARN 28624 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-20T17:16:13.837+01:00  INFO 28624 --- [           main] o.e.r.BaselineV01VerificationTest        : Started BaselineV01VerificationTest in 4.633 seconds (process running for 6.168)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\rosti\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-11-20T17:16:14.654+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205239855574300@example.com: reservation 2 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:14.732+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205239970148500@example.com: reservation 4 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:14.773+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240010063800@example.com: reservation 5 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:14.823+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240058864300@example.com: reservation 6 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:14.856+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240092350200@example.com: reservation 7 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:14.890+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240123366100@example.com: reservation 8 for court 'Court 1' is CONFIRMED
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.744 s -- in OP-04 Cancel Reservation
+[INFO] Running OP-03 Confirm Reservation
+2026-11-20T17:16:14.903+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest$Op03Confirm]: Op03Confirm does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:14.905+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest$Op03Confirm
+2026-11-20T17:16:14.937+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240170874600@example.com: reservation 9 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:14.982+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240217469900@example.com: reservation 10 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.025+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240262642400@example.com: reservation 12 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.034+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240262642400@example.com: reservation 13 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.105+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240346067200@example.com: reservation 16 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.193+01:00  INFO 28624 --- [pool-3-thread-3] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240417291400@example.com: reservation 21 for court 'Court 1' is CONFIRMED
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.330 s -- in OP-03 Confirm Reservation
+[INFO] Running OP-02 Check Availability (fixture: CONFIRMED [10:00,11:00))
+2026-11-20T17:16:15.233+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest$Op02Availability]: Op02Availability does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:15.244+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest$Op02Availability
+2026-11-20T17:16:15.287+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240527703500@example.com: reservation 27 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.309+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240551151900@example.com: reservation 28 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.332+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240574732900@example.com: reservation 29 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.354+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240596752200@example.com: reservation 30 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.380+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240618710700@example.com: reservation 31 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.402+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240644860900@example.com: reservation 32 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.432+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240675175100@example.com: reservation 33 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.452+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240694955500@example.com: reservation 34 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.475+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240715253000@example.com: reservation 35 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.501+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240744955400@example.com: reservation 37 for court 'Court 1' is CONFIRMED
+2026-11-20T17:16:15.508+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240744955400@example.com: reservation 38 for court 'Court 1' is CONFIRMED
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.288 s -- in OP-02 Check Availability (fixture: CONFIRMED [10:00,11:00))
+[INFO] Running OP-01 Create Reservation
+2026-11-20T17:16:15.524+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV01VerificationTest$Op01Create]: Op01Create does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:15.526+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV01VerificationTest$Op01Create
+2026-11-20T17:16:15.565+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240809761200@example.com: reservation 40 for court 'Court 1' is CONFIRMED
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.108 s -- in OP-01 Create Reservation
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.894 s -- in org.example.reservation.BaselineV01VerificationTest
+[INFO] Running org.example.reservation.BaselineV02ApprovalVerificationTest
+2026-11-20T17:16:15.633+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV02ApprovalVerificationTest]: BaselineV02ApprovalVerificationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:15.634+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV02ApprovalVerificationTest
+[INFO] Running OP-04 Cancel - amended cancellable states (BR-03.1)
+2026-11-20T17:16:15.638+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV02ApprovalVerificationTest$Op04Changed]: Op04Changed does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:15.639+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV02ApprovalVerificationTest$Op04Changed
+2026-11-20T17:16:15.665+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 42 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.669+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240903661400@example.com: reservation 42 is now REJECTED (no)
+2026-11-20T17:16:15.691+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 43 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.711+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 44 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.747+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205240953181700@example.com: reservation 44 is now EXPIRED
+2026-11-20T17:16:15.747+01:00  INFO 28624 --- [           main] o.e.r.service.ApprovalWorkflow           : OP-07: expired 1 pending approval request(s) at 2026-09-20T10:00
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.114 s -- in OP-04 Cancel - amended cancellable states (BR-03.1)
+[INFO] Running OP-07 Expire Pending Approvals
+2026-11-20T17:16:15.753+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV02ApprovalVerificationTest$Op07Expire]: Op07Expire does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:15.755+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV02ApprovalVerificationTest$Op07Expire
+2026-11-20T17:16:15.778+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 45 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.800+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 46 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.802+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241043494200@example.com: reservation 46 is now EXPIRED
+2026-11-20T17:16:15.802+01:00  INFO 28624 --- [           main] o.e.r.service.ApprovalWorkflow           : OP-07: expired 1 pending approval request(s) at 2026-09-20T10:30
+2026-11-20T17:16:15.824+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 47 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.840+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 48 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.843+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241085314600@example.com: reservation 48 is now EXPIRED
+2026-11-20T17:16:15.843+01:00  INFO 28624 --- [           main] o.e.r.service.ApprovalWorkflow           : OP-07: expired 1 pending approval request(s) at 2026-09-20T10:00
+2026-11-20T17:16:15.859+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 49 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.111 s -- in OP-07 Expire Pending Approvals
+[INFO] Running OP-06 Reject Reservation
+2026-11-20T17:16:15.864+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV02ApprovalVerificationTest$Op06Reject]: Op06Reject does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:15.866+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV02ApprovalVerificationTest$Op06Reject
+2026-11-20T17:16:15.886+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 50 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.887+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241127709200@example.com: reservation 50 is now REJECTED (Court booked for a tournament)
+2026-11-20T17:16:15.906+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 51 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.907+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241150809300@example.com: reservation 51 is now REJECTED (no)
+2026-11-20T17:16:15.929+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 52 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.948+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241189799400@example.com: reservation 53 for court 'Court 2 (self-service)' is CONFIRMED
+2026-11-20T17:16:15.963+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 54 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.965+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241208810900@example.com: reservation 54 is now REJECTED (late refusal)
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.103 s -- in OP-06 Reject Reservation
+[INFO] Running OP-05 Approve Reservation
+2026-11-20T17:16:15.968+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV02ApprovalVerificationTest$Op05Approve]: Op05Approve does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:15.969+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV02ApprovalVerificationTest$Op05Approve
+2026-11-20T17:16:15.986+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 55 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:15.991+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241229719400@example.com: reservation 55 for court 'Centre Court (approval)' is CONFIRMED
+2026-11-20T17:16:16.010+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 56 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:16.027+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 57 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:16.034+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner erik+5205241273569400@example.com: reservation 57 for court 'Centre Court (approval)' is CONFIRMED
+2026-11-20T17:16:16.050+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 58 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:16.055+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241292377700@example.com: reservation 58 is now EXPIRED
+2026-11-20T17:16:16.070+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 59 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:16.076+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 60 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:30
+2026-11-20T17:16:16.080+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner bob+5205241315766300@example.com: reservation 60 for court 'Centre Court (approval)' is CONFIRMED
+2026-11-20T17:16:16.096+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 61 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:16.125+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 63 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:16.129+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241370955200@example.com: reservation 63 for court 'Centre Court (approval)' is CONFIRMED
+2026-11-20T17:16:16.150+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 64 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:16.155+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 65 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:30
+2026-11-20T17:16:16.160+01:00  INFO 28624 --- [pool-4-thread-1] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241395050700@example.com: reservation 64 for court 'Centre Court (approval)' is CONFIRMED
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.199 s -- in OP-05 Approve Reservation
+[INFO] Running OP-02 Check Availability - approval disclosure (REQ-13)
+2026-11-20T17:16:16.168+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV02ApprovalVerificationTest$Op02Extended]: Op02Extended does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:16.170+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV02ApprovalVerificationTest$Op02Extended
+2026-11-20T17:16:16.196+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 66 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:16.200+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 67 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 s -- in OP-02 Check Availability - approval disclosure (REQ-13)
+[INFO] Running OP-03 Confirm - the approval branch (REQ-09)
+2026-11-20T17:16:16.208+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.BaselineV02ApprovalVerificationTest$Op03Changed]: Op03Changed does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:16.210+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.BaselineV02ApprovalVerificationTest$Op03Changed
+2026-11-20T17:16:16.224+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 68 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:16.238+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241484523000@example.com: reservation 69 for court 'Court 2 (self-service)' is CONFIRMED
+2026-11-20T17:16:16.252+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 70 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+2026-11-20T17:16:16.255+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner alice+5205241497128200@example.com: reservation 70 for court 'Centre Court (approval)' is CONFIRMED
+2026-11-20T17:16:16.272+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 72 for court 'Centre Court (approval)' awaits approval until 2026-09-20T10:00
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.070 s -- in OP-03 Confirm - the approval branch (REQ-09)
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.643 s -- in org.example.reservation.BaselineV02ApprovalVerificationTest
+[INFO] Running org.example.reservation.C03LifecycleConcurrencyTest
+2026-11-20T17:16:16.278+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.C03LifecycleConcurrencyTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-11-20T17:16:16.309+01:00  INFO 28624 --- [           main] o.e.r.C03LifecycleConcurrencyTest        : Starting C03LifecycleConcurrencyTest using Java 21.0.4 with PID 28624 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-11-20T17:16:16.310+01:00  INFO 28624 --- [           main] o.e.r.C03LifecycleConcurrencyTest        : No active profile set, falling back to 1 default profile: "default"
+2026-11-20T17:16:16.508+01:00  INFO 28624 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-20T17:16:16.524+01:00  INFO 28624 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 3 JPA repository interfaces.
+2026-11-20T17:16:16.597+01:00  INFO 28624 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-20T17:16:16.601+01:00  INFO 28624 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-20T17:16:16.610+01:00  INFO 28624 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-20T17:16:16.612+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-11-20T17:16:16.614+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn16: url=jdbc:h2:mem:swi_test user=SA
+2026-11-20T17:16:16.614+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-11-20T17:16:16.614+01:00  INFO 28624 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-20T17:16:16.668+01:00  INFO 28624 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-20T17:16:16.677+01:00  INFO 28624 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-20T17:16:16.740+01:00  WARN 28624 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-20T17:16:16.819+01:00  INFO 28624 --- [           main] o.e.r.C03LifecycleConcurrencyTest        : Started C03LifecycleConcurrencyTest in 0.538 seconds (process running for 9.149)
+RACE approve=Outcome[state=null, failure=ObjectOptimisticLockingFailureException: Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect): [org.example.reservation.domain.Reservation#1]] | rival=Outcome[state=CANCELLED, failure=null] | persisted=CANCELLED | notified=[PENDING:1]
+RACE approve=Outcome[state=null, failure=ObjectOptimisticLockingFailureException: Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect): [org.example.reservation.domain.Reservation#2]] | rival=Outcome[state=REJECTED, failure=null] | persisted=REJECTED | notified=[PENDING:2, REJECTED:2]
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.605 s -- in org.example.reservation.C03LifecycleConcurrencyTest
+[INFO] Running C05 DD - Court Allocation (component)
+2026-11-20T17:16:16.883+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.C05CourtAllocationComponentTest]: C05CourtAllocationComponentTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:16.886+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.C05CourtAllocationComponentTest
+2026-11-20T17:16:16.898+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner mia+5205242145100200@example.com: reservation 3 for court 'Court C05' is CONFIRMED
+2026-11-20T17:16:16.904+01:00  INFO 28624 --- [           main] o.e.r.s.LoggingNotificationService       : NOTIFY owner mia+5205242145100200@example.com: reservation 4 for court 'Court C05' is CONFIRMED
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.115 s -- in C05 DD - Court Allocation (component)
+[INFO] Running C08 - cancellation baseline (TC-C08-01, TC-C08-02) over HTTP with persisted-state oracle
+2026-11-20T17:16:17.001+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.C08CancellationBaselineTest]: C08CancellationBaselineTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:17.004+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.C08CancellationBaselineTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-11-20T17:16:17.039+01:00  INFO 28624 --- [           main] o.e.r.C08CancellationBaselineTest        : Starting C08CancellationBaselineTest using Java 21.0.4 with PID 28624 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-11-20T17:16:17.039+01:00  INFO 28624 --- [           main] o.e.r.C08CancellationBaselineTest        : No active profile set, falling back to 1 default profile: "default"
+2026-11-20T17:16:17.217+01:00  INFO 28624 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-20T17:16:17.232+01:00  INFO 28624 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 3 JPA repository interfaces.
+2026-11-20T17:16:17.488+01:00  INFO 28624 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-20T17:16:17.510+01:00  INFO 28624 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-20T17:16:17.510+01:00  INFO 28624 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.49]
+2026-11-20T17:16:17.593+01:00  INFO 28624 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-20T17:16:17.594+01:00  INFO 28624 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 553 ms
+2026-11-20T17:16:17.682+01:00  INFO 28624 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-20T17:16:17.692+01:00  INFO 28624 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-20T17:16:17.704+01:00  INFO 28624 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-20T17:16:17.705+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Starting...
+2026-11-20T17:16:17.705+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Added connection conn32: url=jdbc:h2:mem:swi_test user=SA
+2026-11-20T17:16:17.705+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Start completed.
+2026-11-20T17:16:17.706+01:00  INFO 28624 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-3)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-20T17:16:17.761+01:00  INFO 28624 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-20T17:16:17.769+01:00  INFO 28624 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-20T17:16:17.821+01:00  WARN 28624 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-20T17:16:18.342+01:00  INFO 28624 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 57467 (http) with context path '/'
+2026-11-20T17:16:18.345+01:00  INFO 28624 --- [           main] o.e.r.C08CancellationBaselineTest        : Started C08CancellationBaselineTest in 1.329 seconds (process running for 10.675)
+2026-11-20T17:16:18.496+01:00  INFO 28624 --- [o-auto-1-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-20T17:16:18.496+01:00  INFO 28624 --- [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-20T17:16:18.497+01:00  INFO 28624 --- [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-11-20T17:16:18.604+01:00  INFO 28624 --- [o-auto-1-exec-2] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205243603896000@example.org: reservation 1 for court 'R1-5205243600935700' is CONFIRMED
+[setup] step 1 B1 created+confirmed [10:00,11:00) now=2026-09-20T07:00:00Z -> {id=1, courtId=1, ownerId=1, start=2026-09-20T10:00:00, end=2026-09-20T11:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-02] step 2 persisted before cancel -> {ID=1, STATE=CONFIRMED, START_TIME=2026-09-20 10:00:00.0, END_TIME=2026-09-20 11:00:00.0, CANCELLED_AT=null}
+[TC-C08-02] step 3 POST /reservations/1/cancel -> 400 BAD_REQUEST {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T08:00; now is 2026-09-20T09:00. Facility staff can still cancel it.}
+[TC-C08-02] step 4 persisted after rollback -> {ID=1, STATE=CONFIRMED, START_TIME=2026-09-20 10:00:00.0, END_TIME=2026-09-20 11:00:00.0, CANCELLED_AT=null}
+2026-11-20T17:16:18.659+01:00  INFO 28624 --- [o-auto-1-exec-6] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205243900382300@example.org: reservation 2 for court 'R1-5205243899472300' is CONFIRMED
+[setup] step 1 B1 created+confirmed [10:00,11:00) now=2026-09-20T07:00:00Z -> {id=2, courtId=2, ownerId=2, start=2026-09-20T10:00:00, end=2026-09-20T11:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-02] step 2 persisted before cancel -> {ID=2, STATE=CONFIRMED, START_TIME=2026-09-20 10:00:00.0, END_TIME=2026-09-20 11:00:00.0, CANCELLED_AT=null}
+[TC-C08-02] step 3 POST /reservations/2/cancel -> 400 BAD_REQUEST {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T08:00; now is 2026-09-20T09:00. Facility staff can still cancel it.}
+[TC-C08-02] step 4 persisted after rollback -> {ID=2, STATE=CONFIRMED, START_TIME=2026-09-20 10:00:00.0, END_TIME=2026-09-20 11:00:00.0, CANCELLED_AT=null}
+2026-11-20T17:16:18.690+01:00  INFO 28624 --- [-auto-1-exec-10] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205243930553900@example.org: reservation 3 for court 'R1-5205243929365100' is CONFIRMED
+[setup] step 1 B1 created+confirmed [12:00,13:00) now=2026-09-20T07:00:00Z -> {id=3, courtId=3, ownerId=3, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 2 persisted before cancel -> {ID=3, STATE=CONFIRMED, START_TIME=2026-09-20 12:00:00.0, END_TIME=2026-09-20 13:00:00.0, CANCELLED_AT=null}
+[TC-C08-01] step 3 POST /reservations/3/cancel -> 200 OK {id=3, courtId=3, ownerId=3, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 4 persisted after commit -> {ID=3, STATE=CANCELLED, START_TIME=2026-09-20 12:00:00.0, END_TIME=2026-09-20 13:00:00.0, CANCELLED_AT=2026-09-20T07:00Z}
+2026-11-20T17:16:18.724+01:00  INFO 28624 --- [o-auto-1-exec-5] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205243964522900@example.org: reservation 4 for court 'R1-5205243963660600' is CONFIRMED
+[setup] step 1 B1 created+confirmed [12:00,13:00) now=2026-09-20T07:00:00Z -> {id=4, courtId=4, ownerId=4, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 2 persisted before cancel -> {ID=4, STATE=CONFIRMED, START_TIME=2026-09-20 12:00:00.0, END_TIME=2026-09-20 13:00:00.0, CANCELLED_AT=null}
+[TC-C08-01] step 3 POST /reservations/4/cancel -> 200 OK {id=4, courtId=4, ownerId=4, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 4 persisted after commit -> {ID=4, STATE=CANCELLED, START_TIME=2026-09-20 12:00:00.0, END_TIME=2026-09-20 13:00:00.0, CANCELLED_AT=2026-09-20T07:00Z}
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.747 s -- in C08 - cancellation baseline (TC-C08-01, TC-C08-02) over HTTP with persisted-state oracle
+[INFO] Running C09 CR-01 - cancellation notice period (AC-01..AC-04) over HTTP with persisted-state oracle
+2026-11-20T17:16:18.747+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.C09CancellationNoticeTest]: C09CancellationNoticeTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:18.749+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.C09CancellationNoticeTest
+2026-11-20T17:16:18.767+01:00  INFO 28624 --- [-auto-1-exec-10] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205244007899000@example.org: reservation 5 for court 'R1-5205244005533800' is CONFIRMED
+[TC-CR01-04] now=2026-09-20T11:00 -> HTTP 200 {id=5, courtId=5, ownerId=5, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {ID=5, STATE=CANCELLED, CANCELLED_AT=2026-09-20T09:00Z}
+2026-11-20T17:16:18.796+01:00  INFO 28624 --- [o-auto-1-exec-3] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205244032321300@example.org: reservation 6 for court 'R1-5205244030573500' is CONFIRMED
+[TC-CR01-07] now=2026-09-20T12:00 -> HTTP 400 {code=TOO_LATE_TO_CANCEL, message=Cancellation is only allowed before the reservation starts (2026-09-20T12:00); now is 2026-09-20T12:00.} | committed row: {ID=6, STATE=CONFIRMED, CANCELLED_AT=null}
+[TC-CR01-05] now=2026-09-20T11:00 -> HTTP 200 {id=7, courtId=9, ownerId=9, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {ID=7, STATE=CANCELLED, CANCELLED_AT=2026-09-20T09:00Z}
+2026-11-20T17:16:19.016+01:00  INFO 28624 --- [o-auto-1-exec-9] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205244199130200@example.org: reservation 8 for court 'R1-5205244194703600' is CONFIRMED
+[TC-CR01-03] now=2026-09-20T11:00 -> HTTP 400 {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T10:00; now is 2026-09-20T11:00. Facility staff can still cancel it.} | committed row: {ID=8, STATE=CONFIRMED, CANCELLED_AT=null}
+2026-11-20T17:16:19.124+01:00  INFO 28624 --- [o-auto-1-exec-3] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 9 for court 'G1-5205244326328200' awaits approval until 2026-09-20T12:00
+[TC-CR01-06] now=2026-09-20T11:00 -> HTTP 200 {id=9, courtId=14, ownerId=13, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=2026-09-20T12:00:00, decidedBy=null} | committed row: {ID=9, STATE=CANCELLED, CANCELLED_AT=2026-09-20T09:00Z}
+2026-11-20T17:16:19.202+01:00  INFO 28624 --- [o-auto-1-exec-6] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205244421346900@example.org: reservation 10 for court 'R1-5205244418360200' is CONFIRMED
+[TC-CR01-01] now=2026-09-20T09:59:59 -> HTTP 200 {id=10, courtId=15, ownerId=15, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {ID=10, STATE=CANCELLED, CANCELLED_AT=2026-09-20T07:59:59Z}
+2026-11-20T17:16:19.236+01:00  INFO 28624 --- [-auto-1-exec-10] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205244476820300@example.org: reservation 11 for court 'R1-5205244474030700' is CONFIRMED
+[TC-CR01-08] now=2026-09-20T11:00 -> HTTP 200 {id=11, courtId=17, ownerId=17, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {ID=11, STATE=CANCELLED, CANCELLED_AT=2026-09-20T07:00Z}
+2026-11-20T17:16:19.269+01:00  INFO 28624 --- [o-auto-1-exec-4] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205244503507500@example.org: reservation 12 for court 'R1-5205244502291300' is CONFIRMED
+[TC-CR01-02] now=2026-09-20T10:00 -> HTTP 400 {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T10:00; now is 2026-09-20T10:00. Facility staff can still cancel it.} | committed row: {ID=12, STATE=CONFIRMED, CANCELLED_AT=null}
+2026-11-20T17:16:19.304+01:00  INFO 28624 --- [o-auto-1-exec-8] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205244537579400@example.org: reservation 13 for court 'R1-5205244536318100' is CONFIRMED
+[TC-CR01-09] now=2026-09-20T11:00 -> HTTP 409 {code=CONFLICT, message=Slot overlaps an existing CONFIRMED reservation of this court.} | committed row: {ID=14, STATE=DRAFT, CANCELLED_AT=null}
+[INFO] Running AC-05 configuration
+2026-11-20T17:16:19.327+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.C09CancellationNoticeTest$NoticePeriodZero]: NoticePeriodZero does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:19.328+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.C09CancellationNoticeTest$NoticePeriodZero
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-11-20T17:16:19.351+01:00  INFO 28624 --- [           main] 9CancellationNoticeTest$NoticePeriodZero : Starting C09CancellationNoticeTest.NoticePeriodZero using Java 21.0.4 with PID 28624 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-11-20T17:16:19.351+01:00  INFO 28624 --- [           main] 9CancellationNoticeTest$NoticePeriodZero : No active profile set, falling back to 1 default profile: "default"
+2026-11-20T17:16:19.557+01:00  INFO 28624 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-20T17:16:19.576+01:00  INFO 28624 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 16 ms. Found 3 JPA repository interfaces.
+2026-11-20T17:16:19.627+01:00  INFO 28624 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-20T17:16:19.628+01:00  INFO 28624 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-20T17:16:19.629+01:00  INFO 28624 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.49]
+2026-11-20T17:16:19.660+01:00  INFO 28624 --- [           main] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2026-11-20T17:16:19.660+01:00  INFO 28624 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 308 ms
+2026-11-20T17:16:19.684+01:00  INFO 28624 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-20T17:16:19.687+01:00  INFO 28624 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-20T17:16:19.697+01:00  INFO 28624 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-20T17:16:19.698+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Starting...
+2026-11-20T17:16:19.699+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-4 - Added connection conn48: url=jdbc:h2:mem:swi_test user=SA
+2026-11-20T17:16:19.699+01:00  INFO 28624 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Start completed.
+2026-11-20T17:16:19.700+01:00  INFO 28624 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-4)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-20T17:16:19.745+01:00  INFO 28624 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-20T17:16:19.753+01:00  INFO 28624 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-20T17:16:19.801+01:00  WARN 28624 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-20T17:16:19.887+01:00  INFO 28624 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 57475 (http) with context path '/'
+2026-11-20T17:16:19.890+01:00  INFO 28624 --- [           main] 9CancellationNoticeTest$NoticePeriodZero : Started C09CancellationNoticeTest.NoticePeriodZero in 0.556 seconds (process running for 12.221)
+2026-11-20T17:16:19.908+01:00  INFO 28624 --- [o-auto-2-exec-1] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-20T17:16:19.908+01:00  INFO 28624 --- [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-20T17:16:19.909+01:00  INFO 28624 --- [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-11-20T17:16:19.929+01:00  INFO 28624 --- [o-auto-2-exec-2] o.e.r.s.LoggingNotificationService       : NOTIFY owner m0-5205245155008700@example.org: reservation 1 for court 'Z1-5205245153032600' is CONFIRMED
+[TC-CR01-10] notice-period=PT0S now=11:00 -> HTTP 200 {id=1, courtId=3, ownerId=3, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.615 s -- in AC-05 configuration
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.195 s -- in C09 CR-01 - cancellation notice period (AC-01..AC-04) over HTTP with persisted-state oracle
+[INFO] Running CP1 walking skeleton - POST /reservations end to end
+2026-11-20T17:16:19.944+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.CP1WalkingSkeletonTest]: CP1WalkingSkeletonTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:19.946+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.CP1WalkingSkeletonTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.054 s -- in CP1 walking skeleton - POST /reservations end to end
+[INFO] Running org.example.reservation.ReservationPersistenceSpikeTest
+2026-11-20T17:16:20.000+01:00  INFO 28624 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.ReservationPersistenceSpikeTest]: ReservationPersistenceSpikeTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:20.017+01:00  INFO 28624 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.ReservationPersistenceSpikeTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-11-20T17:16:20.040+01:00  INFO 28624 --- [           main] o.e.r.ReservationPersistenceSpikeTest    : Starting ReservationPersistenceSpikeTest using Java 21.0.4 with PID 28624 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-11-20T17:16:20.040+01:00  INFO 28624 --- [           main] o.e.r.ReservationPersistenceSpikeTest    : No active profile set, falling back to 1 default profile: "default"
+2026-11-20T17:16:20.138+01:00  INFO 28624 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-20T17:16:20.164+01:00  INFO 28624 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 25 ms. Found 3 JPA repository interfaces.
+2026-11-20T17:16:20.174+01:00  INFO 28624 --- [           main] beddedDataSourceBeanFactoryPostProcessor : Replacing 'dataSource' DataSource bean with embedded version
+2026-11-20T17:16:20.196+01:00  INFO 28624 --- [           main] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:h2:mem:51fa6bc4-7c05-4673-beb3-a0dc9fc9eb84;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+2026-11-20T17:16:20.210+01:00  INFO 28624 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-20T17:16:20.213+01:00  INFO 28624 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-20T17:16:20.220+01:00  INFO 28624 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-20T17:16:20.226+01:00  INFO 28624 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory$EmbeddedDataSourceProxy@2f308931']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-20T17:16:20.266+01:00  INFO 28624 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-20T17:16:20.272+01:00  INFO 28624 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-20T17:16:20.309+01:00  INFO 28624 --- [           main] o.e.r.ReservationPersistenceSpikeTest    : Started ReservationPersistenceSpikeTest in 0.29 seconds (process running for 12.64)
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.323 s -- in org.example.reservation.ReservationPersistenceSpikeTest
+[INFO] Running C05 DD - Court Allocation (unit)
+[INFO] Running DR-1 court hold
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.423 s -- in DR-1 court hold
+[INFO] Running DR-5 / DR-6 transitions into CONFIRMED
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in DR-5 / DR-6 transitions into CONFIRMED
+[INFO] Running DR-3 BR-02 predicate (required-interface contract)
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.049 s -- in DR-3 BR-02 predicate (required-interface contract)
+[INFO] Running DR-2 decision table: first failing rule wins
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in DR-2 decision table: first failing rule wins
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.553 s -- in C05 DD - Court Allocation (unit)
+[INFO] Running org.example.reservation.C03ArchitectureRuleTest
+2026-11-20T17:16:20.893+01:00  INFO 28624 --- [           main] com.tngtech.archunit.core.PluginLoader   : Detected Java version 21.0.4
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.535 s -- in org.example.reservation.C03ArchitectureRuleTest
+2026-11-20T17:16:23.433+01:00  INFO 28624 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-20T17:16:23.440+01:00  INFO 28624 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-11-20T17:16:23.443+01:00  INFO 28624 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-11-20T17:16:23.448+01:00  INFO 28624 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-20T17:16:23.449+01:00  INFO 28624 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 104, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ SWIReservationSystem ---
+[INFO] Building jar: C:\Users\rosti\IdeaProjects\SWIReservationSystem\target\SWIReservationSystem-1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot:3.5.8:repackage (repackage) @ SWIReservationSystem ---
+[INFO] Replacing main artifact C:\Users\rosti\IdeaProjects\SWIReservationSystem\target\SWIReservationSystem-1.0-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to C:\Users\rosti\IdeaProjects\SWIReservationSystem\target\SWIReservationSystem-1.0-SNAPSHOT.jar.original
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  23.878 s
+[INFO] Finished at: 2026-11-20T17:16:25+01:00
+[INFO] ------------------------------------------------------------------------
+fe92e91752ae2c68fab5cdf028ae1dd56561818e01189ccc5122c6d4d1510ff3 *target/SWIReservationSystem-1.0-SNAPSHOT.jar
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< org.example:SWIReservationSystem >------------------
+[INFO] Building SWIReservationSystem 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ SWIReservationSystem ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ SWIReservationSystem ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ SWIReservationSystem ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ SWIReservationSystem ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ SWIReservationSystem ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running C08 - cancellation baseline (TC-C08-01, TC-C08-02) over HTTP with persisted-state oracle
+17:16:30.991 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.example.reservation.C08CancellationBaselineTest]: C08CancellationBaselineTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+17:16:31.170 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.C08CancellationBaselineTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-11-20T17:16:31.650+01:00  INFO 27328 --- [           main] o.e.r.C08CancellationBaselineTest        : Starting C08CancellationBaselineTest using Java 21.0.4 with PID 27328 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-11-20T17:16:31.651+01:00  INFO 27328 --- [           main] o.e.r.C08CancellationBaselineTest        : No active profile set, falling back to 1 default profile: "default"
+2026-11-20T17:16:32.382+01:00  INFO 27328 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-20T17:16:32.455+01:00  INFO 27328 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 63 ms. Found 3 JPA repository interfaces.
+2026-11-20T17:16:33.058+01:00  INFO 27328 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-20T17:16:33.076+01:00  INFO 27328 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-20T17:16:33.076+01:00  INFO 27328 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.49]
+2026-11-20T17:16:33.137+01:00  INFO 27328 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-20T17:16:33.138+01:00  INFO 27328 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1472 ms
+2026-11-20T17:16:33.327+01:00  INFO 27328 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-20T17:16:33.393+01:00  INFO 27328 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.36.Final
+2026-11-20T17:16:33.429+01:00  INFO 27328 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-20T17:16:33.733+01:00  INFO 27328 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-20T17:16:33.768+01:00  INFO 27328 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-11-20T17:16:33.988+01:00  INFO 27328 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@624d778e
+2026-11-20T17:16:33.990+01:00  INFO 27328 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-11-20T17:16:34.054+01:00  INFO 27328 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.15
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-20T17:16:35.183+01:00  INFO 27328 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-20T17:16:35.269+01:00  INFO 27328 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-20T17:16:35.569+01:00  INFO 27328 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-20T17:16:36.471+01:00  WARN 27328 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-20T17:16:37.627+01:00  INFO 27328 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 57496 (http) with context path '/'
+2026-11-20T17:16:37.744+01:00  INFO 27328 --- [           main] o.e.r.C08CancellationBaselineTest        : Started C08CancellationBaselineTest in 6.398 seconds (process running for 7.555)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\rosti\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-11-20T17:16:38.402+01:00  INFO 27328 --- [o-auto-1-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-20T17:16:38.402+01:00  INFO 27328 --- [o-auto-1-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-20T17:16:38.403+01:00  INFO 27328 --- [o-auto-1-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-11-20T17:16:38.675+01:00  INFO 27328 --- [o-auto-1-exec-3] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205263516495600@example.org: reservation 1 for court 'R1-5205263436777400' is CONFIRMED
+[setup] step 1 B1 created+confirmed [10:00,11:00) now=2026-09-20T07:00:00Z -> {id=1, courtId=1, ownerId=1, start=2026-09-20T10:00:00, end=2026-09-20T11:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-02] step 2 persisted before cancel -> {id=1, state=CONFIRMED, start_time=2026-09-20 10:00:00.0, end_time=2026-09-20 11:00:00.0, cancelled_at=null}
+[TC-C08-02] step 3 POST /reservations/1/cancel -> 400 BAD_REQUEST {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T08:00; now is 2026-09-20T09:00. Facility staff can still cancel it.}
+[TC-C08-02] step 4 persisted after rollback -> {id=1, state=CONFIRMED, start_time=2026-09-20 10:00:00.0, end_time=2026-09-20 11:00:00.0, cancelled_at=null}
+2026-11-20T17:16:38.804+01:00  INFO 27328 --- [-auto-1-exec-10] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205264023313200@example.org: reservation 2 for court 'R1-5205264017710200' is CONFIRMED
+[setup] step 1 B1 created+confirmed [10:00,11:00) now=2026-09-20T07:00:00Z -> {id=2, courtId=2, ownerId=2, start=2026-09-20T10:00:00, end=2026-09-20T11:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-02] step 2 persisted before cancel -> {id=2, state=CONFIRMED, start_time=2026-09-20 10:00:00.0, end_time=2026-09-20 11:00:00.0, cancelled_at=null}
+[TC-C08-02] step 3 POST /reservations/2/cancel -> 400 BAD_REQUEST {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T08:00; now is 2026-09-20T09:00. Facility staff can still cancel it.}
+[TC-C08-02] step 4 persisted after rollback -> {id=2, state=CONFIRMED, start_time=2026-09-20 10:00:00.0, end_time=2026-09-20 11:00:00.0, cancelled_at=null}
+2026-11-20T17:16:38.874+01:00  INFO 27328 --- [o-auto-1-exec-6] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205264094733700@example.org: reservation 3 for court 'R1-5205264090248900' is CONFIRMED
+[setup] step 1 B1 created+confirmed [12:00,13:00) now=2026-09-20T07:00:00Z -> {id=3, courtId=3, ownerId=3, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 2 persisted before cancel -> {id=3, state=CONFIRMED, start_time=2026-09-20 12:00:00.0, end_time=2026-09-20 13:00:00.0, cancelled_at=null}
+[TC-C08-01] step 3 POST /reservations/3/cancel -> 200 OK {id=3, courtId=3, ownerId=3, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 4 persisted after commit -> {id=3, state=CANCELLED, start_time=2026-09-20 12:00:00.0, end_time=2026-09-20 13:00:00.0, cancelled_at=2026-09-20 09:00:00.0}
+2026-11-20T17:16:38.958+01:00  INFO 27328 --- [o-auto-1-exec-9] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205264177613400@example.org: reservation 4 for court 'R1-5205264173078400' is CONFIRMED
+[setup] step 1 B1 created+confirmed [12:00,13:00) now=2026-09-20T07:00:00Z -> {id=4, courtId=4, ownerId=4, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CONFIRMED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 2 persisted before cancel -> {id=4, state=CONFIRMED, start_time=2026-09-20 12:00:00.0, end_time=2026-09-20 13:00:00.0, cancelled_at=null}
+[TC-C08-01] step 3 POST /reservations/4/cancel -> 200 OK {id=4, courtId=4, ownerId=4, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 4 persisted after commit -> {id=4, state=CANCELLED, start_time=2026-09-20 12:00:00.0, end_time=2026-09-20 13:00:00.0, cancelled_at=2026-09-20 09:00:00.0}
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.100 s -- in C08 - cancellation baseline (TC-C08-01, TC-C08-02) over HTTP with persisted-state oracle
+[INFO] Running C09 CR-01 - cancellation notice period (AC-01..AC-04) over HTTP with persisted-state oracle
+2026-11-20T17:16:39.007+01:00  INFO 27328 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.C09CancellationNoticeTest]: C09CancellationNoticeTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:39.010+01:00  INFO 27328 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.C09CancellationNoticeTest
+2026-11-20T17:16:39.086+01:00  INFO 27328 --- [o-auto-1-exec-6] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205264291997400@example.org: reservation 5 for court 'R1-5205264268899500' is CONFIRMED
+[TC-CR01-04] now=2026-09-20T11:00 -> HTTP 200 {id=5, courtId=5, ownerId=5, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {id=5, state=CANCELLED, cancelled_at=2026-09-20 11:00:00.0}
+2026-11-20T17:16:39.157+01:00  INFO 27328 --- [o-auto-1-exec-4] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205264376798400@example.org: reservation 6 for court 'R1-5205264360510100' is CONFIRMED
+[TC-CR01-07] now=2026-09-20T12:00 -> HTTP 400 {code=TOO_LATE_TO_CANCEL, message=Cancellation is only allowed before the reservation starts (2026-09-20T12:00); now is 2026-09-20T12:00.} | committed row: {id=6, state=CONFIRMED, cancelled_at=null}
+[TC-CR01-05] now=2026-09-20T11:00 -> HTTP 200 {id=7, courtId=9, ownerId=9, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {id=7, state=CANCELLED, cancelled_at=2026-09-20 11:00:00.0}
+2026-11-20T17:16:39.282+01:00  INFO 27328 --- [o-auto-1-exec-7] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205264498630600@example.org: reservation 8 for court 'R1-5205264484244700' is CONFIRMED
+[TC-CR01-03] now=2026-09-20T11:00 -> HTTP 400 {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T10:00; now is 2026-09-20T11:00. Facility staff can still cancel it.} | committed row: {id=8, state=CONFIRMED, cancelled_at=null}
+2026-11-20T17:16:39.361+01:00  INFO 27328 --- [o-auto-1-exec-4] o.e.r.s.LoggingNotificationService       : NOTIFY approvers: reservation 9 for court 'G1-5205264572001800' awaits approval until 2026-09-20T12:00
+[TC-CR01-06] now=2026-09-20T11:00 -> HTTP 200 {id=9, courtId=14, ownerId=13, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=2026-09-20T12:00:00, decidedBy=null} | committed row: {id=9, state=CANCELLED, cancelled_at=2026-09-20 11:00:00.0}
+2026-11-20T17:16:39.424+01:00  INFO 27328 --- [-auto-1-exec-10] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205264642548300@example.org: reservation 10 for court 'R1-5205264634615900' is CONFIRMED
+[TC-CR01-01] now=2026-09-20T09:59:59 -> HTTP 200 {id=10, courtId=15, ownerId=15, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {id=10, state=CANCELLED, cancelled_at=2026-09-20 09:59:59.0}
+2026-11-20T17:16:39.512+01:00  INFO 27328 --- [o-auto-1-exec-6] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205264728292200@example.org: reservation 11 for court 'R1-5205264714530100' is CONFIRMED
+[TC-CR01-08] now=2026-09-20T11:00 -> HTTP 200 {id=11, courtId=17, ownerId=17, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {id=11, state=CANCELLED, cancelled_at=2026-09-20 09:00:00.0}
+2026-11-20T17:16:39.588+01:00  INFO 27328 --- [o-auto-1-exec-8] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205264805201100@example.org: reservation 12 for court 'R1-5205264795103400' is CONFIRMED
+[TC-CR01-02] now=2026-09-20T10:00 -> HTTP 400 {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T10:00; now is 2026-09-20T10:00. Facility staff can still cancel it.} | committed row: {id=12, state=CONFIRMED, cancelled_at=null}
+2026-11-20T17:16:39.654+01:00  INFO 27328 --- [o-auto-1-exec-5] o.e.r.s.LoggingNotificationService       : NOTIFY owner m1-5205264875668900@example.org: reservation 13 for court 'R1-5205264868338000' is CONFIRMED
+[TC-CR01-09] now=2026-09-20T11:00 -> HTTP 409 {code=CONFLICT, message=Slot overlaps an existing CONFIRMED reservation of this court.} | committed row: {id=14, state=DRAFT, cancelled_at=null}
+[INFO] Running AC-05 configuration
+2026-11-20T17:16:39.696+01:00  INFO 27328 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.C09CancellationNoticeTest$NoticePeriodZero]: NoticePeriodZero does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:39.699+01:00  INFO 27328 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.C09CancellationNoticeTest$NoticePeriodZero
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.8)
+
+2026-11-20T17:16:39.729+01:00  INFO 27328 --- [           main] 9CancellationNoticeTest$NoticePeriodZero : Starting C09CancellationNoticeTest.NoticePeriodZero using Java 21.0.4 with PID 27328 (started by rosti in C:\Users\rosti\IdeaProjects\SWIReservationSystem)
+2026-11-20T17:16:39.730+01:00  INFO 27328 --- [           main] 9CancellationNoticeTest$NoticePeriodZero : No active profile set, falling back to 1 default profile: "default"
+2026-11-20T17:16:39.934+01:00  INFO 27328 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-20T17:16:39.952+01:00  INFO 27328 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 16 ms. Found 3 JPA repository interfaces.
+2026-11-20T17:16:40.024+01:00  INFO 27328 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-20T17:16:40.025+01:00  INFO 27328 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-20T17:16:40.025+01:00  INFO 27328 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.49]
+2026-11-20T17:16:40.054+01:00  INFO 27328 --- [           main] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2026-11-20T17:16:40.054+01:00  INFO 27328 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 323 ms
+2026-11-20T17:16:40.088+01:00  INFO 27328 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-20T17:16:40.091+01:00  INFO 27328 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-20T17:16:40.100+01:00  INFO 27328 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-20T17:16:40.105+01:00  INFO 27328 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-11-20T17:16:40.117+01:00  INFO 27328 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@5b933786
+2026-11-20T17:16:40.117+01:00  INFO 27328 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-11-20T17:16:40.121+01:00  INFO 27328 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 16.15
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-20T17:16:40.164+01:00  INFO 27328 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-20T17:16:40.224+01:00  INFO 27328 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-20T17:16:40.311+01:00  WARN 27328 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-20T17:16:40.416+01:00  INFO 27328 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 57509 (http) with context path '/'
+2026-11-20T17:16:40.418+01:00  INFO 27328 --- [           main] 9CancellationNoticeTest$NoticePeriodZero : Started C09CancellationNoticeTest.NoticePeriodZero in 0.712 seconds (process running for 10.228)
+2026-11-20T17:16:40.455+01:00  INFO 27328 --- [o-auto-2-exec-1] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-20T17:16:40.455+01:00  INFO 27328 --- [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-20T17:16:40.456+01:00  INFO 27328 --- [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-11-20T17:16:40.491+01:00  INFO 27328 --- [o-auto-2-exec-2] o.e.r.s.LoggingNotificationService       : NOTIFY owner m0-5205265699426000@example.org: reservation 1 for court 'Z1-5205265694756300' is CONFIRMED
+[TC-CR01-10] notice-period=PT0S now=11:00 -> HTTP 200 {id=1, courtId=3, ownerId=3, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.810 s -- in AC-05 configuration
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.500 s -- in C09 CR-01 - cancellation notice period (AC-01..AC-04) over HTTP with persisted-state oracle
+[INFO] Running CP1 walking skeleton - POST /reservations end to end
+2026-11-20T17:16:40.510+01:00  INFO 27328 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.example.reservation.CP1WalkingSkeletonTest]: CP1WalkingSkeletonTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20T17:16:40.511+01:00  INFO 27328 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.example.reservation.ReservationApplication for test class org.example.reservation.CP1WalkingSkeletonTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.086 s -- in CP1 walking skeleton - POST /reservations end to end
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  13.265 s
+[INFO] Finished at: 2026-11-20T17:16:41+01:00
+[INFO] ------------------------------------------------------------------------
+VERIFY: OK

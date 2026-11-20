@@ -6,7 +6,13 @@ import org.example.reservation.service.AvailabilityResult;
 import org.example.reservation.service.ReservationErrorCode;
 import org.example.reservation.service.ReservationException;
 import org.example.reservation.service.ReservationService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.transaction.CannotCreateTransactionException;
+import org.springframework.transaction.TransactionException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +43,8 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
+
+    private static final Logger log = LoggerFactory.getLogger(ReservationController.class);
 
     private final ReservationService reservationService;
     private final ApprovalWorkflow approvalWorkflow;
@@ -122,6 +130,39 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(
                 ReservationErrorCode.INVALID_STATE.name(),
                 "The reservation was changed by a concurrent operation; re-read its state."));
+    }
+
+    /**
+     * C10: a TECHNICAL failure (database unreachable, connection lost, SQL error) - not a
+     * business refusal. Before C10 this surfaced as a bare 500 and the log did not say which
+     * operation or actor was affected (docs/evidence-and-evolution.md, C10 situation 3).
+     *
+     * One ERROR line with time (from the logger), operation, actor id, failure type and the
+     * observed outcome; no request body, no personal data. If the transaction could not even
+     * start, nothing was written; otherwise the outcome is unknown and the client must re-read
+     * the state before retrying a write. Declared after the more specific optimistic-lock
+     * handler, which still wins for its exception.
+     */
+    @ExceptionHandler({DataAccessException.class, TransactionException.class})
+    public ResponseEntity<ErrorResponse> handleTechnical(Exception e, HttpServletRequest request) {
+        boolean notStarted = e instanceof CannotCreateTransactionException;
+        String outcome = notStarted ? "NOT_STARTED (nothing written)" : "UNKNOWN (re-read state before retrying)";
+        log.error("TECHNICAL_FAILURE op={} {} actor={} type={} cause={} outcome={}",
+                request.getMethod(), request.getRequestURI(), request.getHeader("X-Actor-Id"),
+                e.getClass().getSimpleName(), rootCause(e), outcome);
+        log.debug("TECHNICAL_FAILURE stack trace", e);
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ErrorResponse("TECHNICAL_FAILURE",
+                notStarted
+                        ? "The reservation store is unavailable; nothing was changed. Try again later."
+                        : "The reservation store failed; the outcome is unknown. Re-read the reservation before retrying."));
+    }
+
+    private static String rootCause(Throwable e) {
+        Throwable root = e;
+        while (root.getCause() != null && root.getCause() != root) {
+            root = root.getCause();
+        }
+        return root.getClass().getSimpleName() + ": " + root.getMessage();
     }
 
     private static HttpStatus statusFor(ReservationErrorCode code) {
