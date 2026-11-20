@@ -410,13 +410,15 @@ class BaselineV01VerificationTest {
         @Test
         @DisplayName("V-04.2 success: cancelling a CONFIRMED reservation frees the slot")
         void v04_2() {
-            Reservation r = confirmed(ownerId, at(10, 0), at(11, 0));
-            assertUnavailable(at(10, 0), at(11, 0), AvailabilityResult.Reason.CONFLICT);
+            // C08 CR-01: [12:00,13:00) at 09:00 = 3 h notice, so the BR-03.6 notice period
+            // (2 h) is not what this example is about; its oracle is unchanged.
+            Reservation r = confirmed(ownerId, at(12, 0), at(13, 0));
+            assertUnavailable(at(12, 0), at(13, 0), AvailabilityResult.Reason.CONFLICT);
 
             service.cancel(ownerId, r.getId());
 
             assertThat(reload(r).getState()).isEqualTo(ReservationState.CANCELLED);
-            assertAvailable(at(10, 0), at(11, 0));
+            assertAvailable(at(12, 0), at(13, 0));
         }
 
         @Test
@@ -487,7 +489,7 @@ class BaselineV01VerificationTest {
         @Test
         @DisplayName("V-04.8 BR-03.4: cancel is not delete - the record is retained")
         void v04_8() {
-            Reservation r = confirmed(ownerId, at(10, 0), at(11, 0));
+            Reservation r = confirmed(ownerId, at(12, 0), at(13, 0));   // C08 CR-01: 3 h notice
             service.cancel(ownerId, r.getId());
 
             Reservation stored = reservations.findById(r.getId()).orElseThrow();

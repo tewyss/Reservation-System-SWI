@@ -1,0 +1,36 @@
+# C09 CR-01 - HTTP integration tests against a real PostgreSQL 16 (not H2)
+# date: 2026-11-20T17:15:33+01:00   code: 07f530e + C09 working tree (committed right after this run as the C09 change)
+# database: PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, docker container swi-pg, isolated database swi_test (create-drop)
+# command: mvn test -Dtest=C08CancellationBaselineTest,C09CancellationNoticeTest,CP1WalkingSkeletonTest \
+#   -Dspring.datasource.url=jdbc:postgresql://localhost:5432/swi_test -Dspring.datasource.driver-class-name=org.postgresql.Driver -Dspring.datasource.username=swi -Dspring.datasource.password=***
+
+HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@39ae6408
+HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@5b933786
+
+[TC-C08-02] step 2 persisted before cancel -> {id=1, state=CONFIRMED, start_time=2026-09-20 10:00:00.0, end_time=2026-09-20 11:00:00.0, cancelled_at=null}
+[TC-C08-02] step 3 POST /reservations/1/cancel -> 400 BAD_REQUEST {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T08:00; now is 2026-09-20T09:00. Facility staff can still cancel it.}
+[TC-C08-02] step 4 persisted after rollback -> {id=1, state=CONFIRMED, start_time=2026-09-20 10:00:00.0, end_time=2026-09-20 11:00:00.0, cancelled_at=null}
+[TC-C08-02] step 2 persisted before cancel -> {id=2, state=CONFIRMED, start_time=2026-09-20 10:00:00.0, end_time=2026-09-20 11:00:00.0, cancelled_at=null}
+[TC-C08-02] step 3 POST /reservations/2/cancel -> 400 BAD_REQUEST {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T08:00; now is 2026-09-20T09:00. Facility staff can still cancel it.}
+[TC-C08-02] step 4 persisted after rollback -> {id=2, state=CONFIRMED, start_time=2026-09-20 10:00:00.0, end_time=2026-09-20 11:00:00.0, cancelled_at=null}
+[TC-C08-01] step 2 persisted before cancel -> {id=3, state=CONFIRMED, start_time=2026-09-20 12:00:00.0, end_time=2026-09-20 13:00:00.0, cancelled_at=null}
+[TC-C08-01] step 3 POST /reservations/3/cancel -> 200 OK {id=3, courtId=3, ownerId=3, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 4 persisted after commit -> {id=3, state=CANCELLED, start_time=2026-09-20 12:00:00.0, end_time=2026-09-20 13:00:00.0, cancelled_at=2026-09-20 09:00:00.0}
+[TC-C08-01] step 2 persisted before cancel -> {id=4, state=CONFIRMED, start_time=2026-09-20 12:00:00.0, end_time=2026-09-20 13:00:00.0, cancelled_at=null}
+[TC-C08-01] step 3 POST /reservations/4/cancel -> 200 OK {id=4, courtId=4, ownerId=4, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+[TC-C08-01] step 4 persisted after commit -> {id=4, state=CANCELLED, start_time=2026-09-20 12:00:00.0, end_time=2026-09-20 13:00:00.0, cancelled_at=2026-09-20 09:00:00.0}
+[TC-CR01-04] now=2026-09-20T11:00 -> HTTP 200 {id=5, courtId=5, ownerId=5, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {id=5, state=CANCELLED, cancelled_at=2026-09-20 11:00:00.0}
+[TC-CR01-07] now=2026-09-20T12:00 -> HTTP 400 {code=TOO_LATE_TO_CANCEL, message=Cancellation is only allowed before the reservation starts (2026-09-20T12:00); now is 2026-09-20T12:00.} | committed row: {id=6, state=CONFIRMED, cancelled_at=null}
+[TC-CR01-05] now=2026-09-20T11:00 -> HTTP 200 {id=7, courtId=9, ownerId=9, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {id=7, state=CANCELLED, cancelled_at=2026-09-20 11:00:00.0}
+[TC-CR01-03] now=2026-09-20T11:00 -> HTTP 400 {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T10:00; now is 2026-09-20T11:00. Facility staff can still cancel it.} | committed row: {id=8, state=CONFIRMED, cancelled_at=null}
+[TC-CR01-06] now=2026-09-20T11:00 -> HTTP 200 {id=9, courtId=14, ownerId=13, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=2026-09-20T12:00:00, decidedBy=null} | committed row: {id=9, state=CANCELLED, cancelled_at=2026-09-20 11:00:00.0}
+[TC-CR01-01] now=2026-09-20T09:59:59 -> HTTP 200 {id=10, courtId=15, ownerId=15, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {id=10, state=CANCELLED, cancelled_at=2026-09-20 09:59:59.0}
+[TC-CR01-08] now=2026-09-20T11:00 -> HTTP 200 {id=11, courtId=17, ownerId=17, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null} | committed row: {id=11, state=CANCELLED, cancelled_at=2026-09-20 09:00:00.0}
+[TC-CR01-02] now=2026-09-20T10:00 -> HTTP 400 {code=TOO_LATE_TO_CANCEL, message=A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T10:00; now is 2026-09-20T10:00. Facility staff can still cancel it.} | committed row: {id=12, state=CONFIRMED, cancelled_at=null}
+[TC-CR01-09] now=2026-09-20T11:00 -> HTTP 409 {code=CONFLICT, message=Slot overlaps an existing CONFIRMED reservation of this court.} | committed row: {id=14, state=DRAFT, cancelled_at=null}
+[TC-CR01-10] notice-period=PT0S now=11:00 -> HTTP 200 {id=1, courtId=3, ownerId=3, start=2026-09-20T12:00:00, end=2026-09-20T13:00:00, state=CANCELLED, approvalDeadline=null, decidedBy=null}
+
+C08CancellationBaselineTest      testcases=4 failures/errors=0
+C09CancellationNoticeTest        testcases=10 failures/errors=0
+CP1WalkingSkeletonTest           testcases=2 failures/errors=0
+RESULT: 16 test cases, 0 failures, 0 errors (exit code 0)

@@ -7,10 +7,12 @@ import org.example.reservation.domain.ReservationState;
 import org.example.reservation.repository.AppUserRepository;
 import org.example.reservation.repository.CourtRepository;
 import org.example.reservation.repository.ReservationRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.Set;
@@ -50,13 +52,22 @@ public class ReservationService {
     private final NotificationDispatcher notifications;
     private final Clock clock;
 
+    /**
+     * BR-03.6 (C08 CR-01, closes assumption A-5): how long before the start a MEMBER
+     * must cancel a CONFIRMED reservation. Configuration, not a business constant;
+     * {@code PT0S} reproduces the pre-CR-01 behaviour exactly (AC-05).
+     */
+    private final Duration cancellationNoticePeriod;
+
     public ReservationService(ReservationRepository reservationRepository,
                               CourtRepository courtRepository,
                               AppUserRepository userRepository,
                               CourtAllocation courtAllocation,
                               ApprovalWorkflow approvalWorkflow,
                               NotificationDispatcher notifications,
-                              Clock clock) {
+                              Clock clock,
+                              @Value("${reservation.cancellation.notice-period:PT0S}")
+                              Duration cancellationNoticePeriod) {
         this.reservationRepository = reservationRepository;
         this.courtRepository = courtRepository;
         this.userRepository = userRepository;
@@ -64,6 +75,11 @@ public class ReservationService {
         this.approvalWorkflow = approvalWorkflow;
         this.notifications = notifications;
         this.clock = clock;
+        if (cancellationNoticePeriod.isNegative()) {
+            throw new IllegalArgumentException(
+                    "reservation.cancellation.notice-period must not be negative: " + cancellationNoticePeriod);
+        }
+        this.cancellationNoticePeriod = cancellationNoticePeriod;
     }
 
     // ==================================================================
@@ -176,6 +192,10 @@ public class ReservationService {
      * time boundary. D7: REJECTED and EXPIRED are NOT treated that way - they are
      * someone else's recorded outcome and must not be overwritten.
      *
+     * BR-03.6 (C08 CR-01): a MEMBER cancelling a CONFIRMED reservation must do so
+     * while {@code now < start - noticePeriod}. DRAFT / PENDING_APPROVAL hold no
+     * court and STAFF cancel for operational reasons, so both keep {@code now < start}.
+     *
      * Takes no court hold - a cancellation allocates nothing. A concurrent
      * approval of the same request is decided by the row version (C03 ADR-7,
      * V-04.11): exactly one of the two commits.
@@ -200,8 +220,18 @@ public class ReservationService {
                     "Cancellation is only allowed before the reservation starts ("
                             + reservation.getStartTime() + "); now is " + now + ".");
         }
+        if (reservation.getState() == ReservationState.CONFIRMED         // BR-03.6 / CR-01: only a
+                && actor.getRole() != AppUser.Role.STAFF) {             // held court, only a member
+            LocalDateTime noticeDeadline = reservation.getStartTime().minus(cancellationNoticePeriod);
+            if (!now.isBefore(noticeDeadline)) {                        // AC-03: strict, == is too late
+                throw new ReservationException(ReservationErrorCode.TOO_LATE_TO_CANCEL,
+                        "A confirmed reservation must be cancelled at least " + cancellationNoticePeriod
+                                + " before its start, i.e. before " + noticeDeadline
+                                + "; now is " + now + ". Facility staff can still cancel it.");
+            }
+        }
 
-        reservation.cancel(clock.instant());                        // BR-03.4 - record retained
+        reservation.cancel(clock.instant());                       // BR-03.4 - record retained
         return reservationRepository.save(reservation);
     }
 

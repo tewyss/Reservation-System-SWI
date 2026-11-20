@@ -1,0 +1,65 @@
+# C09 - CI: runs on every push and pull request.
+# Job 1: full build + all tests (H2) + packaged JAR with its SHA-256.
+# Job 2: the HTTP integration tests (CP1, C08, C09) against a real PostgreSQL 16 service.
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Build, test, package
+        run: mvn -B clean verify
+      - name: Artifact identity
+        run: |
+          echo "commit: $GITHUB_SHA" | tee target/artifact-identity.txt
+          sha256sum target/SWIReservationSystem-*.jar | tee -a target/artifact-identity.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-${{ github.sha }}
+          path: |
+            target/surefire-reports/
+            target/SWIReservationSystem-*.jar
+            target/artifact-identity.txt
+
+  postgres-integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: swi_test
+          POSTGRES_USER: swi
+          POSTGRES_PASSWORD: swi      # throw-away CI database, not a secret
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U swi" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: HTTP integration tests on PostgreSQL
+        run: >
+          mvn -B test
+          -Dtest=C08CancellationBaselineTest,C09CancellationNoticeTest,CP1WalkingSkeletonTest
+          -Dspring.datasource.url=jdbc:postgresql://localhost:5432/swi_test
+          -Dspring.datasource.driver-class-name=org.postgresql.Driver
+          -Dspring.datasource.username=swi -Dspring.datasource.password=swi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: postgres-surefire-${{ github.sha }}
+          path: target/surefire-reports/

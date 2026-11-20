@@ -69,6 +69,13 @@ An interval is **half-open**: `[start, end)`. `start` is included, `end` is excl
    (REQ-04). Whichever commits first wins; the loser sees the new source state and
    is rejected by its own source-state guard. A `CANCELLED` reservation can never
    later become `CONFIRMED`.
+6. **Notice period** *(added by C08 CR-01, implemented in C09; closes A-5)*: a
+   **MEMBER** cancelling a **CONFIRMED** reservation must do so while
+   `now < start − noticePeriod` (strict; `now == start − noticePeriod` is too late →
+   `TOO_LATE_TO_CANCEL`, the reservation stays CONFIRMED). `noticePeriod` is
+   configuration (`reservation.cancellation.notice-period`, facility value `PT2H`;
+   `PT0S` = the rule before CR-01). DRAFT and PENDING_APPROVAL (they hold no court)
+   and STAFF keep the BR-03.2 boundary. See `docs/intent-and-change.md` → C08 / CR-01.
 
 ### BR-04 — Opening-hours rule *(the domain-specific rule from C01)*
 A reservation's interval must lie entirely within its court's opening hours and
@@ -724,7 +731,7 @@ Recorded only where genuinely unresolved.
 | **A-2** | Assumption | An availability answer is advisory and may be stale the moment it is returned; the real guarantee is at confirm time. | If stakeholders expect "available" to hold the slot, a short-lived hold/quote concept would be needed — a new operation, not a tweak. |
 | **A-3** | Assumption | Confirming a reservation whose slot lies in the past is permitted in v0.1 (no lower time bound on Confirm). | If the facility wants it blocked, add a guard to OP-03 mirroring BR-03.2. Flagged because Cancel *does* have a time boundary, so the asymmetry is deliberate rather than overlooked. |
 | **A-4** | Assumption | Changing a court's opening hours does not retroactively invalidate already-CONFIRMED reservations. | Would require a re-validation sweep whenever opening hours change. |
-| **A-5** | Unknown | Whether the facility wants a **cancellation notice period** (e.g. "no cancellation within 2 hours of start") and/or a no-show penalty. Not supplied by any stakeholder. | BR-03.2 would change from `now < start` to `now < start − noticePeriod`. Isolated to one named rule, so the impact is contained — that containment is why the boundary was written as a single rule. |
+| **A-5** | ~~Unknown~~ **Closed by C08 CR-01 (2026-11-20)** — notice period decided as BR-03.6 (config, `PT2H`); no-show penalty still open. Original text: | Whether the facility wants a **cancellation notice period** (e.g. "no cancellation within 2 hours of start") and/or a no-show penalty. Not supplied by any stakeholder. | BR-03.2 would change from `now < start` to `now < start − noticePeriod`. Isolated to one named rule, so the impact is contained — that containment is why the boundary was written as a single rule. |
 | **A-6** | Unknown | Whether a member may hold several concurrent reservations, or whether a fair-use quota applies (carried over from C01). | Would add a new business rule and a new Create guard. |
 
 ---

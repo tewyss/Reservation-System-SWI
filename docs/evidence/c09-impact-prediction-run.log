@@ -1,0 +1,18 @@
+# C09 CR-01 - first run after the code change, BEFORE adjusting tests
+# date: 2026-11-20T17:12:11+01:00  base: 07f530e + uncommitted guard in ReservationService.cancel + notice-period=PT2H
+# command: mvn clean test
+# Purpose: check the C08 Impact Matrix prediction (row 'Tests'): V-04.2, V-04.8 and TC-C08-02 must fail, nothing else.
+
+[ERROR] Tests run: 8, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 7.571 s <<< FAILURE! -- in OP-04 Cancel Reservation
+[ERROR] org.example.reservation.BaselineV01VerificationTest.v04_2 -- Time elapsed: 0.109 s <<< ERROR!
+[ERROR] org.example.reservation.BaselineV01VerificationTest.v04_8 -- Time elapsed: 0.034 s <<< ERROR!
+[ERROR] Tests run: 4, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 1.748 s <<< FAILURE! -- in C08 - cancellation baseline (TC-C08-01, TC-C08-02) over HTTP with persisted-state oracle
+[ERROR] org.example.reservation.C08CancellationBaselineTest.tcC08_02_cancelAtShortNotice()[1] -- Time elapsed: 0.296 s <<< FAILURE!
+[ERROR] org.example.reservation.C08CancellationBaselineTest.tcC08_02_cancelAtShortNotice()[2] -- Time elapsed: 0.029 s <<< FAILURE!
+[ERROR]   C08CancellationBaselineTest.tcC08_02_cancelAtShortNotice:106 
+[ERROR]   C08CancellationBaselineTest.tcC08_02_cancelAtShortNotice:106 
+[ERROR]   BaselineV01VerificationTest.v04_2 » Reservation A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T08:00; now is 2026-09-20T09:00. Facility staff can still cancel it.
+[ERROR]   BaselineV01VerificationTest.v04_8 » Reservation A confirmed reservation must be cancelled at least PT2H before its start, i.e. before 2026-09-20T08:00; now is 2026-09-20T09:00. Facility staff can still cancel it.
+[ERROR] Tests run: 94, Failures: 2, Errors: 2, Skipped: 0
+
+OBSERVED: exactly the 3 predicted tests fail (2 x V-04.x fixture at 1 h notice, TC-C08-02 old oracle x2 runs); 90 others pass.

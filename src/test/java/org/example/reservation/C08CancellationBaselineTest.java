@@ -91,11 +91,15 @@ class C08CancellationBaselineTest {
 
     /**
      * TC-C08-02 - short-notice cancel: the member cancels a CONFIRMED booking 1 h before
-     * start. Expected under the ACCEPTED rule of this baseline (BR-03.2: only
-     * {@code now < start}): allowed -> CANCELLED. This is the observable limitation that
-     * CR-01 (cancellation notice period, assumption A-5) asks to change.
+     * start.
+     *
+     * Before-baseline (b558fc1, BR-03.2 only {@code now < start}): allowed -> CANCELLED,
+     * executed 4/4 PASS in C08 (docs/evidence/c08-cr01-baseline-run.log).
+     * C09, after the ACCEPTED CR-01 (BR-03.6, notice period 2 h): the oracle CHANGES to
+     * AC-02 - refused TOO_LATE_TO_CANCEL, the committed row stays CONFIRMED, the slot stays
+     * blocked. A recorded contract change, not a regression.
      */
-    @RepeatedTest(value = 2, name = "TC-C08-02 run {currentRepetition}/{totalRepetitions}: cancel CONFIRMED [10:00,11:00) at 09:00 (1 h notice) -> baseline BR-03.2 allows it")
+    @RepeatedTest(value = 2, name = "TC-C08-02 run {currentRepetition}/{totalRepetitions}: cancel CONFIRMED [10:00,11:00) at 09:00 (1 h notice) -> CR-01 AC-02 refused, stays CONFIRMED")
     void tcC08_02_cancelAtShortNotice() {
         Long b1 = confirmedBooking("10:00", "11:00");
         step("TC-C08-02", 2, "persisted before cancel", row(b1));
@@ -103,12 +107,14 @@ class C08CancellationBaselineTest {
 
         ResponseEntity<Map> cancel = cancel(b1);
         step("TC-C08-02", 3, "POST /reservations/" + b1 + "/cancel", cancel.getStatusCode() + " " + cancel.getBody());
-        assertThat(cancel.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(cancel.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(cancel.getBody()).containsEntry("code", "TOO_LATE_TO_CANCEL");
 
         Map<String, Object> after = row(b1);
-        step("TC-C08-02", 4, "persisted after commit", after);
-        assertThat(after.get("STATE")).isEqualTo("CANCELLED");
-        assertThat(available("10:00", "11:00")).isTrue();
+        step("TC-C08-02", 4, "persisted after rollback", after);
+        assertThat(after.get("STATE")).isEqualTo("CONFIRMED");
+        assertThat(after.get("CANCELLED_AT")).isNull();
+        assertThat(available("10:00", "11:00")).isFalse();
     }
 
     // ------------------------------------------------------------------ helpers
